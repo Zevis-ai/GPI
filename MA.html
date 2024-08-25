@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="theme-color" content="#4CAF50">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NutriFood Inc. - מזון בריאותי ותוספי תזונה</title>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap');
+
+    :root {
+        --primary-color: #4CAF50;
+        --secondary-color: #FF9800;
+        --accent-color: #2196F3;
+        --background-color: #F5F5F5;
+        --text-color: #333;
+        --light-text: #fff;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color: var(--background-color);
+        color: var(--text-color);
+        line-height: 1.6;
+        direction: rtl;
+        overflow-x: hidden;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    header {
+        background-color: var(--primary-color);
+        color: var(--light-text);
+        padding: 20px 0;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        position: fixed;
+        width: 100%;
+        top: 0;
+        z-index: 1000;
+    }
+
+    nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .logo {
+        font-size: 1.8rem;
+        font-weight: 700;
+    }
+
+    .menu-toggle {
+        font-size: 1.5rem;
+        cursor: pointer;
+    }
+
+    .side-menu {
+        position: fixed;
+        bottom: -100%;
+        left: 0;
+        width: 100%;
+        height: 80vh;
+        background-color: var(--primary-color);
+        padding-top: 60px;
+        transition: bottom 0.5s ease-in-out;
+        z-index: 999;
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+        box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .side-menu.active {
+        bottom: 0;
+    }
+
+    .side-menu ul {
+        list-style-type: none;
+        padding: 0 20px;
+    }
+
+    .side-menu ul li {
+        padding: 15px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .side-menu ul li:last-child {
+        border-bottom: none;
+    }
+
+    .side-menu ul li a {
+        color: var(--light-text);
+        text-decoration: none;
+        font-size: 1.2rem;
+        transition: color 0.3s ease;
+        display: block;
+    }
+
+    .side-menu ul li a:hover {
+        color: var(--accent-color);
+    }
+
+    .close-menu {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        font-size: 1.5rem;
+        color: var(--light-text);
+        cursor: pointer;
+    }
+
+    main {
+        padding: 100px 0 50px;
+    }
+
+    .hero {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: var(--light-text);
+        padding: 100px 0;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero h1 {
+        font-size: 3rem;
+        margin-bottom: 20px;
+    }
+
+    .hero p {
+        font-size: 1.2rem;
+        max-width: 600px;
+        margin: 0 auto 30px;
+    }
+
+    .cta-button {
+        display: inline-block;
+        background-color: var(--accent-color);
+        color: var(--light-text);
+        padding: 12px 30px;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: bold;
+        transition: all 0.3s ease;
+    }
+
+    .cta-button:hover {
+        background-color: #1976D2;
+        transform: translateY(-3px);
+    }
+
+    .features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 30px;
+        padding: 50px 0;
+    }
+
+    .feature-card {
+        background-color: #fff;
+        border-radius: 10px;
+        padding: 30px;
+        text-align: center;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .feature-icon {
+        font-size: 3rem;
+        color: var(--secondary-color);
+        margin-bottom: 20px;
+    }
+
+    .products-showcase {
+        background-color: #fff;
+        padding: 50px 0;
+        text-align: center;
+    }
+
+    .product-slider {
+        display: flex;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        scroll-behavior: smooth;
+        -webkit-overflow-scrolling: touch;
+        margin-top: 30px;
+    }
+
+    .product-slide {
+        flex: 0 0 300px;
+        margin-right: 20px;
+        scroll-snap-align: start;
+        background-color: #f9f9f9;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .product-slide:hover {
+        transform: scale(1.05);
+    }
+
+    .product-slide img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 10px;
+        margin-bottom: 15px;
+    }
+
+    .product-slide h3 {
+        margin-bottom: 10px;
+    }
+
+    .nutrition-facts {
+        background-color: var(--accent-color);
+        color: var(--light-text);
+        padding: 50px 0;
+        text-align: center;
+    }
+
+    .nutrition-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 30px;
+        margin-top: 30px;
+    }
+
+    .nutrition-item {
+        background-color: rgba(255, 255, 255, 0.1);
+        padding: 20px;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+    }
+
+    .nutrition-item:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+        transform: translateY(-5px);
+    }
+
+    .nutrition-item h3 {
+        font-size: 2rem;
+        margin-bottom: 10px;
+    }
+
+    .contact-form {
+        background-color: #fff;
+        padding: 50px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        max-width: 600px;
+        margin: 50px auto;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 500;
+    }
+
+    input, textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    textarea {
+        height: 150px;
+    }
+
+    button {
+        background-color: var(--secondary-color);
+        color: var(--light-text);
+        padding: 12px 30px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: 500;
+        transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+        background-color: #F57C00;
+    }
+
+    @media (max-width: 768px) {
+        .hero h1 {
+            font-size: 2rem;
+        }
+        .hero p {
+            font-size: 1rem;
+        }
+        .product-slide {
+            flex: 0 0 250px;
+        }
+    }
+</style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <div class="logo">NutriFood Inc.</div>
+            <div class="menu-toggle">☰</div>
+        </nav>
+    </header>
+
+    <div class="side-menu">
+        <span class="close-menu">✕</span>
+        <ul>
+            <li><a href="index.html">ראשי</a></li>
+            <li><a href="#about">אודות</a></li>
+            <li><a href="#products">מוצרים</a></li>
+            <li><a href="#nutrition">ערכים תזונתיים</a></li>
+            <li><a href="#quality">איכות ובטיחות</a></li>
+            <li><a href="#contact">צור קשר</a></li>
+        </ul>
+    </div>
+
+    <main>
+        <section class="hero" id="hero">
+            <div class="container">
+                <h1>NutriFood Inc.</h1>
+                <p>מזון בריאותי ותוספי תזונה איכותיים לחיים בריאים יותר</p>
+                <a href="#contact" class="cta-button">צור קשר עכשיו</a>
+            </div>
+        </section>
+
+        <section class="features container" id="about">
+            <div class="feature-card">
+                <div class="feature-icon">🌿</div>
+                <h3>רכיבים טבעיים</h3>
+                <p>שימוש ברכיבים טבעיים ואורגניים ללא תוספים מלאכותיים</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔬</div>
+                <h3>מחקר מתקדם</h3>
+                <p>השקעה במחקר ופיתוח לחדשנות בתחום התזונה</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🏆</div>
+                <h3>איכות מובטחת</h3>
+                <p>תהליכי בקרת איכות קפדניים לבטיחות מרבית</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🌍</div>
+                <h3>אחריות סביבתית</h3>
+                <p>מחויבות לייצור בר-קיימא ואריזות ידידותיות לסביבה</p>
+            </div>
+        </section>
+
+        <section class="products-showcase" id="products">
+            <div class="container">
+                <h2>המוצרים שלנו</h2>
+                <div class="product-slider">
+                    <div class="product-slide">
+                        <img src="https://replicate.delivery/yhqm/lM6VPK6ca7ZfZi2zDIosGM6BzFFLQDWEKLs2ZbrnFRw6WHrJA/out-0.webp" alt="אבקת חלבון טבעית">
+                        <h3>אבקת חלבון טבעית</h3>
+                        <p>עשירה בחלבון איכותי ממקורות צמחיים</p>
+                    </div>
+                    <div class="product-slide">
+                        <img src="https://replicate.delivery/yhqm/sImZvruEDP52H9ooxMBOo4U7gqXLljlJ4dezT1hbkWD6WHrJA/out-0.webp" alt="מולטי-ויטמין יומי">
+                        <h3>מולטי-ויטמין יומי</h3>
+                        <p>תערובת מאוזנת של ויטמינים ומינרלים חיוניים</p>
+                    </div>
+                    <div class="product-slide">
+                        <img src="https://replicate.delivery/yhqm/TneUkrh9gpUFPSNePfQjyITreu6E4lFfH03DBPpJ5dZyu1xaC/out-0.webp" alt="אומגה 3">
+                        <h3>אומגה 3</h3>
+                        <p>שמן דגים טהור לבריאות הלב והמוח</p>
+                    </div>
+                    <div class="product-slide">
+                        <img src="https://replicate.delivery/yhqm/EaPvy69WLkbVKtYziJLl0t5GMJRT85Xuvve352mxaTR6WHrJA/out-0.webp" alt="פרוביוטיקה">
+                        <h3>פרוביוטיקה</h3>
+                        <p>לתמיכה במערכת העיכול ומערכת החיסון</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="nutrition-facts" id="nutrition">
+            <div class="container">
+                <h2>ערכים תזונתיים</h2>
+                <div class="nutrition-grid">
+                    <div class="nutrition-item">
+                        <h3>25g</h3>
+                        <p>חלבון באבקת החלבון שלנו</p>
+                    </div>
+                    <div class="nutrition-item">
+                        <h3>100%</h3>
+                        <p>מהצורך היומי בויטמינים ומינרלים</p>
+                    </div>
+                    <div class="nutrition-item">
+                        <h3>1000mg</h3>
+                        <p>אומגה 3 בכל כמוסה</p>
+                    </div>
+                    <div class="nutrition-item">
+                        <h3>10B</h3>
+                        <p>חיידקים פרוביוטיים בכל מנה</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="contact-form container" id="contact">
+            <h2>צור קשר</h2>
+            <form id="nutrifood-contact-form">
+                <div class="form-group">
+                    <label for="name">שם מלא</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">כתובת אימייל</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="subject">נושא</label>
+                    <input type="text" id="subject" name="subject" required>
+                </div>
+                <div class="form-group">
+                    <label for="message">הודעה</label>
+                    <textarea id="message" name="message" required></textarea>
+                </div>
+                <button type="submit">שלח הודעה</button>
+            </form>
+        </section>
+    </main>
+
+    <script>
+        const menuToggle = document.querySelector('.menu-toggle');
+        const sideMenu = document.querySelector('.side-menu');
+        const closeMenu = document.querySelector('.close-menu');
+
+        menuToggle.addEventListener('click', () => {
+            sideMenu.classList.add('active');
+        });
+
+        closeMenu.addEventListener('click', () => {
+            sideMenu.classList.remove('active');
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (event) => {
+            if (!sideMenu.contains(event.target) && !menuToggle.contains(event.target)) {
+                sideMenu.classList.remove('active');
+            }
+        });
+
+        document.getElementById('nutrifood-contact-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // כאן תוכל להוסיף קוד לשליחת הטופס לשרת
+            alert('הודעתך נשלחה בהצלחה! נציג מ-NutriFood Inc. יצור איתך קשר בקרוב.');
+            this.reset();
+        });
+
+        // Smooth scroll for menu items
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+                sideMenu.classList.remove('active');
+            });
+        });
+
+        // Animate nutrition facts on scroll
+        const nutritionItems = document.querySelectorAll('.nutrition-item');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = 1;
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.5 });
+
+        nutritionItems.forEach(item => {
+            item.style.opacity = 0;
+            item.style.transform = 'translateY(20px)';
+            item.style.transition = 'opacity 0.5s, transform 0.5s';
+            observer.observe(item);
+        });
+    </script>
+</body>
+</html>
