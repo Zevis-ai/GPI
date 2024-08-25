@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>יצירת קשר - TechnoElectro Ltd.</title>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700&display=swap');
+
+    :root {
+        --primary-color: #2c3e50;
+        --secondary-color: #3498db;
+        --accent-color: #e74c3c;
+        --background-color: #ecf0f1;
+        --text-color: #333;
+        --light-text: #fff;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Heebo', sans-serif;
+        background-color: var(--background-color);
+        color: var(--text-color);
+        line-height: 1.6;
+        direction: rtl;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    header {
+        background-color: var(--primary-color);
+        color: var(--light-text);
+        padding: 20px 0;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        position: fixed;
+        width: 100%;
+        top: 0;
+        z-index: 1000;
+    }
+
+    nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .logo {
+        font-size: 1.8rem;
+        font-weight: 700;
+    }
+
+    .menu-toggle {
+        font-size: 1.5rem;
+        cursor: pointer;
+    }
+
+    .side-menu {
+        position: fixed;
+        bottom: -100%;
+        left: 0;
+        width: 100%;
+        height: 80vh;
+        background-color: var(--primary-color);
+        padding-top: 60px;
+        transition: bottom 0.5s ease-in-out;
+        z-index: 999;
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+        box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .side-menu.active {
+        bottom: 0;
+    }
+
+    .side-menu ul {
+        list-style-type: none;
+        padding: 0 20px;
+    }
+
+    .side-menu ul li {
+        padding: 15px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .side-menu ul li:last-child {
+        border-bottom: none;
+    }
+
+    .side-menu ul li a {
+        color: var(--light-text);
+        text-decoration: none;
+        font-size: 1.2rem;
+        transition: color 0.3s ease;
+        display: block;
+    }
+
+    .side-menu ul li a:hover {
+        color: var(--accent-color);
+    }
+
+    .close-menu {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        font-size: 1.5rem;
+        color: var(--light-text);
+        cursor: pointer;
+    }
+
+    main {
+        padding: 100px 0 50px;
+    }
+
+    .contact-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 50px;
+    }
+
+    .contact-form {
+        background-color: #fff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 500;
+    }
+
+    input, textarea, select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-family: 'Heebo', sans-serif;
+    }
+
+    textarea {
+        height: 150px;
+    }
+
+    button {
+        background-color: var(--accent-color);
+        color: var(--light-text);
+        padding: 12px 30px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: 500;
+        transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+        background-color: #c0392b;
+    }
+
+    .factory-info {
+        background-color: #fff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .factory-name {
+        font-size: 2rem;
+        color: var(--primary-color);
+        margin-bottom: 20px;
+    }
+
+    .factory-details {
+        margin-bottom: 20px;
+    }
+
+    .gallery {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 15px;
+        margin-top: 30px;
+    }
+
+    .gallery-item {
+        border-radius: 5px;
+        overflow: hidden;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+    }
+
+    .gallery-item:hover {
+        transform: scale(1.05);
+    }
+
+    .gallery-item img {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+    }
+
+    .availability {
+        background-color: var(--secondary-color);
+        color: var(--light-text);
+        padding: 20px;
+        border-radius: 10px;
+        margin-top: 30px;
+        text-align: center;
+    }
+
+    .availability h3 {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+    }
+
+    .chat-button {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background-color: var(--accent-color);
+        color: var(--light-text);
+        padding: 15px 25px;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: bold;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+    }
+
+    .chat-button:hover {
+        background-color: #c0392b;
+        transform: translateY(-3px);
+    }
+
+    .faq {
+        margin-top: 50px;
+    }
+
+    .faq-item {
+        background-color: #fff;
+        border-radius: 5px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .faq-question {
+        font-weight: bold;
+        margin-bottom: 10px;
+        cursor: pointer;
+    }
+
+    .faq-answer {
+        display: none;
+    }
+
+    @media (max-width: 768px) {
+        .contact-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <div class="logo">GPI</div>
+            <div class="menu-toggle">☰</div>
+        </nav>
+    </header>
+
+    <div class="side-menu">
+        <span class="close-menu">✕</span>
+        <ul>
+            <li><a href="#hero">ראשי</a></li>
+            <li><a href="#about">אודות</a></li>
+            <li><a href="#categories">קטגוריות</a></li>
+            <li><a href="#factories">מפעלים</a></li>
+            <li><a href="#market-trends">מגמות שוק</a></li>
+            <li><a href="#testimonials">המלצות</a></li>
+            <li><a href="#contact">צור קשר</a></li>
+        </ul>
+    </div>
+
+    <main>
+        <div class="container">
+            <div class="contact-grid">
+                <div class="contact-form">
+                    <h2>יצירת קשר עם TechnoElectro Ltd.</h2>
+                    <form id="factory-contact-form">
+                        <div class="form-group">
+                            <label for="name">שם מלא</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">כתובת אימייל</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="company">שם החברה</label>
+                            <input type="text" id="company" name="company">
+                        </div>
+                        <div class="form-group">
+                            <label for="category">קטגוריה</label>
+                            <select id="category" name="category" required>
+                                <option value="">בחר קטגוריה</option>
+                                <option value="semiconductors">מוליכים למחצה</option>
+                                <option value="microprocessors">מיקרו-מעבדים</option>
+                                <option value="sensors">חיישנים</option>
+                                <option value="displays">מסכים</option>
+                                <option value="batteries">סוללות</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">הודעה</label>
+                            <textarea id="message" name="message" required></textarea>
+                        </div>
+                        <button type="submit">שלח הודעה</button>
+                    </form>
+                </div>
+                <div class="factory-info">
+                    <h2 class="factory-name">TechnoElectro Ltd.</h2>
+                    <div class="factory-details">
+                        <p><strong>מיקום:</strong> טייפיי, טייוואן</p>
+                        <p><strong>התמחות:</strong> רכיבים אלקטרוניים מתקדמים</p>
+                        <p><strong>שנת הקמה:</strong> 1985</p>
+                        <p><strong>מספר עובדים:</strong> 5,000+</p>
+                        <p><strong>תקנים:</strong> ISO 9001, ISO 14001, IATF 16949</p>
+                    </div>
+                    <div class="availability">
+                        <h3>זמינות 24/7</h3>
+                        <p>צוות השירות שלנו זמין עבורכם בכל שעה, כל יום. אנו מתחייבים למענה מהיר ויעיל לכל פנייה.</p>
+                    </div>
+                    <h3>גלריית מוצרים</h3>
+                    <div class="gallery">
+                        <div class="gallery-item">
+                            <img src="https://source.unsplash.com/400x300/?microchip" alt="מיקרו-שבב מתקדם">
+                        </div>
+                        <div class="gallery-item">
+                            <img src="https://source.unsplash.com/400x300/?sensor" alt="חיישן חכם">
+                        </div>
+                        <div class="gallery-item">
+                            <img src="https://source.unsplash.com/400x300/?display" alt="מסך גמיש">
+                        </div>
+                        <div class="gallery-item">
+                            <img src="https://source.unsplash.com/400x300/?battery" alt="סוללה בעלת קיבולת גבוהה">
+                        </div>
+                        <div class="gallery-item">
+                            <img src="https://source.unsplash.com/400x300/?circuit" alt="לוח מעגלים מודפס">
+                        </div>
+                        <div class="gallery-item">
+                            <img src="https://source.unsplash.com/400x300/?robotic" alt="רכיב רובוטי">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="faq">
+                <h2>שאלות נפוצות</h2>
+                <div class="faq-item">
+                    <div class="faq-question">מהו זמן האספקה הממוצע?</div>
+                    <div class="faq-answer">זמן האספקה הממוצע שלנו הוא 2-4 שבועות, תלוי במורכבות ההזמנה וביעד המשלוח.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">האם אתם מציעים דוגמאות?</div>
+                    <div class="faq-answer">כן, אנו מציעים דוגמאות למרבית המוצרים שלנו. צרו קשר עם נציג המכירות לפרטים נוספים.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">מהי כמות ההזמנה המינימלית?</div>
+                    <div class="faq-answer">כמות ההזמנה המינימלית משתנה בהתאם למוצר. אנא פנו אלינו לקבלת מידע ספציפי.</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <a href="#" class="chat-button">צ'אט חי</a>
+
+    <script>
+        const menuToggle = document.querySelector('.menu-toggle');
+        const sideMenu = document.querySelector('.side-menu');
+        const closeMenu = document.querySelector('.close-menu');
+
+        menuToggle.addEventListener('click', () => {
+            sideMenu.classList.add('active');
+        });
+
+        closeMenu.addEventListener('click', () => {
+            sideMenu.classList.remove('active');
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (event) => {
+            if (!sideMenu.contains(event.target) && !menuToggle.contains(event.target)) {
+                sideMenu.classList.remove('active');
+            }
+        });
+
+        document.getElementById('factory-contact-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // כאן תוכל להוסיף קוד לשליחת הטופס לשרת
+            alert('הודעתך נשלחה בהצלחה! נציג מ-TechnoElectro Ltd. יצור איתך קשר בקרוב.');
+            this.reset();
+        });
+
+        // הוספת אנימציה לתמונות בגלריה
+        const galleryItems = document.querySelectorAll('.gallery-item');
+        galleryItems.forEach(item => {
+            item.addEventListener('mouseenter', () => {
+                item.style.transform = 'scale(1.05)';
+            });
+            item.addEventListener('mouseleave', () => {
+                item.style.transform = 'scale(1)';
+            });
+        });
+
+        // טיפול בשאלות נפוצות
+        const faqQuestions = document.querySelectorAll('.faq-question');
+        faqQuestions.forEach(question => {
+            question.addEventListener('click', () => {
+                const answer = question.nextElementSibling;
+                answer.style.display = answer.style.display === 'block' ? 'none' : 'block';
+            });
+        });
+    </script>
+</body>
+</html>
