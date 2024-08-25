@@ -739,3 +739,124 @@
     </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>GPI Earth Animation</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        #container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+
+        #gpi-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: Arial, sans-serif;
+            font-size: 64px;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 4px 4px 6px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 255, 255, 0.7);
+            opacity: 0;
+            animation: fadeInText 3s ease-in-out 1s forwards;
+        }
+
+        @keyframes fadeInText {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes fadeOut {
+            0% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="container"></div>
+<div id="gpi-text">GPI</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const container = document.getElementById('container');
+
+    // Set up the scene, camera, and renderer
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    container.appendChild(renderer.domElement);
+
+    // Create the Earth geometry and material
+    const geometry = new THREE.SphereGeometry(2, 32, 32);
+    const textureLoader = new THREE.TextureLoader();
+    const texture = textureLoader.load('https://upload.wikimedia.org/wikipedia/commons/c/cb/The_Blue_Marble_%28remastered%29.jpg');
+    const material = new THREE.MeshPhongMaterial({ map: texture });
+    const earth = new THREE.Mesh(geometry, material);
+    scene.add(earth);
+
+    // Add lighting to the scene
+    const ambientLight = new THREE.AmbientLight(0x333333); // Soft ambient light
+    scene.add(ambientLight);
+
+    const pointLight = new THREE.PointLight(0xffffff, 1, 100);
+    pointLight.position.set(5, 3, 5);
+    scene.add(pointLight);
+
+    // Position the camera
+    camera.position.z = 5;
+
+    // Create the rotation animation
+    const animate = function () {
+        requestAnimationFrame(animate);
+        earth.rotation.y += 0.01; // Rotate the Earth
+        renderer.render(scene, camera);
+    };
+
+    animate();
+
+    // Fade out after 3 seconds
+    setTimeout(() => {
+        container.style.animation = 'fadeOut 1s forwards';
+        document.getElementById('gpi-text').style.animation = 'fadeOut 1s forwards';
+    }, 3000);
+
+    setTimeout(() => {
+        container.style.display = 'none';
+        document.getElementById('gpi-text').style.display = 'none';
+    }, 4000);
+});
+</script>
+
+</body>
+</html>
