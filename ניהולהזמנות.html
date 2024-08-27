@@ -44,10 +44,27 @@
         color: white;
         padding: 20px;
         transition: all 0.3s ease;
+        position: fixed;
+        height: 100vh;
+        overflow-y: auto;
+        z-index: 1000;
     }
 
     .sidebar-collapsed {
         width: 60px;
+    }
+
+    .sidebar-collapsed .menu-item span {
+        display: none;
+    }
+
+    .sidebar-collapsed .logo {
+        font-size: 0;
+    }
+
+    .sidebar-collapsed .logo:before {
+        content: 'GPI';
+        font-size: 24px;
     }
 
     .logo {
@@ -81,6 +98,11 @@
         flex: 1;
         padding: 30px;
         transition: all 0.3s ease;
+        margin-right: 250px;
+    }
+
+    .main-content.sidebar-collapsed {
+        margin-right: 60px;
     }
 
     .header {
@@ -432,10 +454,11 @@
         .sidebar {
             width: 100%;
             position: static;
+            height: auto;
         }
 
         .main-content {
-            margin-left: 0;
+            margin-right: 0;
         }
 
         .modal-content {
@@ -618,7 +641,7 @@
     function updateStats() {
         document.getElementById('totalOrders').textContent = orders.length;
         
-        const totalValue = orders.reduce((sum, order) => sum + parseFloat(order.estimatedPrice), 0);
+        const totalValue = orders.reduce((sum, order) => sum + parseFloat(order.estimatedPrice) * parseFloat(order.productQuantity), 0);
         document.getElementById('totalValue').textContent = totalValue.toFixed(2) + ' ₪';
         
         const categories = [...new Set(orders.map(order => order.productCategory))];
@@ -731,11 +754,11 @@
     <div class="dashboard">
         <div class="sidebar">
             <div class="logo">GPI ניהול</div>
-            <div class="menu-item" id="toggleSidebar"><i class="fas fa-bars"></i> תפריט</div>
-            <div class="menu-item"><i class="fas fa-home"></i> דף הבית</div>
-            <div class="menu-item"><i class="fas fa-shopping-cart"></i> הזמנות</div>
-            <div class="menu-item"><i class="fas fa-chart-bar"></i> סטטיסטיקות</div>
-            <div class="menu-item"><i class="fas fa-cog"></i> הגדרות</div>
+            <div class="menu-item" id="toggleSidebar"><i class="fas fa-bars"></i> <span>תפריט</span></div>
+            <div class="menu-item"><i class="fas fa-home"></i> <span>דף הבית</span></div>
+            <div class="menu-item"><i class="fas fa-shopping-cart"></i> <span>הזמנות</span></div>
+            <div class="menu-item"><i class="fas fa-chart-bar"></i> <span>סטטיסטיקות</span></div>
+            <div class="menu-item"><i class="fas fa-cog"></i> <span>הגדרות</span></div>
         </div>
         <div class="main-content">
             <div class="header">
