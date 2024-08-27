@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>טקסטיל ומוצרי תינוקות - הצעת מוצר</title>
+    <title>טופס פרטי קשר</title>
     <script type="module">
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
@@ -30,37 +30,19 @@
             e.preventDefault();
 
             // איסוף הנתונים מהטופס
-            const productName = document.getElementById('product-name').value;
-            const productCategory = document.getElementById('product-category').value;
-            const productDescription = document.getElementById('product-description').value;
-            const productMaterials = document.getElementById('product-materials').value;
-            const productQuantity = document.getElementById('product-quantity').value;
-            const estimatedPrice = document.getElementById('estimated-price').value;
-            const deliveryDate = document.getElementById('delivery-date').value;
-            const additionalRequirements = document.getElementById('additional-requirements').value;
-            const contactName = document.getElementById('contact-name').value;
-            const contactEmail = document.getElementById('contact-email').value;
-            const contactPhone = document.getElementById('contact-phone').value;
+            const firstName = document.getElementById('first-name').value;
+            const lastName = document.getElementById('last-name').value;
 
             // יצירת רפרנס למסד הנתונים בפיירבייס
-            const formRef = ref(database, 'productRequests/' + new Date().getTime());
+            const formRef = ref(database, 'userDetails/' + new Date().getTime());
 
             // שמירת הנתונים בפיירבייס
             set(formRef, {
-                productName,
-                productCategory,
-                productDescription,
-                productMaterials,
-                productQuantity,
-                estimatedPrice,
-                deliveryDate,
-                additionalRequirements,
-                contactName,
-                contactEmail,
-                contactPhone
+                firstName,
+                lastName
             })
             .then(() => {
-                alert('הבקשה נשלחה בהצלחה!');
+                alert('הנתונים נשלחו בהצלחה!');
                 document.querySelector('form').reset();
             })
             .catch((error) => {
@@ -70,60 +52,17 @@
     </script>
 </head>
 <body>
-    <h2>טקסטיל ומוצרי תינוקות - הצעת מוצר</h2>
+    <h2>טופס פרטי קשר</h2>
     <form onsubmit="submitForm(event)">
         <div>
-            <label for="product-name">שם המוצר:</label>
-            <input type="text" id="product-name" required>
+            <label for="first-name">שם פרטי:</label>
+            <input type="text" id="first-name" required>
         </div>
         <div>
-            <label for="product-category">קטגוריית מוצר:</label>
-            <select id="product-category" required>
-                <option value="">בחר קטגוריה</option>
-                <option value="clothing">בגדי תינוקות</option>
-                <option value="bedding">מצעים ושמיכות</option>
-                <option value="accessories">אביזרים</option>
-                <option value="toys">צעצועים רכים</option>
-                <option value="other">אחר</option>
-            </select>
+            <label for="last-name">שם משפחה:</label>
+            <input type="text" id="last-name" required>
         </div>
-        <div>
-            <label for="product-description">תיאור מפורט של המוצר:</label>
-            <textarea id="product-description" required></textarea>
-        </div>
-        <div>
-            <label for="product-materials">חומרים רצויים:</label>
-            <input type="text" id="product-materials" required>
-        </div>
-        <div>
-            <label for="product-quantity">כמות מבוקשת:</label>
-            <input type="number" id="product-quantity" required min="1">
-        </div>
-        <div>
-            <label for="estimated-price">הערכת מחיר ליחידה (בש"ח):</label>
-            <input type="number" id="estimated-price" required min="0" step="0.01">
-        </div>
-        <div>
-            <label for="delivery-date">תאריך אספקה רצוי:</label>
-            <input type="date" id="delivery-date" required>
-        </div>
-        <div>
-            <label for="additional-requirements">דרישות נוספות או הערות:</label>
-            <textarea id="additional-requirements"></textarea>
-        </div>
-        <div>
-            <label for="contact-name">שם איש קשר:</label>
-            <input type="text" id="contact-name" required>
-        </div>
-        <div>
-            <label for="contact-email">אימייל:</label>
-            <input type="email" id="contact-email" required>
-        </div>
-        <div>
-            <label for="contact-phone">טלפון:</label>
-            <input type="tel" id="contact-phone" required>
-        </div>
-        <button type="submit">שלח בקשה</button>
+        <button type="submit">שלח</button>
     </form>
 </body>
 </html>
