@@ -3,348 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GPI - טקסטיל ומוצרי תינוקות</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700&display=swap');
-
-:root {
-    --primary-color: #2c3e50;
-    --secondary-color: #3498db;
-    --accent-color: #e74c3c;
-    --background-color: #ecf0f1;
-    --text-color: #333;
-    --light-text: #fff;
-}
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: 'Heebo', sans-serif;
-    background-color: var(--background-color);
-    color: var(--text-color);
-    line-height: 1.6;
-    direction: rtl;
-}
-
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
-}
-
-header {
-    background-color: var(--primary-color);
-    color: var(--light-text);
-    padding: 20px 0;
-    position: fixed;
-    width: 100%;
-    top: 0;
-    z-index: 1000;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.logo {
-    font-size: 1.8rem;
-    font-weight: 700;
-}
-
-.home-icon {
-    font-size: 1.5rem;
-    color: var(--light-text);
-    text-decoration: none;
-    transition: color 0.3s ease;
-}
-
-.home-icon:hover {
-    color: var(--secondary-color);
-}
-
-main {
-    padding-top: 80px;
-}
-
-.product-form {
-    background-color: #fff;
-    border-radius: 10px;
-    padding: 40px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    margin-top: 40px;
-}
-
-.form-title {
-    font-size: 2rem;
-    color: var(--primary-color);
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-.form-group {
-    margin-bottom: 20px;
-}
-
-label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: 500;
-}
-
-input[type="text"],
-input[type="number"],
-input[type="tel"],
-input[type="email"],
-textarea,
-select {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 1rem;
-}
-
-textarea {
-    height: 150px;
-    resize: vertical;
-}
-
-.file-input {
-    display: none;
-}
-
-.file-label {
-    display: inline-block;
-    padding: 10px 20px;
-    background-color: var(--secondary-color);
-    color: #fff;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.file-label:hover {
-    background-color: #2980b9;
-}
-
-.image-preview {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 10px;
-}
-
-.image-preview img {
-    width: 100px;
-    height: 100px;
-    object-fit: cover;
-    border-radius: 5px;
-}
-
-.submit-btn {
-    display: block;
-    width: 100%;
-    padding: 15px;
-    background-color: var(--accent-color);
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    font-size: 1.1rem;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.submit-btn:hover {
-    background-color: #c0392b;
-}
-
-.info-section {
-    margin-top: 40px;
-    background-color: #fff;
-    border-radius: 10px;
-    padding: 30px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-}
-
-.info-section h3 {
-    color: var(--primary-color);
-    margin-bottom: 15px;
-}
-
-.info-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
-}
-
-.info-item {
-    text-align: center;
-}
-
-.info-item i {
-    font-size: 2.5rem;
-    color: var(--secondary-color);
-    margin-bottom: 10px;
-}
-
-footer {
-    background-color: var(--primary-color);
-    color: var(--light-text);
-    padding: 40px 0;
-    margin-top: 60px;
-    text-align: center;
-}
-
-@media (max-width: 768px) {
-    .product-form {
-        padding: 20px;
-    }
-}
-    </style>
-    <!-- הוספת Firebase -->
+    <title>טקסטיל ומוצרי תינוקות - הצעת מוצר</title>
     <script type="module">
-  // ייבוא הפונקציות הנדרשות מה-SDK של Firebase
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-analytics.js";
-  import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
 
-  // תצורת Firebase
-  const firebaseConfig = {
-    apiKey: "AIzaSyAaOp49avUlLknLkGzskeCPCk9xPOAeMUE",
-    authDomain: "gpi0-d1e6d.firebaseapp.com",
-    databaseURL: "https://gpi0-d1e6d-default-rtdb.firebaseio.com",
-    projectId: "gpi0-d1e6d",
-    storageBucket: "gpi0-d1e6d.appspot.com",
-    messagingSenderId: "138797690477",
-    appId: "1:138797690477:web:5d04dd40ed2a577dbed964",
-    measurementId: "G-DP0JJ2FX3D"
-  };
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAaOp49avUlLknLkGzskeCPCk9xPOAeMUE",
+            authDomain: "gpi0-d1e6d.firebaseapp.com",
+            databaseURL: "https://gpi0-d1e6d-default-rtdb.firebaseio.com",
+            projectId: "gpi0-d1e6d",
+            storageBucket: "gpi0-d1e6d.appspot.com",
+            messagingSenderId: "138797690477",
+            appId: "1:138797690477:web:5d04dd40ed2a577dbed964",
+            measurementId: "G-DP0JJ2FX3D"
+        };
 
-  // אתחול Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-  const database = getDatabase(app);
-</script>
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
 
-</head>
-<body>
-    <header>
-        <nav class="container">
-            <div class="logo">GPI</div>
-            <a href="index.html" class="home-icon"><i class="fas fa-home"></i></a>
-        </nav>
-    </header>
-
-    <main>
-        <div class="container">
-    <form class="product-form">
-        <!-- השדות בטופס שלך -->
-
-        <h2 class="form-title">טקסטיל ומוצרי תינוקות - הצעת מוצר</h2>
-        <div class="form-group">
-            <label for="product-name">שם המוצר:</label>
-            <input type="text" id="product-name" required>
-        </div>
-        <div class="form-group">
-            <label for="product-category">קטגוריית מוצר:</label>
-            <select id="product-category" required>
-                <option value="">בחר קטגוריה</option>
-                <option value="clothing">בגדי תינוקות</option>
-                <option value="bedding">מצעים ושמיכות</option>
-                <option value="accessories">אביזרים</option>
-                <option value="toys">צעצועים רכים</option>
-                <option value="other">אחר</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="product-images">תמונות המוצר (עד 5 תמונות):</label>
-            <input type="file" id="product-images" class="file-input" accept="image/*" multiple>
-            <label for="product-images" class="file-label">בחר תמונות</label>
-            <div class="image-preview"></div>
-        </div>
-        <div class="form-group">
-            <label for="product-description">תיאור מפורט של המוצר:</label>
-            <textarea id="product-description" required></textarea>
-        </div>
-        <div class="form-group">
-            <label for="product-materials">חומרים רצויים:</label>
-            <input type="text" id="product-materials" required>
-        </div>
-        <div class="form-group">
-            <label for="product-quantity">כמות מבוקשת:</label>
-            <input type="number" id="product-quantity" required min="1">
-        </div>
-        <div class="form-group">
-            <label for="estimated-price">הערכת מחיר ליחידה (בש"ח):</label>
-            <input type="number" id="estimated-price" required min="0" step="0.01">
-        </div>
-        <div class="form-group">
-            <label for="delivery-date">תאריך אספקה רצוי:</label>
-            <input type="date" id="delivery-date" required>
-        </div>
-        <div class="form-group">
-            <label for="additional-requirements">דרישות נוספות או הערות:</label>
-            <textarea id="additional-requirements"></textarea>
-        </div>
-        <div class="form-group">
-            <label for="contact-name">שם איש קשר:</label>
-            <input type="text" id="contact-name" required>
-        </div>
-        <div class="form-group">
-            <label for="contact-email">אימייל:</label>
-            <input type="email" id="contact-email" required>
-        </div>
-        <div class="form-group">
-            <label for="contact-phone">טלפון:</label>
-            <input type="tel" id="contact-phone" required>
-        </div>
-        <button type="submit" class="submit-btn">שלח בקשה להצעות מחיר</button>
-    </form>
-
-    <div class="info-section">
-        <h3>למה כדאי לבחור ב-GPI?</h3>
-        <div class="info-grid">
-            <div class="info-item">
-                <i class="fas fa-industry"></i>
-                <h4>מעל 200 מפעלים</h4>
-                <p>רשת ענפה של יצרנים מובילים בתחום הטקסטיל ומוצרי תינוקות</p>
-            </div>
-            <div class="info-item">
-                <i class="fas fa-clock"></i>
-                <h4>זמינות מעולה</h4>
-                <p>קבלת הצעות מחיר תוך 24-36 שעות</p>
-            </div>
-            <div class="info-item">
-                <i class="fas fa-shield-alt"></i>
-                <h4>אבטחה מתקדמת</h4>
-                <p>הגנה על המידע שלך באמצעות טכנולוגיות אבטחה מתקדמות</p>
-            </div>
-            <div class="info-item">
-                <i class="fas fa-handshake"></i>
-                <h4>ליווי אישי</h4>
-                <p>צוות מומחים מלווה אותך לאורך כל התהליך</p>
-            </div>
-        </div>
-    </div>
-</div>
-</main>
-
-<footer>
-<div class="container">
-    <p>&copy; 2023 GPI - Global Products Industries Connect. כל הזכויות שמורות.</p>
-</div>
-</footer>
-
-
-    <script>
-        document.querySelector('.product-form').addEventListener('submit', (e) => {
+        // פונקציה לטיפול בשליחת הטופס
+        function submitForm(e) {
             e.preventDefault();
 
             // איסוף הנתונים מהטופס
@@ -378,13 +60,70 @@ footer {
                 contactPhone
             })
             .then(() => {
-                alert('הבקשה נשלחה בהצלחה! אנו נחזור אליך עם הצעות מחיר מהמפעלים המובילים שלנו בהקדם.');
-                document.querySelector('.product-form').reset(); // איפוס הטופס לאחר השליחה (אופציונלי)
+                alert('הבקשה נשלחה בהצלחה!');
+                document.querySelector('form').reset();
             })
             .catch((error) => {
                 console.error('Error writing data to Firebase:', error);
             });
-        });
+        }
     </script>
+</head>
+<body>
+    <h2>טקסטיל ומוצרי תינוקות - הצעת מוצר</h2>
+    <form onsubmit="submitForm(event)">
+        <div>
+            <label for="product-name">שם המוצר:</label>
+            <input type="text" id="product-name" required>
+        </div>
+        <div>
+            <label for="product-category">קטגוריית מוצר:</label>
+            <select id="product-category" required>
+                <option value="">בחר קטגוריה</option>
+                <option value="clothing">בגדי תינוקות</option>
+                <option value="bedding">מצעים ושמיכות</option>
+                <option value="accessories">אביזרים</option>
+                <option value="toys">צעצועים רכים</option>
+                <option value="other">אחר</option>
+            </select>
+        </div>
+        <div>
+            <label for="product-description">תיאור מפורט של המוצר:</label>
+            <textarea id="product-description" required></textarea>
+        </div>
+        <div>
+            <label for="product-materials">חומרים רצויים:</label>
+            <input type="text" id="product-materials" required>
+        </div>
+        <div>
+            <label for="product-quantity">כמות מבוקשת:</label>
+            <input type="number" id="product-quantity" required min="1">
+        </div>
+        <div>
+            <label for="estimated-price">הערכת מחיר ליחידה (בש"ח):</label>
+            <input type="number" id="estimated-price" required min="0" step="0.01">
+        </div>
+        <div>
+            <label for="delivery-date">תאריך אספקה רצוי:</label>
+            <input type="date" id="delivery-date" required>
+        </div>
+        <div>
+            <label for="additional-requirements">דרישות נוספות או הערות:</label>
+            <textarea id="additional-requirements"></textarea>
+        </div>
+        <div>
+            <label for="contact-name">שם איש קשר:</label>
+            <input type="text" id="contact-name" required>
+        </div>
+        <div>
+            <label for="contact-email">אימייל:</label>
+            <input type="email" id="contact-email" required>
+        </div>
+        <div>
+            <label for="contact-phone">טלפון:</label>
+            <input type="tel" id="contact-phone" required>
+        </div>
+        <button type="submit">שלח בקשה</button>
+    </form>
 </body>
 </html>
