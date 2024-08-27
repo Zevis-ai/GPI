@@ -1,107 +1,256 @@
 <!DOCTYPE html>
 <html lang="he">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ניהול הזמנות - GPI</title>
-    <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #f8f9fa;
-            color: #333;
-            line-height: 1.6;
-            direction: rtl;
-            padding: 20px;
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>ניהול הזמנות - GPI</title><style>
+    @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700&display=swap');
+
+    :root {
+        --primary-color: #3498db;
+        --secondary-color: #2ecc71;
+        --background-color: #f8f9fa;
+        --text-color: #333;
+        --card-bg-color: #fff;
+        --card-border-color: #e0e0e0;
+        --hover-color: #f1f8ff;
+    }
+
+    body {
+        font-family: 'Heebo', sans-serif;
+        background-color: var(--background-color);
+        color: var(--text-color);
+        line-height: 1.6;
+        direction: rtl;
+        padding: 20px;
+        margin: 0;
+    }
+
+    h1 {
+        text-align: center;
+        color: var(--primary-color);
+        margin-bottom: 30px;
+        font-size: 2.5rem;
+    }
+
+    .order-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .order-card {
+        background-color: var(--card-bg-color);
+        border: 1px solid var(--card-border-color);
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .order-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        background-color: var(--hover-color);
+    }
+
+    .order-number {
+        position: absolute;
+        top: -10px;
+        left: -10px;
+        background-color: var(--secondary-color);
+        color: white;
+        font-weight: bold;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+    }
+
+    .order-title {
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+        color: var(--primary-color);
+        border-bottom: 2px solid var(--primary-color);
+        padding-bottom: 5px;
+    }
+
+    .order-details {
+        margin-bottom: 15px;
+    }
+
+    .order-details span {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 500;
+    }
+
+    .order-date {
+        font-style: italic;
+        color: #7f8c8d;
+        text-align: left;
+        font-size: 0.9rem;
+    }
+
+    .order-actions {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 15px;
+    }
+
+    .action-btn {
+        padding: 8px 15px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        font-weight: 500;
+    }
+
+    .share-btn {
+        background-color: var(--primary-color);
+        color: white;
+    }
+
+    .share-btn:hover {
+        background-color: #2980b9;
+    }
+
+    .edit-btn {
+        background-color: var(--secondary-color);
+        color: white;
+    }
+
+    .edit-btn:hover {
+        background-color: #27ae60;
+    }
+
+    .notification {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        background-color: var(--secondary-color);
+        color: white;
+        padding: 15px 20px;
+        border-radius: 5px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        display: none;
+        z-index: 1000;
+        animation: slideIn 0.5s ease-out;
+    }
+
+    @keyframes slideIn {
+        from {
+            transform: translateX(-100%);
+            opacity: 0;
         }
-
-        .order-container {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
+        to {
+            transform: translateX(0);
+            opacity: 1;
         }
+    }
+</style>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+    import { getDatabase, ref, onValue, push, set } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
 
-        .order-card {
-            background-color: #fff;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
+    const firebaseConfig = {
+        apiKey: "AIzaSyAaOp49avUlLknLkGzskeCPCk9xPOAeMUE",
+        authDomain: "gpi0-d1e6d.firebaseapp.com",
+        databaseURL: "https://gpi0-d1e6d-default-rtdb.firebaseio.com",
+        projectId: "gpi0-d1e6d",
+        storageBucket: "gpi0-d1e6d.appspot.com",
+        messagingSenderId: "138797690477",
+        appId: "1:138797690477:web:5d04dd40ed2a577dbed964",
+        measurementId: "G-DP0JJ2FX3D"
+    };
 
-        .order-title {
-            font-size: 1.5rem;
-            margin-bottom: 10px;
-            color: #3498db;
-        }
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
 
-        .order-details {
-            margin-bottom: 10px;
-        }
+    let lastOrderTimestamp = 0;
 
-        .order-details span {
-            display: block;
-            font-weight: 600;
-        }
+    document.addEventListener('DOMContentLoaded', () => {
+        const ordersRef = ref(database, 'productRequests/');
+        onValue(ordersRef, (snapshot) => {
+            const ordersContainer = document.querySelector('.order-container');
+            ordersContainer.innerHTML = '';
 
-        .order-date {
-            font-style: italic;
-            color: #7f8c8d;
-        }
-    </style>
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
-        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
+            let orderNumber = 1;
+            snapshot.forEach((childSnapshot) => {
+                const order = childSnapshot.val();
+                const orderTimestamp = parseInt(childSnapshot.key);
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyAaOp49avUlLknLkGzskeCPCk9xPOAeMUE",
-            authDomain: "gpi0-d1e6d.firebaseapp.com",
-            databaseURL: "https://gpi0-d1e6d-default-rtdb.firebaseio.com",
-            projectId: "gpi0-d1e6d",
-            storageBucket: "gpi0-d1e6d.appspot.com",
-            messagingSenderId: "138797690477",
-            appId: "1:138797690477:web:5d04dd40ed2a577dbed964",
-            measurementId: "G-DP0JJ2FX3D"
-        };
+                if (orderTimestamp > lastOrderTimestamp) {
+                    showNotification('הזמנה חדשה התקבלה!');
+                    lastOrderTimestamp = orderTimestamp;
+                }
 
-        const app = initializeApp(firebaseConfig);
-        const database = getDatabase(app);
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const ordersRef = ref(database, 'productRequests/');
-            onValue(ordersRef, (snapshot) => {
-                const ordersContainer = document.querySelector('.order-container');
-                ordersContainer.innerHTML = '';
-
-                snapshot.forEach((childSnapshot) => {
-                    const order = childSnapshot.val();
-                    const orderCard = document.createElement('div');
-                    orderCard.className = 'order-card';
-
-                    orderCard.innerHTML = `
-                        <div class="order-title">${order.productName || 'לא צויין שם מוצר'}</div>
-                        <div class="order-details">
-                            <span>קטגוריה: ${order.productCategory || 'לא צויינה קטגוריה'}</span>
-                            <span>תיאור: ${order.productDescription || 'לא צויין תיאור'}</span>
-                            <span>חומרי גלם: ${order.productMaterials || 'לא צויינו חומרי גלם'}</span>
-                            <span>כמות דרושה: ${order.productQuantity || 'לא צויינה כמות'}</span>
-                            <span>מחיר משוער: ${order.estimatedPrice || 'לא צויין מחיר'}</span>
-                            <span>תאריך אספקה: ${order.deliveryDate || 'לא צויין תאריך'}</span>
-                            <span>דרישות נוספות: ${order.additionalRequirements || 'לא צוינו דרישות נוספות'}</span>
-                            <span>שם ליצירת קשר: ${order.contactName || 'לא צויין שם'}</span>
-                            <span>דוא"ל ליצירת קשר: ${order.contactEmail || 'לא צויין דוא"ל'}</span>
-                            <span>טלפון ליצירת קשר: ${order.contactPhone || 'לא צויין טלפון'}</span>
-                        </div>
-                        <div class="order-date">תאריך ההזמנה: ${new Date(parseInt(childSnapshot.key)).toLocaleDateString('he-IL')}</div>
-                    `;
-
-                    ordersContainer.appendChild(orderCard);
-                });
+                const orderCard = createOrderCard(order, orderNumber, childSnapshot.key);
+                ordersContainer.appendChild(orderCard);
+                orderNumber++;
             });
         });
-    </script>
+    });
+
+    function createOrderCard(order, orderNumber, orderId) {
+        const orderCard = document.createElement('div');
+        orderCard.className = 'order-card';
+
+        orderCard.innerHTML = `
+            <div class="order-number">#${orderNumber}</div>
+            <div class="order-title">${order.productName}</div>
+            <div class="order-details">
+                <span>קטגוריה: ${order.productCategory}</span>
+                <span>תיאור: ${order.productDescription}</span>
+                <span>חומרי גלם: ${order.productMaterials}</span>
+                <span>כמות דרושה: ${order.productQuantity}</span>
+                <span>מחיר משוער: ${order.estimatedPrice}</span>
+                <span>תאריך אספקה: ${order.deliveryDate}</span>
+                <span>דרישות נוספות: ${order.additionalRequirements}</span>
+                <span>שם ליצירת קשר: ${order.contactName}</span>
+                <span>דוא"ל ליצירת קשר: ${order.contactEmail}</span>
+                <span>טלפון ליצירת קשר: ${order.contactPhone}</span>
+            </div>
+            <div class="order-date">תאריך ההזמנה: ${new Date(parseInt(orderId)).toLocaleDateString('he-IL')}</div>
+            <div class="order-actions">
+                <button class="action-btn share-btn" onclick="shareOrder('${orderId}')">שתף הזמנה</button>
+                <button class="action-btn edit-btn" onclick="editOrder('${orderId}')">ערוך הזמנה</button>
+            </div>
+        `;
+
+        return orderCard;
+    }
+
+    function showNotification(message) {
+        const notification = document.createElement('div');
+        notification.className = 'notification';
+        notification.textContent = message;
+        document.body.appendChild(notification);
+        notification.style.display = 'block';
+        setTimeout(() => {
+            notification.style.display = 'none';
+            notification.remove();
+        }, 3000);
+    }
+
+    window.shareOrder = function(orderId) {
+        const shareUrl = `https://gpi0-d1e6d.firebaseapp.com/share?orderId=${orderId}`;
+        navigator.clipboard.writeText(shareUrl).then(() => {
+            alert('קישור להזמנה הועתק ללוח');
+        }).catch(err => {
+            console.error('שגיאה בהעתקת הקישור: ', err);
+        });
+    };
+
+    window.editOrder = function(orderId) {
+        // כאן תוכל להוסיף לוגיקה לעריכת ההזמנה
+        alert(`עריכת הזמנה מספר ${orderId}`);
+    };
+</script>
 </head>
 <body>
-    <h1>ניהול הזמנות</h1>
+    <h1>ניהול הזמנות - GPI</h1>
     <div class="order-container"></div>
 </body>
 </html>
