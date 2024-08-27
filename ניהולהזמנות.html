@@ -342,6 +342,15 @@
         z-index: 1000;
         animation: slideUp 0.5s ease-out;
     }
+    a.menu-item {
+    text-decoration: none; /* מסיר את הקו התחתון */
+    color: inherit; /* שומר על הצבע המקורי של הטקסט */
+}
+
+a.menu-item:hover {
+    color: #3498db; /* צבע מותאם אישית בזמן ריחוף, אם אתה רוצה */
+}
+
 
     @keyframes slideUp {
         from {
@@ -555,6 +564,7 @@
             margin-top: 15px;
             margin-right: 0;
         }
+        
     }
 </style>
 <script type="module">
