@@ -231,175 +231,139 @@
       const app = initializeApp(firebaseConfig);
       const analytics = getAnalytics(app);
       const database = getDatabase(app);
+
+      document.querySelector('.product-form').addEventListener('submit', (e) => {
+          e.preventDefault();
+
+          // איסוף הנתונים מהטופס
+          const productName = document.getElementById('product-name').value;
+          const productCategory = document.getElementById('product-category').value;
+          const productDescription = document.getElementById('product-description').value;
+          const productMaterials = document.getElementById('product-materials').value;
+          const productQuantity = document.getElementById('product-quantity').value;
+          const estimatedPrice = document.getElementById('estimated-price').value;
+          const deliveryDate = document.getElementById('delivery-date').value;
+          const additionalRequirements = document.getElementById('additional-requirements').value;
+          const contactName = document.getElementById('contact-name').value;
+          const contactEmail = document.getElementById('contact-email').value;
+          const contactPhone = document.getElementById('contact-phone').value;
+
+          // יצירת רפרנס למסד הנתונים בפיירבייס
+          const formRef = ref(database, 'productRequests/' + new Date().getTime());
+
+          // שמירת הנתונים בפיירבייס
+          set(formRef, {
+              productName,
+              productCategory,
+              productDescription,
+              productMaterials,
+              productQuantity,
+              estimatedPrice,
+              deliveryDate,
+              additionalRequirements,
+              contactName,
+              contactEmail,
+              contactPhone
+          })
+          .then(() => {
+              alert('הבקשה נשלחה בהצלחה! אנו נחזור אליך עם הצעות מחיר מהמפעלים המובילים שלנו בהקדם.');
+              document.querySelector('.product-form').reset(); // איפוס הטופס לאחר השליחה (אופציונלי)
+          })
+          .catch((error) => {
+              console.error('Error writing data to Firebase:', error);
+          });
+      });
+
+           // הצגת תמונות מקובץ העלאה
+           document.getElementById('product-images').addEventListener('change', (e) => {
+          const files = e.target.files;
+          const previewContainer = document.querySelector('.image-preview');
+          previewContainer.innerHTML = ''; // ניקוי התצוגה הקודמת
+
+          for (const file of files) {
+              const reader = new FileReader();
+              
+              reader.onload = (event) => {
+                  const img = document.createElement('img');
+                  img.src = event.target.result;
+                  previewContainer.appendChild(img);
+              };
+
+              reader.readAsDataURL(file);
+          }
+      });
     </script>
 </head>
 <body>
     <header>
-        <nav class="container">
-            <div class="logo">GPI</div>
-            <a href="index.html" class="home-icon"><i class="fas fa-home"></i></a>
-        </nav>
+        <div class="container">
+            <nav>
+                <a href="#" class="logo">GPI</a>
+                <a href="#" class="home-icon">🏠</a>
+            </nav>
+        </div>
     </header>
-
     <main>
         <div class="container">
-            <form class="product-form">
-                <h2 class="form-title">טקסטיל ומוצרי תינוקות - הצעת מוצר</h2>
-                <div class="form-group">
-                    <label for="product-name">שם המוצר:</label>
-                    <input type="text" id="product-name" required>
-                </div>
-                <div class="form-group">
-                    <label for="product-category">קטגוריית מוצר:</label>
-                    <select id="product-category" required>
-                        <option value="">בחר קטגוריה</option>
-                        <option value="clothing">בגדי תינוקות</option>
-                        <option value="bedding">מצעים ושמיכות</option>
-                        <option value="accessories">אביזרים</option>
-                        <option value="toys">צעצועים רכים</option>
-                        <option value="other">אחר</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="product-images">תמונות המוצר (עד 5 תמונות):</label>
-                    <input type="file" id="product-images" class="file-input" accept="image/*" multiple>
-                    <label for="product-images" class="file-label">בחר תמונות</label>
+            <div class="product-form">
+                <h2 class="form-title">שליחת בקשה למוצר</h2>
+                <form>
+                    <div class="form-group">
+                        <label for="product-name">שם המוצר</label>
+                        <input type="text" id="product-name" name="product-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="product-category">קטגוריית המוצר</label>
+                        <input type="text" id="product-category" name="product-category" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="product-description">תיאור המוצר</label>
+                        <textarea id="product-description" name="product-description" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="product-materials">חומרי הגלם</label>
+                        <input type="text" id="product-materials" name="product-materials" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="product-quantity">כמות דרושה</label>
+                        <input type="number" id="product-quantity" name="product-quantity" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="estimated-price">מחיר משוער</label>
+                        <input type="number" id="estimated-price" name="estimated-price" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="delivery-date">תאריך אספקה</label>
+                        <input type="date" id="delivery-date" name="delivery-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="additional-requirements">דרישות נוספות</label>
+                        <textarea id="additional-requirements" name="additional-requirements"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-name">שם ליצירת קשר</label>
+                        <input type="text" id="contact-name" name="contact-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-email">דוא"ל ליצירת קשר</label>
+                        <input type="email" id="contact-email" name="contact-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-phone">טלפון ליצירת קשר</label>
+                        <input type="tel" id="contact-phone" name="contact-phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="product-images" class="file-label">בחר תמונות</label>
+                        <input type="file" id="product-images" name="product-images" class="file-input" multiple>
+                    </div>
                     <div class="image-preview"></div>
-                </div>
-                <div class="form-group">
-                    <label for="product-description">תיאור מפורט של המוצר:</label>
-                    <textarea id="product-description" required></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="product-materials">חומרים רצויים:</label>
-                    <input type="text" id="product-materials" required>
-                </div>
-                <div class="form-group">
-                    <label for="product-quantity">כמות מבוקשת:</label>
-                    <input type="number" id="product-quantity" required min="1">
-                </div                <div class="form-group">
-                    <label for="estimated-price">הערכת מחיר ליחידה (בש"ח):</label>
-                    <input type="number" id="estimated-price" required min="0" step="0.01">
-                </div>
-                <div class="form-group">
-                    <label for="delivery-date">תאריך אספקה רצוי:</label>
-                    <input type="date" id="delivery-date" required>
-                </div>
-                <div class="form-group">
-                    <label for="additional-requirements">דרישות נוספות או הערות:</label>
-                    <textarea id="additional-requirements"></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="contact-name">שם איש קשר:</label>
-                    <input type="text" id="contact-name" required>
-                </div>
-                <div class="form-group">
-                    <label for="contact-email">אימייל:</label>
-                    <input type="email" id="contact-email" required>
-                </div>
-                <div class="form-group">
-                    <label for="contact-phone">טלפון:</label>
-                    <input type="tel" id="contact-phone" required>
-                </div>
-                <button type="submit" class="submit-btn">שלח בקשה להצעות מחיר</button>
-            </form>
-
-            <div class="info-section">
-                <h3>למה כדאי לבחור ב-GPI?</h3>
-                <div class="info-grid">
-                    <div class="info-item">
-                        <i class="fas fa-industry"></i>
-                        <h4>מעל 200 מפעלים</h4>
-                        <p>רשת ענפה של יצרנים מובילים בתחום הטקסטיל ומוצרי תינוקות</p>
-                    </div>
-                    <div class="info-item">
-                        <i class="fas fa-clock"></i>
-                        <h4>זמינות מעולה</h4>
-                        <p>קבלת הצעות מחיר תוך 24-36 שעות</p>
-                    </div>
-                    <div class="info-item">
-                        <i class="fas fa-shield-alt"></i>
-                        <h4>אבטחה מתקדמת</h4>
-                        <p>הגנה על המידע שלך באמצעות טכנולוגיות אבטחה מתקדמות</p>
-                    </div>
-                    <div class="info-item">
-                        <i class="fas fa-handshake"></i>
-                        <h4>ליווי אישי</h4>
-                        <p>צוות מומחים מלווה אותך לאורך כל התהליך</p>
-                    </div>
-                </div>
+                    <button type="submit" class="submit-btn">שלח בקשה</button>
+                </form>
             </div>
         </div>
     </main>
-
     <footer>
-        <div class="container">
-            <p>&copy; 2023 GPI - Global Products Industries Connect. כל הזכויות שמורות.</p>
-        </div>
+        <p>&copy; 2024 GPI - כל הזכויות שמורות</p>
     </footer>
-
-    <script>
-        document.querySelector('.product-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-
-            // איסוף הנתונים מהטופס
-            const productName = document.getElementById('product-name').value;
-            const productCategory = document.getElementById('product-category').value;
-            const productDescription = document.getElementById('product-description').value;
-            const productMaterials = document.getElementById('product-materials').value;
-            const productQuantity = document.getElementById('product-quantity').value;
-            const estimatedPrice = document.getElementById('estimated-price').value;
-            const deliveryDate = document.getElementById('delivery-date').value;
-            const additionalRequirements = document.getElementById('additional-requirements').value;
-            const contactName = document.getElementById('contact-name').value;
-            const contactEmail = document.getElementById('contact-email').value;
-            const contactPhone = document.getElementById('contact-phone').value;
-
-            // יצירת רפרנס למסד הנתונים בפיירבייס
-            const formRef = ref(database, 'productRequests/' + new Date().getTime());
-
-            // שמירת הנתונים בפיירבייס
-            set(formRef, {
-                productName,
-                productCategory,
-                productDescription,
-                productMaterials,
-                productQuantity,
-                estimatedPrice,
-                deliveryDate,
-                additionalRequirements,
-                contactName,
-                contactEmail,
-                contactPhone
-            })
-            .then(() => {
-                alert('הבקשה נשלחה בהצלחה! אנו נחזור אליך עם הצעות מחיר מהמפעלים המובילים שלנו בהקדם.');
-                document.querySelector('.product-form').reset(); // איפוס הטופס לאחר השליחה (אופציונלי)
-            })
-            .catch((error) => {
-                console.error('Error writing data to Firebase:', error);
-            });
-        });
-
-        // הצגת תמונות מקובץ העלאה
-        document.getElementById('product-images').addEventListener('change', (e) => {
-            const files = e.target.files;
-            const previewContainer = document.querySelector('.image-preview');
-            previewContainer.innerHTML = '';
-
-            for (let i = 0; i < files.length; i++) {
-                const file = files[i];
-                const reader = new FileReader();
-
-                reader.onload = (event) => {
-                    const img = document.createElement('img');
-                    img.src = event.target.result;
-                    previewContainer.appendChild(img);
-                };
-
-                reader.readAsDataURL(file);
-            }
-        });
-    </script>
 </body>
 </html>
