@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GPI - טקסטיל ומוצרי תינוקות</title>
     <style>
-                @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
 
 :root {
     --primary-color: #2c3e50;
@@ -380,7 +380,6 @@ footer {
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
       import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-analytics.js";
       import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
-      import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-storage.js";
 
       // Firebase configuration
       const firebaseConfig = {
@@ -398,7 +397,6 @@ footer {
       const app = initializeApp(firebaseConfig);
       const analytics = getAnalytics(app);
       const database = getDatabase(app);
-      const storage = getStorage(app);
 
       document.querySelector('.product-form').addEventListener('submit', (e) => {
           e.preventDefault();
@@ -419,53 +417,31 @@ footer {
           // יצירת רפרנס למסד הנתונים בפיירבייס
           const formRef = ref(database, 'productRequests/' + new Date().getTime());
 
-          // העלאת תמונות לפיירבייס
-          const fileInput = document.getElementById('product-images');
-          const files = fileInput.files;
-
-          // פונקציה להעלות תמונה לפיירבייס
-          const uploadFile = (file) => {
-              return new Promise((resolve, reject) => {
-                  const storageReference = storageRef(storage, 'productImages/' + file.name);
-                  uploadBytes(storageReference, file)
-                      .then(() => getDownloadURL(storageReference))
-                      .then((url) => resolve(url))
-                      .catch((error) => reject(error));
-              });
-          };
-
-          // העלאת כל התמונות והמתנה לסיום
-          const uploadFiles = Array.from(files).map(uploadFile);
-          Promise.all(uploadFiles)
-              .then((urls) => {
-                  // שמירת הנתונים בפיירבייס
-                  return set(formRef, {
-                      productName,
-                      productCategory,
-                      productDescription,
-                      productMaterials,
-                      productQuantity,
-                      estimatedPrice,
-                      deliveryDate,
-                      additionalRequirements,
-                      contactName,
-                      contactEmail,
-                      contactPhone,
-                      imageUrls: urls
-                  });
-              })
-              .then(() => {
-                  alert('הבקשה נשלחה בהצלחה! אנו נחזור אליך עם הצעות מחיר מהמפעלים המובילים שלנו בהקדם.');
-                  document.querySelector('.product-form').reset(); // איפוס הטופס לאחר השליחה (אופציונלי)
-              })
-              .catch((error) => {
-                  console.error('Error uploading files or writing data to Firebase:', error);
-                  alert('שגיאה בשליחה לפיירבייס: ' + error.message);
-              });
+          // שמירת הנתונים בפיירבייס
+          set(formRef, {
+              productName,
+              productCategory,
+              productDescription,
+              productMaterials,
+              productQuantity,
+              estimatedPrice,
+              deliveryDate,
+              additionalRequirements,
+              contactName,
+              contactEmail,
+              contactPhone
+          })
+          .then(() => {
+              alert('הבקשה נשלחה בהצלחה! אנו נחזור אליך עם הצעות מחיר מהמפעלים המובילים שלנו בהקדם.');
+              document.querySelector('.product-form').reset(); // איפוס הטופס לאחר השליחה (אופציונלי)
+          })
+          .catch((error) => {
+              console.error('Error writing data to Firebase:', error);
+          });
       });
 
-      // הצגת תמונות מקובץ העלאה
-      document.getElementById('product-images').addEventListener('change', (e) => {
+           // הצגת תמונות מקובץ העלאה
+           document.getElementById('product-images').addEventListener('change', (e) => {
           const files = e.target.files;
           const previewContainer = document.querySelector('.image-preview');
           previewContainer.innerHTML = ''; // ניקוי התצוגה הקודמת
@@ -586,7 +562,7 @@ footer {
                         <input type="tel" id="contact-phone" name="contact-phone" required>
                     </div>
                     <div class="form-group">
-                        <label for="product-images" class="file-label">בחר תמונות/קבצים</label>
+                        <label for="product-images" class="file-label">בחר תמונות</label>
                         <input type="file" id="product-images" name="product-images" class="file-input" multiple>
                     </div>
                     <div class="image-preview"></div>
