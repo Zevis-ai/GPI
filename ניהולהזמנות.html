@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ניהול הזמנות - GPI</title>
     <style>
-        /* נוסיף כאן את העיצובים שלך */
         body {
             font-family: 'Roboto', sans-serif;
             background-color: #f8f9fa;
@@ -79,18 +78,18 @@
                     orderCard.className = 'order-card';
 
                     orderCard.innerHTML = `
-                        <div class="order-title">${order.productName}</div>
+                        <div class="order-title">${order.productName || 'לא צויין שם מוצר'}</div>
                         <div class="order-details">
-                            <span>קטגוריה: ${order.productCategory}</span>
-                            <span>תיאור: ${order.productDescription}</span>
-                            <span>חומרי גלם: ${order.productMaterials}</span>
-                            <span>כמות דרושה: ${order.productQuantity}</span>
-                            <span>מחיר משוער: ${order.estimatedPrice}</span>
-                            <span>תאריך אספקה: ${order.deliveryDate}</span>
-                            <span>דרישות נוספות: ${order.additionalRequirements}</span>
-                            <span>שם ליצירת קשר: ${order.contactName}</span>
-                            <span>דוא"ל ליצירת קשר: ${order.contactEmail}</span>
-                            <span>טלפון ליצירת קשר: ${order.contactPhone}</span>
+                            <span>קטגוריה: ${order.productCategory || 'לא צויינה קטגוריה'}</span>
+                            <span>תיאור: ${order.productDescription || 'לא צויין תיאור'}</span>
+                            <span>חומרי גלם: ${order.productMaterials || 'לא צויינו חומרי גלם'}</span>
+                            <span>כמות דרושה: ${order.productQuantity || 'לא צויינה כמות'}</span>
+                            <span>מחיר משוער: ${order.estimatedPrice || 'לא צויין מחיר'}</span>
+                            <span>תאריך אספקה: ${order.deliveryDate || 'לא צויין תאריך'}</span>
+                            <span>דרישות נוספות: ${order.additionalRequirements || 'לא צוינו דרישות נוספות'}</span>
+                            <span>שם ליצירת קשר: ${order.contactName || 'לא צויין שם'}</span>
+                            <span>דוא"ל ליצירת קשר: ${order.contactEmail || 'לא צויין דוא"ל'}</span>
+                            <span>טלפון ליצירת קשר: ${order.contactPhone || 'לא צויין טלפון'}</span>
                         </div>
                         <div class="order-date">תאריך ההזמנה: ${new Date(parseInt(childSnapshot.key)).toLocaleDateString('he-IL')}</div>
                     `;
