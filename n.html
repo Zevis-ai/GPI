@@ -1,599 +1,369 @@
 <!DOCTYPE html>
 <html lang="he">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GPI - פלטפורמת ייצור גלובלית | טקסטיל ומוצרי תינוקות</title>
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPI - טקסטיל ומוצרי תינוקות</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700&display=swap');
 
-    :root {
-        --primary-color: #2c3e50;
-        --secondary-color: #3498db;
-        --accent-color: #e74c3c;
-        --background-color: #f8f9fa;
-        --text-color: #333;
-        --light-text: #fff;
-        --card-bg: #fff;
-    }
-
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
-
-    body {
-        font-family: 'Roboto', sans-serif;
-        background-color: var(--background-color);
-        color: var(--text-color);
-        line-height: 1.6;
-        direction: rtl;
-    }
-
-    .container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 20px;
-    }
-
-    header {
-        background-color: var(--primary-color);
-        color: var(--light-text);
-        padding: 20px 0;
-        position: fixed;
-        width: 100%;
-        top: 0;
-        z-index: 1000;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-
-    nav {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .logo {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: var(--light-text);
-        text-decoration: none;
-    }
-
-    .menu-toggle {
-        background: none;
-        border: none;
-        color: var(--light-text);
-        font-size: 1.5rem;
-        cursor: pointer;
-    }
-
-    main {
-        padding-top: 80px;
-    }
-
-    .hero-section {
-        background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-        color: var(--light-text);
-        text-align: center;
-        padding: 100px 0;
-        margin-bottom: 60px;
-    }
-
-    .hero-title {
-        font-size: 3rem;
-        margin-bottom: 20px;
-    }
-
-    .hero-subtitle {
-        font-size: 1.2rem;
-        margin-bottom: 30px;
-    }
-
-    .stats-section {
-        display: flex;
-        justify-content: space-around;
-        flex-wrap: wrap;
-        margin-bottom: 60px;
-    }
-
-    .stat-item {
-        text-align: center;
-        padding: 20px;
-        background-color: var(--card-bg);
-        border-radius: 8px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        flex-basis: calc(25% - 20px);
-        margin-bottom: 20px;
-    }
-
-    .stat-number {
-        font-size: 2rem;
-        font-weight: 700;
-        color: var(--secondary-color);
-        margin-bottom: 10px;
-    }
-
-    .stat-label {
-        font-size: 1rem;
-        color: var(--text-color);
-    }
-
-    .product-form {
-        background-color: var(--card-bg);
-        border-radius: 8px;
-        padding: 40px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    }
-
-    .form-title {
-        font-size: 2rem;
-        color: var(--primary-color);
-        margin-bottom: 30px;
-        text-align: center;
-    }
-
-    .form-group {
-        margin-bottom: 20px;
-        position: relative;
-    }
-
-    label {
-        display: block;
-        margin-bottom: 5px;
-        font-weight: 500;
-    }
-
-    input[type="text"],
-    input[type="number"],
-    input[type="tel"],
-    input[type="email"],
-    textarea,
-    select {
-        width: 100%;
-        padding: 15px;
-        border: 2px solid #ddd;
-        border-radius: 8px;
-        font-size: 1rem;
-        transition: all 0.3s ease;
-    }
-
-    input[type="text"]:focus,
-    input[type="number"]:focus,
-    input[type="tel"]:focus,
-    input[type="email"]:focus,
-    textarea:focus,
-    select:focus {
-        border-color: var(--secondary-color);
-        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
-        outline: none;
-    }
-
-    textarea {
-        height: 120px;
-        resize: vertical;
-    }
-
-    .file-upload-container {
-        position: relative;
-        overflow: hidden;
-        display: inline-block;
-        cursor: pointer;
-    }
-
-    .file-upload-btn {
-        display: inline-block;
-        padding: 12px 20px;
-        background-color: var(--secondary-color);
-        color: var(--light-text);
-        border-radius: 8px;
-        transition: background-color 0.3s ease;
-        cursor: pointer;
-    }
-
-    .file-upload-btn:hover {
-        background-color: #2980b9;
-    }
-
-    .file-upload-input {
-        position: absolute;
-        left: 0;
-        top: 0;
-        opacity: 0;
-        cursor: pointer;
-    }
-
-    .file-upload-label {
-        margin-right: 10px;
-    }
-
-    .file-preview {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        margin-top: 20px;
-    }
-
-    .file-preview-item {
-        width: 100px;
-        height: 100px;
-        border-radius: 4px;
-        overflow: hidden;
-        position: relative;
-    }
-
-    .file-preview-item img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    .file-preview-remove {
-        position: absolute;
-        top: 5px;
-        right: 5px;
-        background-color: rgba(255, 255, 255, 0.7);
-        border-radius: 50%;
-        width: 20px;
-        height: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        font-size: 12px;
-        color: var(--accent-color);
-    }
-
-    .submit-btn {
-        display: block;
-        width: 100%;
-        padding: 15px;
-        background-color: var(--accent-color);
-        color: var(--light-text);
-        border: none;
-        border-radius: 8px;
-        font-size: 1.1rem;
-        font-weight: 700;
-        cursor: pointer;
-        transition: background-color 0.3s ease, transform 0.2s ease;
-    }
-
-    .submit-btn:hover {
-        background-color: #c0392b;
-        transform: translateY(-2px);
-    }
-
-    .submit-btn:active {
-        transform: translateY(0);
-    }
-
-    footer {
-        background-color: var(--primary-color);
-        color: var(--light-text);
-        padding: 20px 0;
-        text-align: center;
-    }
-
-    /* Side Menu Styles */
-    .side-menu {
-        position: fixed;
-        top: -100%;
-        left: 0;
-        width: 100%;
-        height: 33.33vh;
-        background-color: var(--primary-color);
-        transition: top 0.3s ease-in-out;
-        overflow: hidden;
-        z-index: 999;
-    }
-
-    .side-menu.open {
-        top: 0;
-    }
-
-    .side-menu-content {
-        padding: 20px;
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-        height: 100%;
-    }
-
-    .side-menu ul {
-        list-style-type: none;
-        display: flex;
-        justify-content: space-around;
-        width: 100%;
-    }
-
-    .side-menu ul li {
-        margin: 0 10px;
-    }
-
-    .side-menu ul li a {
-        color: var(--light-text);
-        text-decoration: none;
-        font-size: 1.2rem;
-        transition: color 0.3s ease;
-        padding: 10px;
-        border-radius: 5px;
-    }
-
-    .side-menu ul li a:hover {
-        color: var(--secondary-color);
-        background-color: rgba(255, 255, 255, 0.1);
-    }
-
-    /* Floating labels */
-    .form-group {
-        position: relative;
-    }
-
-    .form-group label {
-        position: absolute;
-        top: 15px;
-        left: 15px;
-        transition: all 0.3s ease;
-        pointer-events: none;
-        color: #999;
-    }
-
-    .form-group input:focus + label,
-    .form-group input:not(:placeholder-shown) + label,
-    .form-group textarea:focus + label,
-    .form-group textarea:not(:placeholder-shown) + label {
-        top: -10px;
-        left: 10px;
-        font-size: 0.8rem;
-        color: var(--secondary-color);
-        background-color: var(--card-bg);
-        padding: 0 5px;
-    }
-
-    @media (max-width: 768px) {
-        .stat-item {
-            flex-basis: calc(50% - 20px);
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --background-color: #ecf0f1;
+            --text-color: #333;
+            --light-text: #fff;
         }
 
-        .hero-title {
-            font-size: 2.5rem;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        .side-menu-content {
-            flex-direction: column;
+        body {
+            font-family: 'Heebo', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            direction: rtl;
         }
 
-        .side-menu ul {
-            flex-direction: column;
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: var(--light-text);
+            padding: 20px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
             align-items: center;
         }
 
-        .side-menu ul li {
-            margin: 10px 0;
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
         }
-    }
-</style>
+
+        .home-icon {
+            font-size: 1.5rem;
+            color: var(--light-text);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .home-icon:hover {
+            color: var(--secondary-color);
+        }
+
+        main {
+            padding-top: 80px;
+        }
+
+        .product-form {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-top: 40px;
+        }
+
+        .form-title {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="tel"],
+        input[type="email"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        textarea {
+            height: 150px;
+            resize: vertical;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .file-label {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: var(--secondary-color);
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .file-label:hover {
+            background-color: #2980b9;
+        }
+
+        .image-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .image-preview img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        .submit-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: var(--accent-color);
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background-color: #c0392b;
+        }
+
+        .info-section {
+            margin-top: 40px;
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .info-section h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .info-item {
+            text-align: center;
+        }
+
+        .info-item i {
+            font-size: 2.5rem;
+            color: var(--secondary-color);
+            margin-bottom: 10px;
+        }
+
+        footer {
+            background-color: var(--primary-color);
+            color: var(--light-text);
+            padding: 40px 0;
+            margin-top: 60px;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .product-form {
+                padding: 20px;
+            }
+        }
+    </style>
+    <!-- הוספת Firebase -->
+    <script type="module">
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+      import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-analytics.js";
+      import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
+
+      // Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyAaOp49avUlLknLkGzskeCPCk9xPOAeMUE",
+        authDomain: "gpi0-d1e6d.firebaseapp.com",
+        databaseURL: "https://gpi0-d1e6d-default-rtdb.firebaseio.com",
+        projectId: "gpi0-d1e6d",
+        storageBucket: "gpi0-d1e6d.appspot.com",
+        messagingSenderId: "138797690477",
+        appId: "1:138797690477:web:5d04dd40ed2a577dbed964",
+        measurementId: "G-DP0JJ2FX3D"
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const analytics = getAnalytics(app);
+      const database = getDatabase(app);
+
+      document.querySelector('.product-form').addEventListener('submit', (e) => {
+          e.preventDefault();
+
+          // איסוף הנתונים מהטופס
+          const productName = document.getElementById('product-name').value;
+          const productCategory = document.getElementById('product-category').value;
+          const productDescription = document.getElementById('product-description').value;
+          const productMaterials = document.getElementById('product-materials').value;
+          const productQuantity = document.getElementById('product-quantity').value;
+          const estimatedPrice = document.getElementById('estimated-price').value;
+          const deliveryDate = document.getElementById('delivery-date').value;
+          const additionalRequirements = document.getElementById('additional-requirements').value;
+          const contactName = document.getElementById('contact-name').value;
+          const contactEmail = document.getElementById('contact-email').value;
+          const contactPhone = document.getElementById('contact-phone').value;
+
+          // יצירת רפרנס למסד הנתונים בפיירבייס
+          const formRef = ref(database, 'productRequests/' + new Date().getTime());
+
+          // שמירת הנתונים בפיירבייס
+          set(formRef, {
+              productName,
+              productCategory,
+              productDescription,
+              productMaterials,
+              productQuantity,
+              estimatedPrice,
+              deliveryDate,
+              additionalRequirements,
+              contactName,
+              contactEmail,
+              contactPhone
+          })
+          .then(() => {
+              alert('הבקשה נשלחה בהצלחה! אנו נחזור אליך עם הצעות מחיר מהמפעלים המובילים שלנו בהקדם.');
+              document.querySelector('.product-form').reset(); // איפוס הטופס לאחר השליחה (אופציונלי)
+          })
+          .catch((error) => {
+              console.error('Error writing data to Firebase:', error);
+          });
+      });
+
+           // הצגת תמונות מקובץ העלאה
+           document.getElementById('product-images').addEventListener('change', (e) => {
+          const files = e.target.files;
+          const previewContainer = document.querySelector('.image-preview');
+          previewContainer.innerHTML = ''; // ניקוי התצוגה הקודמת
+
+          for (const file of files) {
+              const reader = new FileReader();
+              
+              reader.onload = (event) => {
+                  const img = document.createElement('img');
+                  img.src = event.target.result;
+                  previewContainer.appendChild(img);
+              };
+
+              reader.readAsDataURL(file);
+          }
+      });
+    </script>
 </head>
 <body>
     <header>
         <div class="container">
             <nav>
                 <a href="#" class="logo">GPI</a>
-                <button class="menu-toggle" id="menuToggle">☰</button>
+                <a href="#" class="home-icon">🏠</a>
             </nav>
         </div>
     </header>
-
-    <div class="side-menu" id="sideMenu">
-        <div class="side-menu-content">
-            <ul>
-                <li><a href="index.html">דף הבית</a></li>
-                <li><a href="#about">אודות</a></li>
-                <li><a href="#services">שירותים</a></li>
-                <li><a href="#contact">צור קשר</a></li>
-            </ul>
-        </div>
-    </div>
-
     <main>
-        <section class="hero-section" id="home">
-            <div class="container">
-                <h1 class="hero-title">GPI - המהפכה בעולם הייצור</h1>
-                <p class="hero-subtitle">מחברים בין חדשנות לאיכות ברמה עולמית</p>
-            </div>
-        </section>
-
         <div class="container">
-            <section class="stats-section">
-                <div class="stat-item">
-                    <div class="stat-number">256</div>
-                    <div class="stat-label"> מפעלי טקסטיל מובילים  </div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">45</div>
-                    <div class="stat-label">מדינות</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">10,000+</div>
-                    <div class="stat-label">מוצרי טקסטיל ייצרנו עד היום</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">92%</div>
-                    <div class="stat-label">*שביעות רצון לקוחות</div>
-                </div>
-            </section>
-
-            <div class="product-form" id="contact">
-                <h2 class="form-title">יצירת מוצר חדשני</h2>
-                <h2 class="form-title">שלחו לנו מוצר וקבלו את הצעת מחיר הכי טובה מבין מאות מפעלים </h2>
-                <form id="productForm">
+            <div class="product-form">
+                <h2 class="form-title">שליחת בקשה למוצר</h2>
+                <form>
                     <div class="form-group">
-                        <input type="text" id="product-name" name="product-name" placeholder=" " required>
                         <label for="product-name">שם המוצר</label>
+                        <input type="text" id="product-name" name="product-name" required>
                     </div>
                     <div class="form-group">
-                        <input type="text" id="product-category" name="product-category" placeholder=" " required>
                         <label for="product-category">קטגוריית המוצר</label>
+                        <input type="text" id="product-category" name="product-category" required>
                     </div>
                     <div class="form-group">
-                        <textarea id="product-description" name="product-description" placeholder=" " required></textarea>
                         <label for="product-description">תיאור המוצר</label>
+                        <textarea id="product-description" name="product-description" required></textarea>
                     </div>
                     <div class="form-group">
-                        <input type="number" id="product-quantity" name="product-quantity" placeholder=" " required>
-                        <label for="product-quantity">כמות נדרשת</label>
+                        <label for="product-materials">חומרי הגלם</label>
+                        <input type="text" id="product-materials" name="product-materials" required>
                     </div>
                     <div class="form-group">
-                        <input type="text" id="contact-name" name="contact-name" placeholder=" " required>
-                        <label for="contact-name">שם איש הקשר</label>
+                        <label for="product-quantity">כמות דרושה</label>
+                        <input type="number" id="product-quantity" name="product-quantity" required>
                     </div>
                     <div class="form-group">
-                        <input type="email" id="contact-email" name="contact-email" placeholder=" " required>
-                        <label for="contact-email">דוא"ל</label>
+                        <label for="estimated-price">מחיר משוער</label>
+                        <input type="number" id="estimated-price" name="estimated-price" required>
                     </div>
                     <div class="form-group">
-                        <input type="tel" id="contact-phone" name="contact-phone" placeholder=" " required>
-                        <label for="contact-phone">טלפון</label>
+                        <label for="delivery-date">תאריך אספקה</label>
+                        <input type="date" id="delivery-date" name="delivery-date" required>
                     </div>
                     <div class="form-group">
-                        <label for="product-images" class="file-upload-label">העלאת קונספט ויזואלי</label>
-                        <div class="file-upload-container">
-                            <span class="file-upload-btn">בחר קבצים</span>
-                            <input type="file" id="product-images" name="product-images" class="file-upload-input" multiple accept="image/*">
-                        </div>
-                        <div id="file-preview" class="file-preview"></div>
+                        <label for="additional-requirements">דרישות נוספות</label>
+                        <textarea id="additional-requirements" name="additional-requirements"></textarea>
                     </div>
-                    <button type="submit" class="submit-btn">שליחת בקשה</button>
+                    <div class="form-group">
+                        <label for="contact-name">שם ליצירת קשר</label>
+                        <input type="text" id="contact-name" name="contact-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-email">דוא"ל ליצירת קשר</label>
+                        <input type="email" id="contact-email" name="contact-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-phone">טלפון ליצירת קשר</label>
+                        <input type="tel" id="contact-phone" name="contact-phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="product-images" class="file-label">בחר תמונות</label>
+                        <input type="file" id="product-images" name="product-images" class="file-input" multiple>
+                    </div>
+                    <div class="image-preview"></div>
+                    <button type="submit" class="submit-btn">שלח בקשה</button>
                 </form>
             </div>
         </div>
     </main>
-
     <footer>
-        <p>&copy; 2024 GPI - מובילים את עתיד הייצור העולמי</p>
+        <p>&copy; 2024 GPI - כל הזכויות שמורות</p>
     </footer>
-
-    <script type="module">
-        // Import the functions you need from the SDKs you need
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-analytics.js";
-        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
-        import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-storage.js";
-
-        // Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyAaOp49avUlLknLkGzskeCPCk9xPOAeMUE",
-            authDomain: "gpi0-d1e6d.firebaseapp.com",
-            databaseURL: "https://gpi0-d1e6d-default-rtdb.firebaseio.com",
-            projectId: "gpi0-d1e6d",
-            storageBucket: "gpi0-d1e6d.appspot.com",
-            messagingSenderId: "138797690477",
-            appId: "1:138797690477:web:5d04dd40ed2a577dbed964",
-            measurementId: "G-DP0JJ2FX3D"
-        };
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
-        const database = getDatabase(app);
-        const storage = getStorage(app);
-
-        const productImagesInput = document.getElementById('product-images');
-        const filePreview = document.getElementById('file-preview');
-        let selectedFiles = [];
-
-        productImagesInput.addEventListener('change', (e) => {
-            const files = Array.from(e.target.files);
-            selectedFiles = selectedFiles.concat(files);
-            updateFilePreview();
-        });
-
-        function updateFilePreview() {
-            filePreview.innerHTML = '';
-            selectedFiles.forEach((file, index) => {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    const previewItem = document.createElement('div');
-                    previewItem.className = 'file-preview-item';
-                    previewItem.innerHTML = `
-                        <img src="${e.target.result}" alt="תצוגה מקדימה של קובץ ${index + 1}">
-                        <span class="file-preview-remove" data-index="${index}">&times;</span>
-                    `;
-                    filePreview.appendChild(previewItem);
-                };
-                reader.readAsDataURL(file);
-            });
-        }
-
-        filePreview.addEventListener('click', (e) => {
-            if (e.target.classList.contains('file-preview-remove')) {
-                const index = parseInt(e.target.getAttribute('data-index'));
-                selectedFiles.splice(index, 1);
-                updateFilePreview();
-            }
-        });
-
-        document.getElementById('productForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const productName = document.getElementById('product-name').value;
-            const productCategory = document.getElementById('product-category').value;
-            const productDescription = document.getElementById('product-description').value;
-            const productQuantity = document.getElementById('product-quantity').value;
-            const contactName = document.getElementById('contact-name').value;
-            const contactEmail = document.getElementById('contact-email').value;
-            const contactPhone = document.getElementById('contact-phone').value;
-
-            const formRef = ref(database, 'productRequests/' + new Date().getTime());
-
-            try {
-                const imageUrls = await uploadImages(selectedFiles);
-
-                await set(formRef, {
-                    productName,
-                    productCategory,
-                    productDescription,
-                    productQuantity,
-                    contactName,
-                    contactEmail,
-                    contactPhone,
-                    imageUrls
-                });
-
-                alert('הבקשה נשלחה בהצלחה! נחזור אליך בהקדם.');
-                document.getElementById('productForm').reset();
-                selectedFiles = [];
-                updateFilePreview();
-            } catch (error) {
-                console.error('Error submitting form:', error);
-                alert('אירעה שגיאה בשליחת הטופס. אנא נסה שוב מאוחר יותר.');
-            }
-        });
-
-        async function uploadImages(files) {
-            const uploadPromises = files.map(file => {
-                const imageRef = storageRef(storage, `product-images/${new Date().getTime()}_${file.name}`);
-                return uploadBytes(imageRef, file).then(() => getDownloadURL(imageRef));
-            });
-
-            return Promise.all(uploadPromises);
-        }
-
-        // Side Menu Toggle
-        const menuToggle = document.getElementById('menuToggle');
-        const sideMenu = document.getElementById('sideMenu');
-
-        menuToggle.addEventListener('click', () => {
-            sideMenu.classList.toggle('open');
-        });
-
-        // Close menu when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!sideMenu.contains(e.target) && !menuToggle.contains(e.target)) {
-                sideMenu.classList.remove('open');
-            }
-        });
-    </script>
 </body>
 </html>
