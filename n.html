@@ -372,8 +372,6 @@ footer {
     .side-menu ul li {
         margin: 10px 0;
     }
-
-    
 }
     </style>
     <!-- הוספת Firebase -->
@@ -459,20 +457,6 @@ footer {
 
               reader.readAsDataURL(file);
           }
-
-           // Side Menu Toggle
-        const menuToggle = document.getElementById('menuToggle');
-        const sideMenu = document.getElementById('sideMenu');
-
-        menuToggle.addEventListener('click', () => {
-            sideMenu.classList.toggle('open');
-        });
-
-        // Close menu when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!sideMenu.contains(e.target) && !menuToggle.contains(e.target)) {
-                sideMenu.classList.remove('open');
-            }
       });
     </script>
 </head>
@@ -578,14 +562,11 @@ footer {
                         <input type="tel" id="contact-phone" name="contact-phone" required>
                     </div>
                     <div class="form-group">
-                        <label for="product-images" class="file-upload-label">העלאת קונספט ויזואלי</label>
-                        <div class="file-upload-container">
-                            <span class="file-upload-btn">בחר קבצים</span>
-                            <input type="file" id="product-images" name="product-images" class="file-upload-input" multiple accept="image/*">
-                        </div>
-                        <div id="file-preview" class="file-preview"></div>
+                        <label for="product-images" class="file-label">בחר תמונות</label>
+                        <input type="file" id="product-images" name="product-images" class="file-input" multiple>
                     </div>
-                    <button type="submit" class="submit-btn">שליחת בקשה</button>
+                    <div class="image-preview"></div>
+                    <button type="submit" class="submit-btn">שלח בקשה</button>
                 </form>
             </div>
         </div>
