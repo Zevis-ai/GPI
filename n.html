@@ -4,6 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>טופס פרטי קשר</title>
+</head>
+<body>
+    <h2>טופס פרטי קשר</h2>
+    <form onsubmit="submitForm(event)">
+        <div>
+            <label for="first-name">שם פרטי:</label>
+            <input type="text" id="first-name" required>
+        </div>
+        <div>
+            <label for="last-name">שם משפחה:</label>
+            <input type="text" id="last-name" required>
+        </div>
+        <button type="submit">שלח</button>
+    </form>
+
     <script type="module">
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
@@ -28,7 +43,7 @@
         const database = getDatabase(app);
 
         // פונקציה לטיפול בשליחת הטופס
-        function submitForm(e) {
+        window.submitForm = function(e) {
             e.preventDefault();
 
             // איסוף הנתונים מהטופס
@@ -50,21 +65,7 @@
             .catch((error) => {
                 console.error('Error writing data to Firebase:', error);
             });
-        }
+        };
     </script>
-</head>
-<body>
-    <h2>טופס פרטי קשר</h2>
-    <form onsubmit="submitForm(event)">
-        <div>
-            <label for="first-name">שם פרטי:</label>
-            <input type="text" id="first-name" required>
-        </div>
-        <div>
-            <label for="last-name">שם משפחה:</label>
-            <input type="text" id="last-name" required>
-        </div>
-        <button type="submit">שלח</button>
-    </form>
 </body>
 </html>
