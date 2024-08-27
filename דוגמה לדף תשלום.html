@@ -1,0 +1,329 @@
+<html><head><base href="https://gpipayments.com/"><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>GPI - חווית תשלום יוקרתית</title><script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script><style>
+@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;600;700&display=swap');
+
+:root {
+    --primary-color: #1a237e;
+    --secondary-color: #7986cb;
+    --accent-color: #ffd54f;
+    --background-color: #0a0a0a;
+    --surface-color: #1c1c1c;
+    --text-color: #ffffff;
+    --border-color: #3d3d3d;
+}
+
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Heebo', sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    overflow-x: hidden;
+    direction: rtl;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.payment-form {
+    background: var(--surface-color);
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    width: 100%;
+    max-width: 500px;
+    position: relative;
+    overflow: hidden;
+}
+
+.logo {
+    font-size: 2.5em;
+    font-weight: 700;
+    color: var(--accent-color);
+    margin-bottom: 20px;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+}
+
+h1 {
+    font-size: 1.8em;
+    color: var(--text-color);
+    margin-top: 0;
+    margin-bottom: 30px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 25px;
+    position: relative;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--secondary-color);
+    font-weight: 500;
+    font-size: 0.9em;
+}
+
+input, select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid var(--border-color);
+    border-radius: 10px;
+    font-size: 16px;
+    background-color: rgba(255,255,255,0.05);
+    color: var(--text-color);
+    transition: all 0.3s ease;
+}
+
+input:focus, select:focus {
+    border-color: var(--accent-color);
+    outline: none;
+    box-shadow: 0 0 15px rgba(255,213,79,0.3);
+}
+
+button {
+    width: 100%;
+    padding: 15px;
+    background-color: var(--accent-color);
+    color: var(--primary-color);
+    border: none;
+    border-radius: 10px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 20px;
+}
+
+button:hover {
+    background-color: #ffc107;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(255,213,79,0.4);
+}
+
+.security-info {
+    margin-top: 30px;
+    text-align: center;
+    position: relative;
+}
+
+.security-icon {
+    font-size: 48px;
+    color: var(--accent-color);
+    margin-bottom: 15px;
+}
+
+.security-text {
+    font-size: 14px;
+    color: var(--secondary-color);
+    line-height: 1.6;
+}
+
+#canvas-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+.glow {
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,213,79,0.2) 0%, rgba(255,213,79,0) 70%);
+    pointer-events: none;
+    z-index: 1;
+}
+
+.insurance-details {
+    background: rgba(255,255,255,0.05);
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 30px;
+    text-align: right;
+    max-width: 500px;
+    width: 100%;
+}
+
+.insurance-details h2 {
+    color: var(--accent-color);
+    font-size: 1.5em;
+    margin-bottom: 15px;
+}
+
+.insurance-details ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.insurance-details li {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.insurance-details li::before {
+    content: "✓";
+    color: var(--accent-color);
+    margin-left: 10px;
+    font-weight: bold;
+}
+
+</style></head><body>
+<div id="canvas-container"></div>
+<div class="container">
+    <div class="payment-form">
+        <div class="glow"></div>
+        <div class="logo">GPI תשלומים</div>
+        <h1>חווית תשלום יוקרתית</h1>
+        <form id="paymentForm">
+            <div class="form-group">
+                <label for="cardNumber">מספר כרטיס</label>
+                <input type="text" id="cardNumber" maxlength="19" required placeholder="1234 5678 9012 3456">
+            </div>
+            <div class="form-group">
+                <label for="cardName">שם בעל הכרטיס</label>
+                <input type="text" id="cardName" required placeholder="ישראל ישראלי">
+            </div>
+            <div class="form-group">
+                <label for="cardExpiry">תוקף</label>
+                <input type="text" id="cardExpiry" maxlength="5" placeholder="MM/YY" required>
+            </div>
+            <div class="form-group">
+                <label for="cardCVV">קוד אבטחה (CVV)</label>
+                <input type="text" id="cardCVV" maxlength="3" required placeholder="123">
+            </div>
+            <div class="form-group">
+                <label for="installments">מספר תשלומים</label>
+                <select id="installments">
+                    <option value="1">תשלום אחד</option>
+                    <option value="3">3 תשלומים</option>
+                    <option value="6">6 תשלומים</option>
+                    <option value="12">12 תשלומים</option>
+                </select>
+            </div>
+            <button type="submit">השלמת תשלום</button>
+        </form>
+        <div class="security-info">
+            <div class="security-icon">&#128274;</div>
+            <div class="security-text">
+                התשלום מאובטח ומוצפן ברמה הגבוהה ביותר. הכסף מבוטח ומופקד בחשבון נפרד עד להגעת המוצר.
+                <br>אנו עומדים בתקני אבטחה בינלאומיים ומבטיחים את פרטיותך ובטחונך.
+            </div>
+        </div>
+    </div>
+    <div class="insurance-details">
+        <h2>ביטוח ואבטחת תשלומים</h2>
+        <ul>
+            <li>כל עסקה מבוטחת על ידי חברת הביטוח ביטחון פלוס</li>
+            <li>הכספים מופקדים בחשבון נאמנות נפרד בבנק לאומי</li>
+            <li>שחרור הכספים מתבצע רק לאחר אישור קבלת המוצר על ידי הלקוח</li>
+            <li>מערכת האבטחה שלנו עומדת בתקן PCI DSS ברמה 1 - התקן הגבוה ביותר בתעשיית כרטיסי האשראי</li>
+            <li>כל המידע מוצפן בשיטת SSL 256-bit - אותה רמת אבטחה המשמשת בנקים</li>
+            <li>מוקד תמיכה 24/7 לכל שאלה או בעיה</li>
+        </ul>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const cardNumberInput = document.getElementById('cardNumber');
+    const cardExpiryInput = document.getElementById('cardExpiry');
+    const form = document.getElementById('paymentForm');
+
+    // Card number formatting
+    cardNumberInput.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\s/g, '');
+        let newValue = '';
+        for (let i = 0; i < value.length; i++) {
+            if (i > 0 && i % 4 === 0) {
+                newValue += ' ';
+            }
+            newValue += value[i];
+        }
+        e.target.value = newValue;
+    });
+
+    // Card expiry formatting
+    cardExpiryInput.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/[^\d]/g, '');
+        if (value.length > 2) {
+            value = value.slice(0, 2) + '/' + value.slice(2);
+        }
+        e.target.value = value;
+    });
+
+    // Form submission
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const installments = document.getElementById('installments').value;
+        alert(`תשלום אושר בהצלחה! העסקה תתבצע ב-${installments} תשלומים. הכסף מובטח ומבוטח עד להגעת המוצר אליך.`);
+        form.reset();
+    });
+
+    // Three.js background
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+    const geometry = new THREE.TorusKnotGeometry(10, 3, 100, 16);
+    const material = new THREE.MeshBasicMaterial({ color: 0x7986cb, wireframe: true });
+    const torusKnot = new THREE.Mesh(geometry, material);
+    scene.add(torusKnot);
+
+    camera.position.z = 30;
+
+    function animate() {
+        requestAnimationFrame(animate);
+        torusKnot.rotation.x += 0.001;
+        torusKnot.rotation.y += 0.001;
+        renderer.render(scene, camera);
+    }
+    animate();
+
+    window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    // Input animations
+    const inputs = document.querySelectorAll('input, select');
+    inputs.forEach(input => {
+        input.addEventListener('focus', () => {
+            input.style.borderColor = '#ffd54f';
+        });
+        input.addEventListener('blur', () => {
+            input.style.borderColor = '#3d3d3d';
+        });
+    });
+
+    // Button hover animation
+    const button = document.querySelector('button');
+    button.addEventListener('mouseenter', () => {
+        button.style.transform = 'translateY(-3px)';
+        button.style.boxShadow = '0 10px 20px rgba(255,213,79,0.4)';
+    });
+    button.addEventListener('mouseleave', () => {
+        button.style.transform = 'translateY(0)';
+        button.style.boxShadow = 'none';
+    });
+});
+</script>
+</body></html>
