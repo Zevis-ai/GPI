@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>הגדרות מערכת - GPI</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700&display=swap');
+
+    :root {
+        --primary-color: #6200ea;
+        --secondary-color: #03dac6;
+        --background-color: #f5f5f5;
+        --text-color: #333333;
+        --card-bg-color: #ffffff;
+        --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        --transition: all 0.3s ease;
+        --success-color: #4CAF50;
+        --warning-color: #FFC107;
+        --danger-color: #F44336;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Heebo', sans-serif;
+        background-color: var(--background-color);
+        color: var(--text-color);
+        line-height: 1.6;
+        direction: rtl;
+    }
+
+    .dashboard {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
+
+    .top-bar {
+        background: linear-gradient(135deg, var(--primary-color), #7c4dff);
+        color: white;
+        padding: 15px 20px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: var(--transition);
+    }
+
+    .logo {
+        font-size: 24px;
+        font-weight: bold;
+        color: var(--secondary-color);
+    }
+
+    .menu-toggle {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 24px;
+        cursor: pointer;
+    }
+
+    .sidebar {
+        position: fixed;
+        top: 0;
+        right: 0;
+        height: 100vh;
+        width: 250px;
+        background: linear-gradient(135deg, var(--primary-color), #7c4dff);
+        color: white;
+        padding: 20px;
+        transform: translateX(100%);
+        transition: var(--transition);
+        z-index: 1001;
+    }
+
+    .sidebar.active {
+        transform: translateX(0);
+    }
+
+    .close-sidebar {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background: none;
+        border: none;
+        color: white;
+        font-size: 24px;
+        cursor: pointer;
+    }
+
+    .menu-item {
+        padding: 12px;
+        margin-bottom: 10px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+    }
+
+    .menu-item:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .menu-item i {
+        margin-left: 10px;
+        font-size: 18px;
+    }
+
+    .main-content {
+        flex: 1;
+        padding: 80px 20px 20px;
+        transition: var(--transition);
+    }
+
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        background-color: var(--card-bg-color);
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: var(--card-shadow);
+    }
+
+    h1 {
+        font-size: 28px;
+        color: var(--primary-color);
+        font-weight: 700;
+    }
+
+    .settings-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+    }
+
+    .settings-card {
+        background-color: var(--card-bg-color);
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: var(--card-shadow);
+        transition: var(--transition);
+    }
+
+    .settings-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    }
+
+    .settings-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: var(--primary-color);
+        margin-bottom: 15px;
+    }
+
+    .settings-item {
+        margin-bottom: 15px;
+    }
+
+    .settings-item label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 500;
+    }
+
+    .settings-item input[type="text"],
+    .settings-item input[type="email"],
+    .settings-item input[type="password"],
+    .settings-item select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 16px;
+    }
+
+    .settings-item input[type="checkbox"] {
+        margin-right: 10px;
+    }
+
+    .color-picker {
+        display: flex;
+        gap: 10px;
+    }
+
+    .color-option {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        cursor: pointer;
+        border: 2px solid transparent;
+    }
+
+    .color-option.active {
+        border-color: var(--primary-color);
+    }
+
+    .button-group {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        font-size: 16px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: var(--transition);
+    }
+
+    .btn-primary {
+        background-color: var(--primary-color);
+        color: white;
+    }
+
+    .btn-secondary {
+        background-color: var(--secondary-color);
+        color: var(--text-color);
+    }
+
+    .btn:hover {
+        opacity: 0.9;
+    }
+
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+    }
+
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: .4s;
+        border-radius: 34px;
+    }
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 26px;
+        width: 26px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        transition: .4s;
+        border-radius: 50%;
+    }
+
+    input:checked + .slider {
+        background-color: var(--primary-color);
+    }
+
+    input:checked + .slider:before {
+        transform: translateX(26px);
+    }
+
+    @media (max-width: 768px) {
+        .settings-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+</head>
+<body>
+    <div class="dashboard">
+        <div class="top-bar">
+            <button class="menu-toggle"><i class="fas fa-bars"></i></button>
+            <div class="logo">GPI ניהול</div>
+        </div>
+        <div class="sidebar">
+            <button class="close-sidebar"><i class="fas fa-times"></i></button>
+            <div class="menu-item">
+                <a href="2.html" style="text-decoration: none; color: inherit;">
+                  <i class="fas fa-home"></i> <span>דף הבית</span>
+                </a>
+              </div>
+              
+              <div class="menu-item">
+                <a href="תיקי לקוחות.html" style="text-decoration: none; color: inherit;">
+                  <i class="fas fa-users"></i> <span>תיקי לקוחות</span>
+                </a>
+              </div>
+              
+              <div class="menu-item">
+                <a href="ניהולהזמנות.html" style="text-decoration: none; color: inherit;">
+                  <i class="fas fa-shopping-cart"></i> <span>ניהול הזמנות</span>
+                </a>
+              </div>
+              
+              <div class="menu-item">
+                <a href="סטטיסטיקות.html" style="text-decoration: none; color: inherit;">
+                  <i class="fas fa-chart-bar"></i> <span>סטטיסטיקות</span>
+                </a>
+              </div>
+              
+              <div class="menu-item">
+                <a href="הגדרות.html" style="text-decoration: none; color: inherit;">
+                  <i class="fas fa-cog"></i> <span>הגדרות</span>
+                </a>
+              </div>
+              
+        </div>
+        <div class="main-content">
+            <div class="header">
+                <h1>הגדרות מערכת</h1>
+            </div>
+            
+            <div class="settings-grid">
+                <div class="settings-card">
+                    <div class="settings-title">הגדרות חשבון</div>
+                    <div class="settings-item">
+                        <label for="username">שם משתמש</label>
+                        <input type="text" id="username" name="username" value="admin@gpi.com">
+                    </div>
+                    <div class="settings-item">
+                        <label for="email">כתובת אימייל</label>
+                        <input type="email" id="email" name="email" value="admin@gpi.com">
+                    </div>
+                    <div class="settings-item">
+                        <label for="password">סיסמה</label>
+                        <input type="password" id="password" name="password" value="********">
+                    </div>
+                    <div class="settings-item">
+                        <label for="language">שפת ממשק</label>
+                        <select id="language" name="language">
+                            <option value="he" selected>עברית</option>
+                            <option value="en">English</option>
+                            <option value="ar">العربية</option>
+                            <option value="ch">中文</option>
+                            <option value="ch">भारतीय</option>
+
+                            
+                        </select>
+                    </div>
+                </div>
+
+                <div class="settings-card">
+                    <div class="settings-title">הגדרות תצוגה</div>
+                    <div class="settings-item">
+                        <label>ערכת נושא</label>
+                        <div class="color-picker">
+                            <div class="color-option active" style="background-color: #6200ea;"></div>
+                            <div class="color-option" style="background-color: #0077be;"></div>
+                            <div class="color-option" style="background-color: #00a86b;"></div>
+                            <div class="color-option" style="background-color: #ff4081;"></div>
+                        </div>
+                    </div>
+                    <div class="settings-item">
+                        <label for="font-size">גודל גופן</label>
+                        <select id="font-size" name="font-size">
+                            <option value="small">קטן</option>
+                            <option value="medium" selected>בינוני</option>
+                            <option value="large">גדול</option>
+                        </select>
+                    </div>
+                    <div class="settings-item">
+                        <label for="dark-mode">מצב לילה</label>
+                        <label class="switch">
+                            <input type="checkbox" id="dark-mode">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="settings-card">
+                    <div class="settings-title">הגדרות התראות</div>
+                    <div class="settings-item">
+                        <label for="email-notifications">התראות באימייל</label>
+                        <label class="switch">
+                            <input type="checkbox" id="email-notifications" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="settings-item">
+                        <label for="sms-notifications">התראות ב-SMS</label>
+                        <label class="switch">
+                            <input type="checkbox" id="sms-notifications">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="settings-item">
+                        <label for="push-notifications">התראות דחיפה</label>
+                        <label class="switch">
+                            <input type="checkbox" id="push-notifications" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="settings-card">
+                    <div class="settings-title">הגדרות אבטחה</div>
+                    <div class="settings-item">
+                        <label for="two-factor-auth">אימות דו-שלבי</label>
+                        <label class="switch">
+                            <input type="checkbox" id="two-factor-auth">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="settings-item">
+                        <label for="session-timeout">זמן התנתקות אוטומטית (דקות)</label>
+                        <input type="number" id="session-timeout" name="session-timeout" value="30" min="5" max="120">
+                    </div>
+                    <div class="settings-item">
+                        <label for="ip-whitelist">רשימת IP מורשים</label>
+                        <input type="text" id="ip-whitelist" name="ip-whitelist" placeholder="הזן כתובות IP מופרדות בפסיקים">
+                    </div>
+                </div>
+
+                <div class="settings-card">
+                    <div class="settings-title">הגדרות מערכת</div>
+                    <div class="settings-item">
+                        <label for="auto-backup">גיבוי אוטומטי</label>
+                        <label class="switch">
+                            <input type="checkbox" id="auto-backup" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="settings-item">
+                        <label for="backup-frequency">תדירות גיבוי</label>
+                        <select id="backup-frequency" name="backup-frequency">
+                            <option value="daily">יומי</option>
+                            <option value="weekly" selected>שבועי</option>
+                            <option value="monthly">חודשי</option>
+                        </select>
+                    </div>
+                    <div class="settings-item">
+                        <label for="system-logs">שמירת לוגים</label>
+                        <label class="switch">
+                            <input type="checkbox" id="system-logs" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="settings-card">
+                    <div class="settings-title">הגדרות אינטגרציה</div>
+                    <div class="settings-item">
+                        <label for="crm-integration">אינטגרציה עם מערכת CRM</label>
+                        <select id="crm-integration" name="crm-integration">
+                            <option value="none">ללא</option>
+                            <option value="salesforce">Salesforce</option>
+                            <option value="hubspot">HubSpot</option>
+                            <option value="zoho">Zoho CRM</option>
+                        </select>
+                    </div>
+                    <div class="settings-item">
+                        <label for="accounting-integration">אינטגרציה עם מערכת הנהלת חשבונות</label>
+                        <select id="accounting-integration" name="accounting-integration">
+                            <option value="none">ללא</option>
+                            <option value="quickbooks">QuickBooks</option>
+                            <option value="xero">Xero</option>
+                            <option value="sap">SAP</option>
+                        </select>
+                    </div>
+                    <div class="settings-item">
+                        <label for="api-key">מפתח API</label>
+                        <input type="text" id="api-key" name="api-key" value="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" readonly>
+                    </div>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-primary">שמור שינויים</button>
+                <button class="btn btn-secondary">בטל שינויים</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle sidebar
+        document.querySelector('.menu-toggle').addEventListener('click', () => {
+            document.querySelector('.sidebar').classList.toggle('active');
+        });
+
+        document.querySelector('.close-sidebar').addEventListener('click', () => {
+            document.querySelector('.sidebar').classList.remove('active');
+        });
+
+        // Color theme selection
+        const colorOptions = document.querySelectorAll('.color-option');
+        colorOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                colorOptions.forEach(opt => opt.classList.remove('active'));
+                option.classList.add('active');
+                document.documentElement.style.setProperty('--primary-color', option.style.backgroundColor);
+            });
+        });
+
+        // Dark mode toggle
+        const darkModeToggle = document.getElementById('dark-mode');
+        darkModeToggle.addEventListener('change', () => {
+            document.body.classList.toggle('dark-mode', darkModeToggle.checked);
+        });
+
+        // Save changes
+        document.querySelector('.btn-primary').addEventListener('click', () => {
+            alert('השינויים נשמרו בהצלחה!');
+        });
+
+        // Cancel changes
+        document.querySelector('.btn-secondary').addEventListener('click', () => {
+            if(confirm('האם אתה בטוח שברצונך לבטל את כל השינויים?')) {
+                location.reload();
+            }
+        });
+    </script>
+</body>
+</html>
