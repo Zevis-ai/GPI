@@ -371,13 +371,13 @@
             const largestOrder = Math.max(...orders.map(order => order.total));
 
             document.getElementById('totalOrders').textContent = totalOrders.toLocaleString();
-            document.getElementById('totalRevenue').textContent = `₪${totalRevenue.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-            document.getElementById('averageOrderValue').textContent = `₪${averageOrderValue.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            document.getElementById('totalRevenue').textContent = `$${totalRevenue.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            document.getElementById('averageOrderValue').textContent = `$${averageOrderValue.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
             document.getElementById('customerCount').textContent = customerCount.toLocaleString();
             document.getElementById('monthlyOrders').textContent = monthlyOrders.toLocaleString();
-            document.getElementById('monthlyRevenue').textContent = `₪${monthlyRevenue.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            document.getElementById('monthlyRevenue').textContent = `$${monthlyRevenue.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
             document.getElementById('newCustomers').textContent = newCustomers.toLocaleString();
-            document.getElementById('largestOrder').textContent = `₪${largestOrder.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            document.getElementById('largestOrder').textContent = `$${largestOrder.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
         }
 
         function updateCharts() {
@@ -458,7 +458,7 @@
                             beginAtZero: true,
                             ticks: {
                                 callback: function(value, index, values) {
-                                    return '₪' + value.toLocaleString();
+                                    return '$' + value.toLocaleString();
                                 }
                             }
                         }
@@ -592,7 +592,7 @@
                         x: {
                             title: {
                                 display: true,
-                                text: 'גודל הזמנה (₪)'
+                                text: 'גודל הזמנה ($)'
                             }
                         }
                     }
