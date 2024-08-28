@@ -7,6 +7,43 @@
     <!-- טעינת Firebase UMD SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-auth-compat.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        #login-button {
+            background-color: #4285F4;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #login-button:hover {
+            background-color: #357ae8;
+        }
+
+        #status {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #333;
+        }
+    </style>
 </head>
 <body>
 
@@ -37,6 +74,9 @@
           const user = result.user;
           document.getElementById('status').innerText = `שלום, ${user.displayName}`;
           console.log("משתמש התחבר בהצלחה:", user);
+          
+          // הפניה לאחר התחברות מוצלחת
+          window.location.href = "https://zevis-ai.github.io/GPI/2.html";
       }).catch((error) => {
           console.error("שגיאה בהתחברות:", error);
           document.getElementById('status').innerText = "שגיאה בהתחברות";
