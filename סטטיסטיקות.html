@@ -263,6 +263,22 @@
                     <div class="stat-title">סה"כ הכנסות</div>
                     <div class="stat-value" id="totalRevenue">טוען...</div>
                 </div>
+
+
+
+
+                
+                <div class="stat-card">
+                    <div class="stat-title">10% מההזמנות</div>
+                    <div class="stat-value" id="tenPercentOrders">טוען...</div>
+                </div>
+                
+
+
+
+
+
+                
                 <div class="stat-card">
                     <div class="stat-title">ממוצע הזמנה</div>
                     <div class="stat-value" id="averageOrderValue">טוען...</div>
@@ -369,6 +385,12 @@
             const newCustomers = new Set(thisMonth.filter(order => !orders.some(o => o.date < lastMonthStart && (o.contactEmail === order.contactEmail || o.contactPhone === order.contactPhone))).map(order => order.contactEmail || order.contactPhone)).size;
 
             const largestOrder = Math.max(...orders.map(order => order.total));
+
+
+            const tenPercentOrders = totalRevenue * 0.1;
+
+// הצגת 10% מההזמנות
+document.getElementById('tenPercentOrders').textContent = `$${tenPercentOrders.toFixed(0)}`;
 
             document.getElementById('totalOrders').textContent = totalOrders.toLocaleString();
             document.getElementById('totalRevenue').textContent = `$${totalRevenue.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
