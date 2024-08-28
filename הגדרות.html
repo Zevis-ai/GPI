@@ -536,3 +536,290 @@
     </script>
 </body>
 </html>
+
+
+
+
+
+
+
+<html><head><base href="https://zevis-ai.github.io/GPI/">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPI - Global Products Industries Connect</title>
+    <!-- טעינת Firebase UMD SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-auth-compat.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700&display=swap');
+
+        /* Floating profile picture and menu */
+        .profile-container {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .profile-picture {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 3px solid #3498db;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            object-fit: cover;
+        }
+
+        .profile-picture:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .profile-menu {
+            display: none;
+            position: absolute;
+            bottom: 70px;
+            left: 0;
+            background-color: #ffffff;
+            color: #333333;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            width: 250px;
+            text-align: center;
+            z-index: 1000;
+        }
+
+        .profile-menu.show {
+            display: block;
+        }
+
+        .profile-menu-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .profile-menu-picture {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 10px;
+            object-fit: cover;
+        }
+
+        .profile-menu-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .profile-menu-email {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .profile-menu-button {
+            background-color: #3498db;
+            color: #ffffff;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .profile-menu-button:hover {
+            background-color: #2980b9;
+        }
+
+        #logout-button {
+            background-color: #e74c3c;
+        }
+
+        #logout-button:hover {
+            background-color: #c0392b;
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- Floating profile picture and menu -->
+    <div class="profile-container">
+        <img src="default-profile.png" alt="תמונת פרופיל" class="profile-picture" id="profile-picture">
+        <div class="profile-menu" id="profile-menu">
+            <div class="profile-menu-header">
+                <img src="default-profile.png" alt="תמונת פרופיל" class="profile-menu-picture" id="profile-menu-picture">
+                <div class="profile-menu-name" id="profile-menu-name">שם המשתמש</div>
+            </div>
+            <div class="profile-menu-email" id="profile-menu-email">user@example.com</div>
+            <button class="profile-menu-button" id="profile-button">הפרופיל שלי</button>
+            <button class="profile-menu-button" id="orders-button">ההזמנות שלי</button>
+            <button class="profile-menu-button" id="settings-button">הגדרות</button>
+            <button class="profile-menu-button" id="logout-button">התנתק</button>
+        </div>
+    </div>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAaOp49avUlLknLkGzskeCPCk9xPOAeMUE",
+            authDomain: "gpi0-d1e6d.firebaseapp.com",
+            databaseURL: "https://gpi0-d1e6d-default-rtdb.firebaseio.com",
+            projectId: "gpi0-d1e6d",
+            storageBucket: "gpi0-d1e6d.appspot.com",
+            messagingSenderId: "138797690477",
+            appId: "1:138797690477:web:5d04dd40ed2a577dbed964",
+            measurementId: "G-DP0JJ2FX3D"
+        };
+
+        // אתחול Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        const auth = firebase.auth();
+
+        // פונקציה לבדוק אם המשתמש מחובר
+        auth.onAuthStateChanged(user => {
+            if (!user) {
+                // אם המשתמש לא מחובר, הפנה אותו לדף התחברות
+                window.location.href = "https://zevis-ai.github.io/GPI/login.html";
+            } else {
+                // אם המשתמש מחובר, עדכן את תמונת הפרופיל ופרטי המשתמש
+                const profilePicture = document.getElementById('profile-picture');
+                const profileMenuPicture = document.getElementById('profile-menu-picture');
+                const profileMenuName = document.getElementById('profile-menu-name');
+                const profileMenuEmail = document.getElementById('profile-menu-email');
+
+                profilePicture.src = user.photoURL || 'default-profile.png';
+                profileMenuPicture.src = user.photoURL || 'default-profile.png';
+                profileMenuName.textContent = user.displayName || 'משתמש';
+                profileMenuEmail.textContent = user.email || '';
+            }
+        });
+
+        // טיפול בלחיצה על תמונת הפרופיל
+        document.getElementById('profile-picture').addEventListener('click', () => {
+            document.getElementById('profile-menu').classList.toggle('show');
+        });
+
+        // סגירת התפריט בלחיצה מחוץ לאזור התפריט
+        document.addEventListener('click', (event) => {
+            const profileMenu = document.getElementById('profile-menu');
+            const profilePicture = document.getElementById('profile-picture');
+            if (!profileMenu.contains(event.target) && event.target !== profilePicture) {
+                profileMenu.classList.remove('show');
+            }
+        });
+
+        // פונקציות לכפתורי התפריט
+        document.getElementById('profile-button').addEventListener('click', () => {
+            console.log('עבור לדף הפרופיל');
+            // הוסף כאן את הקוד לניווט לדף הפרופיל
+        });
+
+        document.getElementById('orders-button').addEventListener('click', () => {
+            console.log('עבור לדף ההזמנות');
+            // הוסף כאן את הקוד לניווט לדף ההזמנות
+        });
+
+        document.getElementById('settings-button').addEventListener('click', () => {
+            console.log('עבור לדף ההגדרות');
+            // הוסף כאן את הקוד לניווט לדף ההגדרות
+        });
+
+        // פונקציה להתנתקות
+        document.getElementById('logout-button').addEventListener('click', () => {
+            auth.signOut().then(() => {
+                window.location.href = "https://zevis-ai.github.io/GPI/login.html";
+            }).catch((error) => {
+                console.error("שגיאה בהתנתקות:", error);
+            });
+        });
+    </script>
+
+    <script>
+        const menuToggle = document.querySelector('.menu-toggle');
+        const sideMenu = document.querySelector('.side-menu');
+        const closeMenu = document.querySelector('.close-menu');
+        const header = document.querySelector('header');
+
+        menuToggle.addEventListener('click', () => {
+            sideMenu.classList.add('active');
+        });
+
+        closeMenu.addEventListener('click', () => {
+            sideMenu.classList.remove('active');
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (event) => {
+            if (!sideMenu.contains(event.target) && !menuToggle.contains(event.target)) {
+                sideMenu.classList.remove('active');
+            }
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                sideMenu.classList.remove('active');
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Hide header on scroll down, show on scroll up
+        let lastScrollTop = 0;
+        let isScrolling;
+
+        window.addEventListener('scroll', () => {
+            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+            if (scrollTop > lastScrollTop) {
+                header.classList.add('hidden');
+            } else {
+                header.classList.remove('hidden');
+            }
+
+            lastScrollTop = scrollTop;
+
+            // Clear the timeout throughout the scroll
+            window.clearTimeout(isScrolling);
+
+            // Set a timeout to run after scrolling ends
+            isScrolling = setTimeout(() => {
+                header.classList.remove('hidden');
+            }, 100);
+        });
+
+        // Add scroll animation to elements
+        const animatedElements = document.querySelectorAll('.category-button');
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: "0px 0px -50px 0px"
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = 1;
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        animatedElements.forEach(element => {
+            element.style.opacity = 0;
+            element.style.transform = 'translateY(50px)';
+            element.style.transition = 'opacity 0.5s ease-out, transform 0.5s ease-out';
+            observer.observe(element);
+        });
+    </script>
+</body>
+</html>
