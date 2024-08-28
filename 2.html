@@ -271,6 +271,54 @@
             .category-button {
                 width: 100%;
             }
+            .profile-menu {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: var(--primary-color);
+            color: var(--light-text);
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .profile-menu img {
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+        }
+
+        .profile-menu .dropdown {
+            display: none;
+            position: absolute;
+            top: 60px;
+            right: 0;
+            background-color: var(--primary-color);
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .profile-menu:hover .dropdown {
+            display: block;
+        }
+
+        .profile-menu .dropdown a {
+            color: var(--light-text);
+            text-decoration: none;
+            display: block;
+            padding: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        .profile-menu .dropdown a:hover {
+            background-color: var(--secondary-color);
+        }
         }
     </style>
 </head>
@@ -280,6 +328,12 @@
             <div class="logo">GPI</div>
             <div class="menu-toggle">☰</div>
         </nav>
+         <div class="profile-menu" id="profile-menu">
+        <img id="profile-pic" src="" alt="Profile Picture">
+        <div class="dropdown">
+            <a href="#" id="logout-button">התנתק</a>
+        </div>
+    </div>
     </header>
 
     <div class="side-menu">
@@ -329,35 +383,43 @@
 
 
     <script>
-      // הגדרות Firebase
       const firebaseConfig = {
-        apiKey: "AIzaSyAaOp49avUlLknLkGzskeCPCk9xPOAeMUE",
-        authDomain: "gpi0-d1e6d.firebaseapp.com",
-        databaseURL: "https://gpi0-d1e6d-default-rtdb.firebaseio.com",
-        projectId: "gpi0-d1e6d",
-        storageBucket: "gpi0-d1e6d.appspot.com",
-        messagingSenderId: "138797690477",
-        appId: "1:138797690477:web:5d04dd40ed2a577dbed964",
-        measurementId: "G-DP0JJ2FX3D"
-      };
+            apiKey: "AIzaSyAaOp49avUlLknLkGzskeCPCk9xPOAeMUE",
+            authDomain: "gpi0-d1e6d.firebaseapp.com",
+            databaseURL: "https://gpi0-d1e6d-default-rtdb.firebaseio.com",
+            projectId: "gpi0-d1e6d",
+            storageBucket: "gpi0-d1e6d.appspot.com",
+            messagingSenderId: "138797690477",
+            appId: "1:138797690477:web:5d04dd40ed2a577dbed964",
+            measurementId: "G-DP0JJ2FX3D"
+        };
 
-      // אתחול Firebase
-      firebase.initializeApp(firebaseConfig);
+        // אתחול Firebase
+        firebase.initializeApp(firebaseConfig);
 
-      const auth = firebase.auth();
+        const auth = firebase.auth();
 
-      // פונקציה לבדוק אם המשתמש מחובר
-      auth.onAuthStateChanged(user => {
-        if (!user) {
-          // אם המשתמש לא מחובר, הפנה אותו לדף התחברות
-          window.location.href = "https://zevis-ai.github.io/GPI/login.html";
-        }
+        // פונקציה לבדוק אם המשתמש מחובר
+        auth.onAuthStateChanged(user => {
+            if (!user) {
+                // אם המשתמש לא מחובר, הפנה אותו לדף התחברות
+                window.location.href = "https://zevis-ai.github.io/GPI/login.html";
+            } else {
+                // אם המשתמש מחובר, עדכן את תמונת הפרופיל
+                document.getElementById('profile-pic').src = user.photoURL || 'default-profile.png';
+                document.getElementById('profile-pic').alt = `Profile Picture of ${user.displayName}`;
+                document.getElementById('profile-menu').style.display = 'flex';
+            }
+        });
 
-
-
-
-        
-      });
+        // פונקציה להתנתקות
+        document.getElementById('logout-button').addEventListener('click', () => {
+            auth.signOut().then(() => {
+                window.location.href = "https://zevis-ai.github.io/GPI/login.html";
+            }).catch((error) => {
+                console.error("שגיאה בהתנתקות:", error);
+            });
+        });
     </script>
 
 
