@@ -604,7 +604,7 @@
                     </div>
                     <div class="detail-group">
                         <div class="detail-label">סה"כ קניות</div>
-                        <div class="detail-value">₪${customer.totalSpent.toLocaleString()}</div>
+                        <div class="detail-value">$${customer.totalSpent.toLocaleString()}</div>
                     </div>
                 </div>
                 <div class="order-history">
@@ -615,7 +615,7 @@
                                 <div class="order-header">
                                     <div class="order-number">${order.orderNumber}</div>
                                     <div class="order-date">${order.date}</div>
-                                    <div class="order-total">₪${order.total.toLocaleString()}</div>
+                                    <div class="order-total">$${order.total.toLocaleString()}</div>
                                 </div>
                                 <div class="order-details">
                                     <span><i class="fas fa-box"></i> שם המוצר: ${order.productName}</span>
@@ -623,7 +623,7 @@
                                     <span><i class="fas fa-info-circle"></i> תיאור: ${order.productDescription}</span>
                                     <span><i class="fas fa-cube"></i> חומרי גלם: ${order.productMaterials}</span>
                                     <span><i class="fas fa-box"></i> כמות: ${order.productQuantity}</span>
-                                    <span><i class="fas fa-shekel-sign"></i> מחיר משוער: ${order.estimatedPrice}</span>
+                                    <span><i class="fas fa-dollar-sign"></i> מחיר משוער: ${order.estimatedPrice}</span>
                                     <span><i class="fas fa-calendar-alt"></i> תאריך אספקה: ${order.deliveryDate}</span>
                                     <span><i class="fas fa-clipboard-list"></i> דרישות נוספות: ${order.additionalRequirements || 'אין'}</span>
                                     <span><i class="fas fa-user"></i> איש קשר: ${order.contactName}</span>
