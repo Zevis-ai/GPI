@@ -748,7 +748,7 @@
         document.getElementById('totalOrders').textContent = orders.length;
         
         const totalValue = orders.reduce((sum, order) => sum + parseFloat(order.estimatedPrice) * parseFloat(order.productQuantity), 0);
-        document.getElementById('totalValue').textContent = totalValue.toFixed(2) + ' ₪';
+        document.getElementById('totalValue').textContent = totalValue.toFixed(2) + ' $';
         
         const categories = [...new Set(orders.map(order => order.productCategory))];
         document.getElementById('uniqueCategories').textContent = categories.length;
@@ -926,8 +926,8 @@
                     <div class="stat-value" id="totalOrders">0</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-title"><i class="fas fa-shekel-sign"></i> סה"כ ערך</div>
-                    <div class="stat-value" id="totalValue">0 ₪</div>
+                    <div class="stat-title"><i class="fas fa-dollar-sign"></i> סה"כ ערך</div>
+                    <div class="stat-value" id="totalValue">0 $</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-title"><i class="fas fa-tags"></i> קטגוריות ייחודיות</div>
@@ -977,7 +977,7 @@
                     <input type="number" id="productQuantity" required>
                 </div>
                 <div class="form-group">
-                    <label for="estimatedPrice">מחיר משוער</label>
+                    <label for="estimatedPrice">$ מחיר משוער</label>
                     <input type="number" id="estimatedPrice" required>
                 </div>
                 <div class="form-group">
