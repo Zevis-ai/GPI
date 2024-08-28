@@ -1,22 +1,99 @@
+
 <!DOCTYPE html>
 <html lang="he">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>התחברות</title>
-    <!-- טעינת Firebase UMD SDKs -->
+    <title>GPI - מייבאים לכם חלומות</title>
     <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-auth-compat.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #000000;
+            color: #ffffff;
+            height: 100%;
+            overflow: hidden;
+        }
+        #space-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        .container {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            padding: 2rem;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(3px);
+        }
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 0.5rem;
+            text-align: center;
+            background: linear-gradient(45deg, #3498db, #2ecc71, #9b59b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 10px rgba(52, 152, 219, 0.5);
+        }
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            color: #ffffff;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+        }
+        #login-button {
+            background: linear-gradient(45deg, #3498db, #2ecc71, #9b59b6);
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 1.2rem;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.5);
+        }
+        #login-button:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.7);
+        }
+        #status {
+            margin-top: 1rem;
+            font-weight: bold;
+            font-size: 1.2rem;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+        }
+    </style>
 </head>
 <body>
-
-<h1>התחבר עם חשבון Google</h1>
-<button id="login-button">התחבר</button>
-<p id="status"></p>
+<div id="space-container"></div>
+<div class="container animate__animated animate__fadeIn">
+    <h1 class="animate__animated animate__fadeInDown">ברוכים הבאים ל-GPI</h1>
+    <h2 class="animate__animated animate__fadeInUp">מייבאים לכם חלומות</h2>
+    <button id="login-button" class="animate__animated animate__pulse animate__infinite">התחבר עם Google</button>
+    <p id="status"></p>
+</div>
 
 <script>
-  // הגדרות Firebase
-  const firebaseConfig = {
+// הגדרות Firebase
+const firebaseConfig = {
     apiKey: "AIzaSyAaOp49avUlLknLkGzskeCPCk9xPOAeMUE",
     authDomain: "gpi0-d1e6d.firebaseapp.com",
     databaseURL: "https://gpi0-d1e6d-default-rtdb.firebaseio.com",
@@ -25,30 +102,95 @@
     messagingSenderId: "138797690477",
     appId: "1:138797690477:web:5d04dd40ed2a577dbed964",
     measurementId: "G-DP0JJ2FX3D"
-  };
+};
 
-  // אתחול Firebase
-  firebase.initializeApp(firebaseConfig);
+// אתחול Firebase
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
 
-  const auth = firebase.auth();
+// פונקציה להתחברות עם Google
+function signInWithGoogle() {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    auth.signInWithPopup(provider).then((result) => {
+        const user = result.user;
+        document.getElementById('status').innerText = `שלום, ${user.displayName}`;
+        document.getElementById('status').classList.add('animate__animated', 'animate__fadeIn');
+        setTimeout(() => {
+            window.location.href = "https://zevis-ai.github.io/GPI/2.html";
+        }, 2000);
+    }).catch((error) => {
+        console.error("שגיאה בהתחברות:", error);
+        document.getElementById('status').innerText = "שגיאה בהתחברות";
+        document.getElementById('status').classList.add('animate__animated', 'animate__shakeX');
+    });
+}
 
-  // פונקציה להתחברות עם Google
-  function signInWithGoogle() {
-      const provider = new firebase.auth.GoogleAuthProvider();
-      auth.signInWithPopup(provider).then((result) => {
-          const user = result.user;
-          document.getElementById('status').innerText = `שלום, ${user.displayName}`;
-          // הפנה את המשתמש לדף הבית לאחר התחברות מוצלחת
-          window.location.href = "https://zevis-ai.github.io/GPI/2.html";
-      }).catch((error) => {
-          console.error("שגיאה בהתחברות:", error);
-          document.getElementById('status').innerText = "שגיאה בהתחברות";
-      });
-  }
+document.getElementById('login-button').addEventListener('click', signInWithGoogle);
 
-  // קישור כפתור ההתחברות לפונקציה
-  document.getElementById('login-button').addEventListener('click', signInWithGoogle);
+// יצירת סצנת חלל עם כדור הארץ וכוכבים
+let scene, camera, renderer, earth, stars;
+
+function init() {
+    scene = new THREE.Scene();
+    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
+    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.getElementById('space-container').appendChild(renderer.domElement);
+
+    // יצירת כדור הארץ
+    const earthGeometry = new THREE.SphereGeometry(5, 32, 32);
+    const earthTexture = new THREE.TextureLoader().load('https://i.imgur.com/9nZO4k6.png');
+    const earthMaterial = new THREE.MeshPhongMaterial({ map: earthTexture });
+    earth = new THREE.Mesh(earthGeometry, earthMaterial);
+    scene.add(earth);
+
+    // יצירת כוכבים
+    const starsGeometry = new THREE.BufferGeometry();
+    const starsMaterial = new THREE.PointsMaterial({ color: 0xFFFFFF, size: 0.1, sizeAttenuation: true });
+
+    const starsVertices = [];
+    for (let i = 0; i < 20000; i++) {
+        const x = (Math.random() - 0.5) * 2000;
+        const y = (Math.random() - 0.5) * 2000;
+        const z = -Math.random() * 2000;
+        starsVertices.push(x, y, z);
+    }
+
+    starsGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starsVertices, 3));
+    stars = new THREE.Points(starsGeometry, starsMaterial);
+    scene.add(stars);
+
+    // הוספת תאורה
+    const ambientLight = new THREE.AmbientLight(0x404040);
+    scene.add(ambientLight);
+
+    const pointLight = new THREE.PointLight(0xFFFFFF, 1, 100);
+    pointLight.position.set(10, 10, 10);
+    scene.add(pointLight);
+
+    camera.position.z = 15;
+
+    animate();
+}
+
+function animate() {
+    requestAnimationFrame(animate);
+    earth.rotation.y += 0.002;
+    stars.rotation.y += 0.0001;
+    renderer.render(scene, camera);
+}
+
+function onWindowResize() {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+}
+
+window.addEventListener('resize', onWindowResize, false);
+
+init();
 </script>
 
 </body>
 </html>
+</body></html>
