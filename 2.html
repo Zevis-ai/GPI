@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="he">
 <head>
-   
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GPI - Global Products Industries Connect</title>
+    <!-- טעינת Firebase UMD SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-auth-compat.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700&display=swap');
 
@@ -325,86 +327,123 @@
         </div>
     </footer>
 
+
     <script>
-        const menuToggle = document.querySelector('.menu-toggle');
-        const sideMenu = document.querySelector('.side-menu');
-        const closeMenu = document.querySelector('.close-menu');
-        const header = document.querySelector('header');
+      // הגדרות Firebase
+      const firebaseConfig = {
+        apiKey: "AIzaSyAaOp49avUlLknLkGzskeCPCk9xPOAeMUE",
+        authDomain: "gpi0-d1e6d.firebaseapp.com",
+        databaseURL: "https://gpi0-d1e6d-default-rtdb.firebaseio.com",
+        projectId: "gpi0-d1e6d",
+        storageBucket: "gpi0-d1e6d.appspot.com",
+        messagingSenderId: "138797690477",
+        appId: "1:138797690477:web:5d04dd40ed2a577dbed964",
+        measurementId: "G-DP0JJ2FX3D"
+      };
 
-        menuToggle.addEventListener('click', () => {
-            sideMenu.classList.add('active');
-        });
+      // אתחול Firebase
+      firebase.initializeApp(firebaseConfig);
 
-        closeMenu.addEventListener('click', () => {
-            sideMenu.classList.remove('active');
-        });
+      const auth = firebase.auth();
 
-        // Close menu when clicking outside
-        document.addEventListener('click', (event) => {
-            if (!sideMenu.contains(event.target) && !menuToggle.contains(event.target)) {
-                sideMenu.classList.remove('active');
-            }
-        });
+      // פונקציה לבדוק אם המשתמש מחובר
+      auth.onAuthStateChanged(user => {
+        if (!user) {
+          // אם המשתמש לא מחובר, הפנה אותו לדף התחברות
+          window.location.href = "https://zevis-ai.github.io/GPI/login.html";
+        }
 
-        // Smooth scroll for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                sideMenu.classList.remove('active');
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
-            });
-        });
 
-        // Hide header on scroll down, show on scroll up
-        let lastScrollTop = 0;
-        let isScrolling;
 
-        window.addEventListener('scroll', () => {
-            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
 
-            if (scrollTop > lastScrollTop) {
-                header.classList.add('hidden');
-            } else {
-                header.classList.remove('hidden');
-            }
-
-            lastScrollTop = scrollTop;
-
-            // Clear the timeout throughout the scroll
-            window.clearTimeout(isScrolling);
-
-            // Set a timeout to run after scrolling ends
-            isScrolling = setTimeout(() => {
-                header.classList.remove('hidden');
-            }, 100);
-        });
-
-        // Add scroll animation to elements
-        const animatedElements = document.querySelectorAll('.category-button');
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: "0px 0px -50px 0px"
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = 1;
-                    entry.target.style.transform = 'translateY(0)';
-                }
-            });
-        }, observerOptions);
-
-        animatedElements.forEach(element => {
-            element.style.opacity = 0;
-            element.style.transform = 'translateY(50px)';
-            element.style.transition = 'opacity 0.5s ease-out, transform 0.5s ease-out';
-            observer.observe(element);
-        });
+        
+      });
     </script>
+
+
+
+
+<script>
+    const menuToggle = document.querySelector('.menu-toggle');
+    const sideMenu = document.querySelector('.side-menu');
+    const closeMenu = document.querySelector('.close-menu');
+    const header = document.querySelector('header');
+
+    menuToggle.addEventListener('click', () => {
+        sideMenu.classList.add('active');
+    });
+
+    closeMenu.addEventListener('click', () => {
+        sideMenu.classList.remove('active');
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', (event) => {
+        if (!sideMenu.contains(event.target) && !menuToggle.contains(event.target)) {
+            sideMenu.classList.remove('active');
+        }
+    });
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            sideMenu.classList.remove('active');
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    });
+
+    // Hide header on scroll down, show on scroll up
+    let lastScrollTop = 0;
+    let isScrolling;
+
+    window.addEventListener('scroll', () => {
+        let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+        if (scrollTop > lastScrollTop) {
+            header.classList.add('hidden');
+        } else {
+            header.classList.remove('hidden');
+        }
+
+        lastScrollTop = scrollTop;
+
+        // Clear the timeout throughout the scroll
+        window.clearTimeout(isScrolling);
+
+        // Set a timeout to run after scrolling ends
+        isScrolling = setTimeout(() => {
+            header.classList.remove('hidden');
+        }, 100);
+    });
+
+    // Add scroll animation to elements
+    const animatedElements = document.querySelectorAll('.category-button');
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: "0px 0px -50px 0px"
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = 1;
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, observerOptions);
+
+    animatedElements.forEach(element => {
+        element.style.opacity = 0;
+        element.style.transform = 'translateY(50px)';
+        element.style.transition = 'opacity 0.5s ease-out, transform 0.5s ease-out';
+        observer.observe(element);
+    });
+</script>
 
 
 </body>
 </html>
+
