@@ -276,57 +276,64 @@
 
 
 
-             .profile-container {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            z-index: 1000;
-        }
+          /* Floating profile picture and menu */
+.profile-container {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 1000;
+}
 
-        .profile-picture {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            border: 3px solid var(--primary-color);
-            cursor: pointer;
-            transition: transform 0.3s ease;
-        }
+.profile-picture {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 3px solid #3498db; /* Adjust border color as needed */
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
 
-        .profile-menu {
-            display: none;
-            position: absolute;
-            bottom: 70px;
-            left: 0;
-            background-color: var(--primary-color);
-            color: var(--light-text);
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            padding: 10px;
-            width: 150px;
-            text-align: center;
-            z-index: 1000;
-        }
+.profile-picture:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
 
-        .profile-menu button {
-            background-color: var(--accent-color);
-            border: none;
-            color: var(--light-text);
-            padding: 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
+.profile-menu {
+    display: none;
+    position: absolute;
+    bottom: 70px;
+    left: 0;
+    background-color: #3498db; /* Adjust background color as needed */
+    color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    width: 150px;
+    text-align: center;
+    z-index: 1000;
+}
 
-        .profile-menu button:hover {
-            background-color: #c0392b;
-        }
+.profile-menu button {
+    background-color: #2ecc71; /* Adjust button color as needed */
+    border: none;
+    color: #ffffff;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
 
-        .profile-menu.show {
-            display: block;
-        }
+.profile-menu button:hover {
+    background-color: #c0392b;
+}
+
+.profile-menu.show {
+    display: block;
+}
+
     </style>
 </head>
 <body>
@@ -385,6 +392,18 @@
             </div>
             <p>&copy; 2023 GPI - Global Products Industries Connect. כל הזכויות שמורות.</p>
         </div>
+
+
+
+
+        <!-- Floating profile picture and menu -->
+<div class="profile-container">
+    <img src="path/to/profile-picture.jpg" alt="Profile Picture" class="profile-picture" id="profile-picture">
+    <div class="profile-menu" id="profile-menu">
+        <button id="logout-button">התנתק</button>
+    </div>
+</div>
+
     </footer>
 
 
