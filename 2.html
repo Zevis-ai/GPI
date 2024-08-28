@@ -271,54 +271,46 @@
             .category-button {
                 width: 100%;
             }
-            .profile-menu {
+            .profile-container {
             position: fixed;
             top: 20px;
             right: 20px;
-            background-color: var(--primary-color);
-            color: var(--light-text);
-            padding: 10px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            cursor: pointer;
+            text-align: center;
+            z-index: 1001;
         }
 
-        .profile-menu img {
+        .profile-picture {
+            width: 80px;
+            height: 80px;
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            object-fit: cover;
+            border: 3px solid var(--secondary-color);
+            cursor: pointer;
+            transition: border-color 0.3s ease;
         }
 
-        .profile-menu .dropdown {
+        .profile-picture:hover {
+            border-color: var(--accent-color);
+        }
+
+        .logout-button {
             display: none;
-            position: absolute;
-            top: 60px;
-            right: 0;
-            background-color: var(--primary-color);
-            padding: 10px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-        }
-
-        .profile-menu:hover .dropdown {
-            display: block;
-        }
-
-        .profile-menu .dropdown a {
+            margin-top: 10px;
+            padding: 10px 20px;
+            border: none;
+            background-color: var(--accent-color);
             color: var(--light-text);
-            text-decoration: none;
-            display: block;
-            padding: 10px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 1rem;
             transition: background-color 0.3s ease;
         }
 
-        .profile-menu .dropdown a:hover {
-            background-color: var(--secondary-color);
+        .logout-button:hover {
+            background-color: #c0392b;
         }
+
+        .profile-container.show-logout .logout-button {
+            display: block;
         }
     </style>
 </head>
@@ -333,6 +325,7 @@
         <div class="dropdown">
             <a href="#" id="logout-button">התנתק</a>
         </div>
+    </div>
     </div>
     </header>
 
