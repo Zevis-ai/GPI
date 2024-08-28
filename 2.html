@@ -1,9 +1,7 @@
 <!DOCTYPE html>
 <html lang="he">
 <head>
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js"></script>
-
+   
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GPI - Global Products Industries Connect</title>
@@ -333,18 +331,6 @@
         const closeMenu = document.querySelector('.close-menu');
         const header = document.querySelector('header');
 
-         function signInWithGoogle() {
-        const provider = new firebase.auth.GoogleAuthProvider();
-        auth.signInWithPopup(provider).then((result) => {
-            // הצלחה
-            console.log(result.user);
-            // תוכל לשמור את פרטי המשתמש או להציג הודעת הצלחה
-        }).catch((error) => {
-            // שגיאה
-            console.error(error);
-        });
-    }
-
         menuToggle.addEventListener('click', () => {
             sideMenu.classList.add('active');
         });
@@ -418,21 +404,7 @@
             observer.observe(element);
         });
     </script>
-    <script>
-    // הגדרת הקונפיגורציה של Firebase
-    const firebaseConfig = {
-        apiKey: "AIzaSyAaOp49avUlLknLkGzskeCPCk9xPOAeMUE",
-        authDomain: "gpi0-d1e6d.firebaseapp.com",
-        projectId: "gpi0-d1e6d",
-        storageBucket: "gpi0-d1e6d.appspot.com",
-        messagingSenderId: "138797690477",
-        appId: "1:138797690477:web:5d04dd40ed2a577dbed964"
-    };
 
-    // אתחול של Firebase
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-</script>
 
 </body>
 </html>
