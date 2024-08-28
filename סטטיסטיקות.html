@@ -390,7 +390,7 @@
             const tenPercentOrders = totalRevenue * 0.1;
 
 // הצגת 10% מההזמנות
-document.getElementById('tenPercentOrders').textContent = `$${formatNumberWithCommas(tenPercentOrders.toFixed(0))}`;
+            document.getElementById('tenPercentOrders').textContent = `$${tenPercentOrders.toFixed(0)}`;
 
             document.getElementById('totalOrders').textContent = totalOrders.toLocaleString();
             document.getElementById('totalRevenue').textContent = `$${totalRevenue.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
