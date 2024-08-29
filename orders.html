@@ -1,14 +1,15 @@
-<html><head><base href="https://zevis-ai.github.io/GPI/"></head>
+<html><head><base href="https://zevis-ai.github.io/GPI/">
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ההזמנות שלי</title>
+    <title>ההזמנות שלי - GPI</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     <style>
         body {
             font-family: 'Rubik', sans-serif;
@@ -26,7 +27,7 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             padding: 40px;
             width: 90%;
-            max-width: 900px;
+            max-width: 1000px;
             backdrop-filter: blur(10px);
         }
         .user-info {
@@ -86,6 +87,12 @@
             transform: translateY(-5px);
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
         }
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
         .order-id {
             font-weight: bold;
             color: #3a1c71;
@@ -94,10 +101,8 @@
         .order-date {
             color: #666;
             font-size: 0.9em;
-            margin-top: 5px;
         }
         .order-status {
-            float: left;
             padding: 8px 15px;
             border-radius: 30px;
             font-size: 0.9em;
@@ -118,9 +123,20 @@
             color: #721c24;
         }
         .order-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
             margin-top: 15px;
             color: #444;
             line-height: 1.6;
+        }
+        .order-detail {
+            display: flex;
+            align-items: center;
+        }
+        .order-detail i {
+            margin-left: 10px;
+            color: #3a1c71;
         }
         .no-orders {
             text-align: center;
@@ -144,6 +160,39 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        .order-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 15px;
+        }
+        .order-action {
+            background-color: #3a1c71;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+            transition: background-color 0.3s ease;
+        }
+        .order-action:hover {
+            background-color: #2575fc;
+        }
+        .order-details-toggle {
+            background: none;
+            border: none;
+            color: #3a1c71;
+            cursor: pointer;
+            font-size: 1em;
+            padding: 5px 10px;
+            margin-top: 10px;
+        }
+        .order-details-toggle:hover {
+            text-decoration: underline;
+        }
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -151,7 +200,7 @@
         <div class="user-info">
             <img id="profile-picture" class="profile-picture" src="default-profile.png" alt="תמונת פרופיל">
             <div class="user-details">
-                <h1 id="user-greeting">שלום, אורח</h1>
+                <h1 id="user-greeting">ההזמנות שלי</h1>
                 <p id="user-email" class="email"></p>
             </div>
         </div>
@@ -187,7 +236,7 @@
                 const userEmail = document.getElementById('user-email');
 
                 profilePicture.src = user.photoURL || 'default-profile.png';
-                userGreeting.textContent = ;
+                userGreeting.textContent = `שלום, ${user.displayName || 'משתמש'}`;
                 userEmail.textContent = user.email;
 
                 loadUserOrders(user.uid);
@@ -202,7 +251,6 @@
                 const ordersContainer = document.getElementById('orders-container');
                 const loadingElement = document.getElementById('loading');
                 
-                // Hide loading spinner
                 loadingElement.style.display = 'none';
                 
                 ordersContainer.innerHTML = '';
@@ -219,7 +267,6 @@
                         const orderElement = createOrderElement(order, order.key);
                         ordersContainer.appendChild(orderElement);
                         
-                        // Animate order entrance
                         anime({
                             targets: orderElement,
                             translateY: [50, 0],
@@ -236,29 +283,97 @@
         function createOrderElement(order, orderId) {
             const orderDiv = document.createElement('div');
             orderDiv.className = 'order';
-            orderDiv.innerHTML =                 <span class="order-id">הזמנה מספר: ${orderId}</span>
-                <span class="order-date">תאריך: ${new Date(order.date).toLocaleDateString('he-IL')}</span>
-                <span class="order-status ${getStatusClass(order.status)}">${getStatusText(order.status)}</span>
-                <p class="order-details">פרטי ההזמנה: ${order.details}</p>
-                        return orderDiv;
+            orderDiv.innerHTML = `
+                <div class="order-header">
+                    <span class="order-id">הזמנה מספר: ${orderId}</span>
+                    <span class="order-date">תאריך: ${new Date(order.date).toLocaleDateString('he-IL')}</span>
+                    <div class="order-status ${getOrderStatusClass(order.status)}">
+                        ${order.status}
+                    </div>
+                </div>
+                <div class="order-details">
+                    <div class="order-detail"><i class="fas fa-user"></i> ${order.customerName}</div>
+                    <div class="order-detail"><i class="fas fa-envelope"></i> ${order.customerEmail}</div>
+                    <div class="order-detail"><i class="fas fa-phone"></i> ${order.customerPhone}</div>
+                    <div class="order-detail"><i class="fas fa-box"></i> ${order.productType}</div>
+                    <div class="order-detail"><i class="fas fa-hashtag"></i> כמות: ${order.quantity}</div>
+                    <div class="order-detail"><i class="fas fa-sun"></i> בהירות: ${order.brightness}</div>
+                </div>
+                <button class="order-details-toggle" onclick="toggleOrderDetails(this)">הצג פרטים נוספים</button>
+                <div class="order-details hidden">
+                    <div class="order-detail"><i class="fas fa-palette"></i> צבע LED: ${order.ledColor}</div>
+                    <div class="order-detail"><i class="fas fa-temperature-high"></i> טמפרטורת צבע: ${order.colorTemperature}</div>
+                    <div class="order-detail"><i class="fas fa-adjust"></i> דימר: ${order.dimming ? 'כן' : 'לא'}</div>
+                    <div class="order-detail"><i class="fas fa-ruler"></i> אורך: ${order.length}</div>
+                    <div class="order-detail"><i class="fas fa-wrench"></i> הרכבה: ${order.mounting}</div>
+                    <div class="order-detail"><i class="fas fa-shield-alt"></i> דרגת IP: ${order.ipRating}</div>
+                    <div class="order-detail"><i class="fas fa-plug"></i> ספק כוח: ${order.powerSupply}</div>
+                    <div class="order-detail"><i class="fas fa-comment"></i> דרישות מיוחדות: ${order.specialRequirements}</div>
+                    <div class="order-detail"><i class="fas fa-building"></i> שם חברה: ${order.companyName}</div>
+                </div>
+                <div class="order-actions">
+                    <button class="order-action" onclick="editOrder('${orderId}')">עריכה</button>
+                    <button class="order-action" onclick="cancelOrder('${orderId}')">ביטול</button>
+                </div>
+            `;
+            return orderDiv;
         }
 
-        function getStatusClass(status) {
-            switch (status) {
-                case 'pending': return 'status-pending';
-                case 'completed': return 'status-completed';
-                case 'cancelled': return 'status-cancelled';
+        function getOrderStatusClass(status) {
+            switch (status.toLowerCase()) {
+                case 'בהמתנה': return 'status-pending';
+                case 'הושלמה': return 'status-completed';
+                case 'בוטלה': return 'status-cancelled';
                 default: return '';
             }
         }
 
-        function getStatusText(status) {
-            switch (status) {
-                case 'pending': return 'ממתין';
-                case 'completed': return 'הושלם';
-                case 'cancelled': return 'בוטל';
-                default: return status;
+        function toggleOrderDetails(button) {
+            const details = button.nextElementSibling;
+            const isHidden = details.classList.contains('hidden');
+            details.classList.toggle('hidden');
+            button.textContent = isHidden ? 'הסתר פרטים נוספים' : 'הצג פרטים נוספים';
+
+            anime({
+                targets: details,
+                height: isHidden ? ['0px', details.scrollHeight + 'px'] : [details.scrollHeight + 'px', '0px'],
+                opacity: isHidden ? [0, 1] : [1, 0],
+                duration: 400,
+                easing: 'easeInOutQuad'
+            });
+        }
+
+        function editOrder(orderId) {
+            // כאן תוכל להוסיף לוגיקה לעריכת ההזמנה
+            console.log(`עריכת הזמנה מספר ${orderId}`);
+            // לדוגמה: הצגת טופס עריכה או ניווט לדף עריכה
+        }
+
+        function cancelOrder(orderId) {
+            if (confirm('האם אתה בטוח שברצונך לבטל הזמנה זו?')) {
+                // כאן תוכל להוסיף לוגיקה לביטול ההזמנה
+                console.log(`ביטול הזמנה מספר ${orderId}`);
+                // לדוגמה: עדכון סטטוס ההזמנה בדאטאבייס
+                database.ref(`orders/${orderId}`).update({ status: 'בוטלה' })
+                    .then(() => {
+                        showNotification('ההזמנה בוטלה בהצלחה');
+                    })
+                    .catch((error) => {
+                        console.error('שגיאה בביטול ההזמנה:', error);
+                        showNotification('אירעה שגיאה בביטול ההזמנה', 'error');
+                    });
             }
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
         }
     </script>
 </body>
