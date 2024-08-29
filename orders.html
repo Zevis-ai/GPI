@@ -1,4 +1,6 @@
-<html><head><base href="https://gpi0-d1e6d.firebaseapp.com/my-orders/">
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ההזמנות שלי - GPI</title>
@@ -6,208 +8,125 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
-        :root {
-            --primary-color: #4A90E2;
-            --secondary-color: #F5A623;
-            --background-color: #F0F4F8;
-            --text-color: #333;
-            --border-color: #E1E8ED;
-        }
-
         body {
             font-family: 'Rubik', sans-serif;
-            background-color: var(--background-color);
+            background-color: #f0f0f0;
             margin: 0;
             padding: 0;
             direction: rtl;
-            color: var(--text-color);
         }
-
         .container {
-            max-width: 1200px;
+            max-width: 1000px;
             margin: 0 auto;
             padding: 20px;
-        }
-
-        header {
             background-color: white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            padding: 15px 0;
-            margin-bottom: 30px;
-        }
-
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .user-profile {
-            display: flex;
-            align-items: center;
-        }
-
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            margin-left: 10px;
-        }
-
-        .user-name {
-            font-weight: 500;
-        }
-
-        h1 {
-            color: var(--primary-color);
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .filters {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
-
-        .search-bar {
-            flex-grow: 1;
-            margin-left: 20px;
-        }
-
-        .search-bar input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid var(--border-color);
-            border-radius: 5px;
-            font-size: 16px;
-        }
-
-        .sort-options select {
-            padding: 10px;
-            border: 1px solid var(--border-color);
-            border-radius: 5px;
-            font-size: 16px;
-            background-color: white;
-        }
-
-        .orders-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-        }
-
-        .order {
-            background-color: white;
-            border: 1px solid var(--border-color);
             border-radius: 8px;
-            padding: 20px;
-            transition: box-shadow 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #333;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px 8px 0 0;
+        }
+        header img {
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            border: 2px solid white;
+        }
+        header h2 {
+            margin: 0;
+        }
+        .menu {
+            display: flex;
+            gap: 15px;
+        }
+        .menu a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .search-bar {
+            margin: 20px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+        .search-bar input[type="text"] {
+            width: 70%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .search-bar button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .order {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            transition: transform 0.3s ease;
+        }
         .order:hover {
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transform: scale(1.02);
         }
-
         .order-header {
             font-weight: bold;
-            margin-bottom: 15px;
-            font-size: 1.1em;
-            color: var(--primary-color);
-            border-bottom: 2px solid var(--secondary-color);
-            padding-bottom: 5px;
-        }
-
-        .order-detail {
             margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
+            font-size: 1.1em;
+            color: #333;
         }
-
-        .order-detail span:first-child {
-            font-weight: 500;
-            color: var(--text-color);
+        .order-detail {
+            margin-bottom: 5px;
+            color: #555;
         }
-
         .order-status {
             font-weight: bold;
             color: #4CAF50;
-            text-align: center;
-            margin-top: 15px;
-            padding: 5px;
-            background-color: #E8F5E9;
-            border-radius: 5px;
         }
-
-        .no-orders {
-            text-align: center;
-            color: #666;
-            font-style: italic;
-            grid-column: 1 / -1;
-            padding: 40px;
-            background-color: white;
-            border-radius: 8px;
-        }
-
-        .loading, .error {
+        .no-orders, .loading, .error {
             text-align: center;
             margin-top: 20px;
-            padding: 20px;
-            background-color: white;
-            border-radius: 8px;
         }
-
         .error {
-            color: #D32F2F;
+            color: red;
             font-weight: bold;
-        }
-
-        @media (max-width: 768px) {
-            .filters {
-                flex-direction: column;
-            }
-            .search-bar {
-                margin-left: 0;
-                margin-bottom: 10px;
-            }
         }
     </style>
 </head>
 <body>
-    <header>
-        <div class="container header-content">
-            <div class="user-profile">
-                <img id="userAvatar" src="https://via.placeholder.com/40" alt="תמונת פרופיל" class="user-avatar">
-                <span id="userName" class="user-name">שם המשתמש</span>
-            </div>
-            <nav>
-                <a href="#" title="דף הבית"><i class="fas fa-home"></i></a>
-                <a href="#" title="הגדרות"><i class="fas fa-cog"></i></a>
-                <a href="#" id="logoutBtn" title="התנתקות"><i class="fas fa-sign-out-alt"></i></a>
-            </nav>
-        </div>
-    </header>
-
     <div class="container">
-        <h1>ההזמנות שלי</h1>
-
-        <div class="filters">
-            <div class="search-bar">
-                <input type="text" id="searchInput" placeholder="חפש לפי מספר הזמנה, שם לקוח או סוג מוצר...">
+        <header>
+            <div>
+                <h2>ההזמנות שלי</h2>
             </div>
-            <div class="sort-options">
-                <select id="sortSelect">
-                    <option value="date-desc">תאריך: מהחדש לישן</option>
-                    <option value="date-asc">תאריך: מהישן לחדש</option>
-                    <option value="status">לפי סטטוס</option>
-                </select>
+            <div class="menu">
+                <a href="#">בית</a>
+                <a href="#">הזמנות</a>
+                <a href="#">יציאה</a>
             </div>
+            <div class="profile">
+                <img id="profile-pic" src="" alt="Profile Picture">
+                <h2 id="user-name">משתמש</h2>
+            </div>
+        </header>
+        <div class="search-bar">
+            <input type="text" id="search-input" placeholder="חפש הזמנה...">
+            <button onclick="searchOrders()">חיפוש</button>
         </div>
-
         <div id="loading" class="loading">טוען הזמנות...</div>
-        <div id="orders-container" class="orders-grid"></div>
+        <div id="orders-container"></div>
         <div id="error" class="error" style="display:none;">אירעה שגיאה בטעינת ההזמנות. אנא נסה שוב מאוחר יותר.</div>
     </div>
 
@@ -228,24 +147,20 @@
         const auth = firebase.auth();
         const database = firebase.database();
 
-        let currentUser;
-
         auth.onAuthStateChanged(user => {
             if (user) {
-                currentUser = user;
-                updateUserProfile();
+                displayUserProfile(user);
                 loadUserOrders(user.uid);
             } else {
                 window.location.href = "https://zevis-ai.github.io/GPI/login.html";
             }
         });
 
-        function updateUserProfile() {
-            const userAvatar = document.getElementById('userAvatar');
-            const userName = document.getElementById('userName');
-
-            userAvatar.src = currentUser.photoURL || 'https://via.placeholder.com/40';
-            userName.textContent = currentUser.displayName || 'משתמש';
+        function displayUserProfile(user) {
+            document.getElementById('user-name').textContent = user.displayName || 'משתמש';
+            if (user.photoURL) {
+                document.getElementById('profile-pic').src = user.photoURL;
+            }
         }
 
         function loadUserOrders(userId) {
@@ -260,30 +175,18 @@
                 ordersContainer.innerHTML = '';
 
                 if (snapshot.exists()) {
-                    const orders = [];
                     snapshot.forEach((childSnapshot) => {
-                        orders.push({
-                            id: childSnapshot.key,
-                            ...childSnapshot.val()
-                        });
+                        const order = childSnapshot.val();
+                        const orderElement = createOrderElement(order, childSnapshot.key);
+                        ordersContainer.appendChild(orderElement);
                     });
-                    displayOrders(orders);
                 } else {
                     ordersContainer.innerHTML = '<p class="no-orders">אין הזמנות להצגה כרגע.</p>';
                 }
             }, (error) => {
-                loadingElement.style.display = 'none';
-                errorElement.style.display = 'block';
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('error').style.display = 'block';
                 console.error("Error loading orders:", error);
-            });
-        }
-
-        function displayOrders(orders) {
-            const ordersContainer = document.getElementById('orders-container');
-            ordersContainer.innerHTML = '';
-            orders.forEach(order => {
-                const orderElement = createOrderElement(order, order.id);
-                ordersContainer.appendChild(orderElement);
             });
         }
 
@@ -292,76 +195,40 @@
             orderDiv.className = 'order';
             orderDiv.innerHTML = `
                 <div class="order-header">הזמנה מספר: ${orderId}</div>
-                <div class="order-detail">תאריך: ${new Date(order.date).toLocaleDateString('he-IL')}</div>
-                <div class="order-detail">סטטוס: <span class="order-status">${order.status}</span></div>
-                <div class="order-detail">שם לקוח: ${order.customerName}</div>
-                <div class="order-detail">אימייל: ${order.customerEmail}</div>
-                <div class="order-detail">טלפון: ${order.customerPhone}</div>
-                <div class="order-detail">סוג מוצר: ${order.productType}</div>
+                <div class="order-detail">שם לקוח: ${order['customer-name']}</div>
+                <div class="order-detail">אימייל: ${order['customer-email']}</div>
+                <div class="order-detail">טלפון: ${order['customer-phone']}</div>
+                <div class="order-detail">סוג מוצר: ${order['product-type']}</div>
                 <div class="order-detail">כמות: ${order.quantity}</div>
                 <div class="order-detail">בהירות: ${order.brightness}</div>
-                <div class="order-detail">צבע LED: ${order.ledColor}</div>
-                <div class="order-detail">טמפרטורת צבע: ${order.colorTemperature}</div>
-                <div class="order-detail">דימר: ${order.dimming ? 'כן' : 'לא'}</div>
+                <div class="order-detail">צבע LED: ${order['led-color']}</div>
+                <div class="order-detail">טמפרטורת צבע: ${order['color-temperature']}</div>
+                <div class="order-detail">דימר: ${order.dimming}</div>
                 <div class="order-detail">אורך: ${order.length}</div>
+                <div class="order-detail">רוחב: ${order.width}</div>
                 <div class="order-detail">הרכבה: ${order.mounting}</div>
-                <div class="order-detail">דרגת IP: ${order.ipRating}</div>
-                <div class="order-detail">ספק כוח: ${order.powerSupply}</div>
-                <div class="order-detail">דרישות מיוחדות: ${order.specialRequirements}</div>
-                <div class="order-detail">שם חברה: ${order.companyName}</div>
+                <div class="order-detail">דרגת IP: ${order['ip-rating']}</div>
+                <div class="order-detail">ספק כוח: ${order['power-supply']}</div>
+                <div class="order-detail">דרישות מיוחדות: ${order['special-requirements']}</div>
+                <div class="order-detail">שם חברה: ${order['company-name']}</div>
             `;
             return orderDiv;
         }
 
-        function getOrderStatus(order) {
-            // לוגיקה לקביעת סטטוס ההזמנה. זה יכול להיות מבוסס על שדה בהזמנה או לוגיקה אחרת
-            return 'בטיפול';
-        }
+        function searchOrders() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const ordersContainer = document.getElementById('orders-container');
+            const orders = ordersContainer.querySelectorAll('.order');
 
-        // חיפוש הזמנות
-        document.getElementById('searchInput').addEventListener('input', function(e) {
-            const searchTerm = e.target.value.toLowerCase();
-            const orders = document.querySelectorAll('.order');
-            
             orders.forEach(order => {
-                const orderText = order.innerText.toLowerCase();
+                const orderText = order.textContent.toLowerCase();
                 if (orderText.includes(searchTerm)) {
                     order.style.display = '';
                 } else {
                     order.style.display = 'none';
                 }
             });
-        });
-
-        // מיון הזמנות
-        document.getElementById('sortSelect').addEventListener('change', function(e) {
-            const sortMethod = e.target.value;
-            const ordersContainer = document.getElementById('orders-container');
-            const orders = Array.from(ordersContainer.children);
-
-            orders.sort((a, b) => {
-                if (sortMethod === 'date-desc') {
-                    return new Date(b.dataset.date) - new Date(a.dataset.date);
-                } else if (sortMethod === 'date-asc') {
-                    return new Date(a.dataset.date) - new Date(b.dataset.date);
-                } else if (sortMethod === 'status') {
-                    return a.querySelector('.order-status').textContent.localeCompare(b.querySelector('.order-status').textContent);
-                }
-            });
-
-            ordersContainer.innerHTML = '';
-            orders.forEach(order => ordersContainer.appendChild(order));
-        });
-
-        // התנתקות
-        document.getElementById('logoutBtn').addEventListener('click', function(e) {
-            e.preventDefault();
-            auth.signOut().then(() => {
-                window.location.href = "https://zevis-ai.github.io/GPI/login.html";
-            }).catch((error) => {
-                console.error("Error signing out: ", error);
-            });
-        });
+        }
     </script>
 </body>
 </html>
