@@ -164,76 +164,79 @@
     </div>
 
     <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyAaOp49avUlLknLkGzskeCPCk9xPOAeMUE",
-            authDomain: "gpi0-d1e6d.firebaseapp.com",
-            databaseURL: "https://gpi0-d1e6d-default-rtdb.firebaseio.com",
-            projectId: "gpi0-d1e6d",
-            storageBucket: "gpi0-d1e6d.appspot.com",
-            messagingSenderId: "138797690477",
-            appId: "1:138797690477:web:5d04dd40ed2a577dbed964",
-            measurementId: "G-DP0JJ2FX3D"
-        };
+       const firebaseConfig = {
+    apiKey: "AIzaSyAaOp49avUlLknLkGzskeCPCk9xPOAeMUE",
+    authDomain: "gpi0-d1e6d.firebaseapp.com",
+    databaseURL: "https://gpi0-d1e6d-default-rtdb.firebaseio.com",
+    projectId: "gpi0-d1e6d",
+    storageBucket: "gpi0-d1e6d.appspot.com",
+    messagingSenderId: "138797690477",
+    appId: "1:138797690477:web:5d04dd40ed2a577dbed964",
+    measurementId: "G-DP0JJ2FX3D"
+};
 
-        firebase.initializeApp(firebaseConfig);
+firebase.initializeApp(firebaseConfig);
 
-        const auth = firebase.auth();
-        const database = firebase.database();
+const auth = firebase.auth();
+const database = firebase.database();
 
-        auth.onAuthStateChanged(user => {
-            if (user) {
-                const profilePicture = document.getElementById('profile-picture');
-                const userGreeting = document.getElementById('user-greeting');
-                const userEmail = document.getElementById('user-email');
+auth.onAuthStateChanged(user => {
+    if (user) {
+        const profilePicture = document.getElementById('profile-picture');
+        const userGreeting = document.getElementById('user-greeting');
+        const userEmail = document.getElementById('user-email');
 
-                profilePicture.src = user.photoURL || 'default-profile.png';
-                userGreeting.textContent = `שלום, ${user.displayName || 'משתמש'}`;
-                userEmail.textContent = user.email;
+        profilePicture.src = user.photoURL || 'default-profile.png';
+        userGreeting.textContent = `שלום, ${user.displayName || 'משתמש'}`;
+        userEmail.textContent = user.email;
 
-                loadUserOrders(user.uid);
-            } else {
-                window.location.href = "https://zevis-ai.github.io/GPI/login.html";
+        loadUserOrders(user.email);
+    } else {
+        window.location.href = "https://zevis-ai.github.io/GPI/login.html";
+    }
+});
+
+function loadUserOrders(userEmail) {
+    const ordersRef = database.ref('orders');
+    ordersRef.on('value', (snapshot) => {
+        const ordersContainer = document.getElementById('orders-container');
+        const loadingElement = document.getElementById('loading');
+        
+        // Hide loading spinner
+        loadingElement.style.display = 'none';
+        
+        ordersContainer.innerHTML = '';
+
+        const orders = [];
+        snapshot.forEach((childSnapshot) => {
+            const order = childSnapshot.val();
+            if (order.contactEmail === userEmail) {
+                orders.push({ key: childSnapshot.key, ...order });
             }
         });
 
-        function loadUserOrders(userId) {
-            const ordersRef = database.ref('orders').orderByChild('userId').equalTo(userId);
-            ordersRef.on('value', (snapshot) => {
-                const ordersContainer = document.getElementById('orders-container');
-                const loadingElement = document.getElementById('loading');
+        if (orders.length === 0) {
+            ordersContainer.innerHTML = '<p class="no-orders">אין הזמנות להצגה כרגע.</p>';
+        } else {
+            orders.forEach((order, index) => {
+                const orderElement = createOrderElement(order, order.key);
+                ordersContainer.appendChild(orderElement);
                 
-                // Hide loading spinner
-                loadingElement.style.display = 'none';
-                
-                ordersContainer.innerHTML = '';
-
-                const orders = [];
-                snapshot.forEach((childSnapshot) => {
-                    orders.push({ key: childSnapshot.key, ...childSnapshot.val() });
+                // Animate order entrance
+                anime({
+                    targets: orderElement,
+                    translateY: [50, 0],
+                    opacity: [0, 1],
+                    easing: 'easeOutExpo',
+                    duration: 1000,
+                    delay: index * 100
                 });
-
-                if (orders.length === 0) {
-                    ordersContainer.innerHTML = '<p class="no-orders">אין הזמנות להצגה כרגע.</p>';
-                } else {
-                    orders.forEach((order, index) => {
-                        const orderElement = createOrderElement(order, order.key);
-                        ordersContainer.appendChild(orderElement);
-                        
-                        // Animate order entrance
-                        anime({
-                            targets: orderElement,
-                            translateY: [50, 0],
-                            opacity: [0, 1],
-                            easing: 'easeOutExpo',
-                            duration: 1000,
-                            delay: index * 100
-                        });
-                    });
-                }
             });
         }
+    });
+}
 
-       function createOrderElement(order, orderId) {
+function createOrderElement(order, orderId) {
     const orderDiv = document.createElement('div');
     orderDiv.className = 'order';
     orderDiv.innerHTML = `
@@ -258,24 +261,24 @@
     return orderDiv;
 }
 
+function getStatusClass(status) {
+    switch (status) {
+        case 'pending': return 'status-pending';
+        case 'completed': return 'status-completed';
+        case 'cancelled': return 'status-cancelled';
+        default: return '';
+    }
+}
 
-        function getStatusClass(status) {
-            switch (status) {
-                case 'pending': return 'status-pending';
-                case 'completed': return 'status-completed';
-                case 'cancelled': return 'status-cancelled';
-                default: return '';
-            }
-        }
+function getStatusText(status) {
+    switch (status) {
+        case 'pending': return 'ממתין';
+        case 'completed': return 'הושלם';
+        case 'cancelled': return 'בוטל';
+        default: return status;
+    }
+}
 
-        function getStatusText(status) {
-            switch (status) {
-                case 'pending': return 'ממתין';
-                case 'completed': return 'הושלם';
-                case 'cancelled': return 'בוטל';
-                default: return status;
-            }
-        }
     </script>
 </body>
 </html>
