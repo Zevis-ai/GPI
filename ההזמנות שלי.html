@@ -1,0 +1,267 @@
+<html><head><base href="https://zevis-ai.github.io/GPI/"></head>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ההזמנות שלי</title>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <style>
+        body {
+            font-family: 'Rubik', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 90%;
+            max-width: 900px;
+            backdrop-filter: blur(10px);
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        .profile-picture {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-left: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border: 4px solid white;
+        }
+        .user-details {
+            flex-grow: 1;
+        }
+        h1 {
+            color: #333;
+            margin: 0;
+            font-size: 2.2em;
+            font-weight: 700;
+        }
+        .email {
+            color: #666;
+            margin: 5px 0;
+            font-size: 1.1em;
+        }
+        .orders {
+            margin-top: 30px;
+        }
+        .order {
+            background-color: #ffffff;
+            border: none;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        .order::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(to bottom, #6a11cb 0%, #2575fc 100%);
+        }
+        .order:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        .order-id {
+            font-weight: bold;
+            color: #3a1c71;
+            font-size: 1.2em;
+        }
+        .order-date {
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        .order-status {
+            float: left;
+            padding: 8px 15px;
+            border-radius: 30px;
+            font-size: 0.9em;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .status-pending {
+            background-color: #ffeeba;
+            color: #856404;
+        }
+        .status-completed {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .status-cancelled {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .order-details {
+            margin-top: 15px;
+            color: #444;
+            line-height: 1.6;
+        }
+        .no-orders {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            margin-top: 30px;
+        }
+        .loading {
+            text-align: center;
+            margin-top: 50px;
+        }
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="user-info">
+            <img id="profile-picture" class="profile-picture" src="default-profile.png" alt="תמונת פרופיל">
+            <div class="user-details">
+                <h1 id="user-greeting">שלום, אורח</h1>
+                <p id="user-email" class="email"></p>
+            </div>
+        </div>
+        <div id="loading" class="loading">
+            <div class="loading-spinner"></div>
+        </div>
+        <div class="orders" id="orders-container">
+            <!-- ההזמנות יוכנסו כאן דינמית -->
+        </div>
+    </div>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAaOp49avUlLknLkGzskeCPCk9xPOAeMUE",
+            authDomain: "gpi0-d1e6d.firebaseapp.com",
+            databaseURL: "https://gpi0-d1e6d-default-rtdb.firebaseio.com",
+            projectId: "gpi0-d1e6d",
+            storageBucket: "gpi0-d1e6d.appspot.com",
+            messagingSenderId: "138797690477",
+            appId: "1:138797690477:web:5d04dd40ed2a577dbed964",
+            measurementId: "G-DP0JJ2FX3D"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+
+        const auth = firebase.auth();
+        const database = firebase.database();
+
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                const profilePicture = document.getElementById('profile-picture');
+                const userGreeting = document.getElementById('user-greeting');
+                const userEmail = document.getElementById('user-email');
+
+                profilePicture.src = user.photoURL || 'default-profile.png';
+                userGreeting.textContent = `שלום, ${user.displayName || 'משתמש'}`;
+                userEmail.textContent = user.email;
+
+                loadUserOrders(user.uid);
+            } else {
+                window.location.href = "https://zevis-ai.github.io/GPI/login.html";
+            }
+        });
+
+        function loadUserOrders(userId) {
+            const ordersRef = database.ref('orders').orderByChild('userId').equalTo(userId);
+            ordersRef.on('value', (snapshot) => {
+                const ordersContainer = document.getElementById('orders-container');
+                const loadingElement = document.getElementById('loading');
+                
+                // Hide loading spinner
+                loadingElement.style.display = 'none';
+                
+                ordersContainer.innerHTML = '';
+
+                const orders = [];
+                snapshot.forEach((childSnapshot) => {
+                    orders.push({ key: childSnapshot.key, ...childSnapshot.val() });
+                });
+
+                if (orders.length === 0) {
+                    ordersContainer.innerHTML = '<p class="no-orders">אין הזמנות להצגה כרגע.</p>';
+                } else {
+                    orders.forEach((order, index) => {
+                        const orderElement = createOrderElement(order, order.key);
+                        ordersContainer.appendChild(orderElement);
+                        
+                        // Animate order entrance
+                        anime({
+                            targets: orderElement,
+                            translateY: [50, 0],
+                            opacity: [0, 1],
+                            easing: 'easeOutExpo',
+                            duration: 1000,
+                            delay: index * 100
+                        });
+                    });
+                }
+            });
+        }
+
+        function createOrderElement(order, orderId) {
+            const orderDiv = document.createElement('div');
+            orderDiv.className = 'order';
+            orderDiv.innerHTML = `
+                <span class="order-id">הזמנה מספר: ${orderId}</span>
+                <span class="order-date">תאריך: ${new Date(order.date).toLocaleDateString('he-IL')}</span>
+                <span class="order-status ${getStatusClass(order.status)}">${getStatusText(order.status)}</span>
+                <p class="order-details">פרטי ההזמנה: ${order.details}</p>
+            `;
+            return orderDiv;
+        }
+
+        function getStatusClass(status) {
+            switch (status) {
+                case 'pending': return 'status-pending';
+                case 'completed': return 'status-completed';
+                case 'cancelled': return 'status-cancelled';
+                default: return '';
+            }
+        }
+
+        function getStatusText(status) {
+            switch (status) {
+                case 'pending': return 'ממתין';
+                case 'completed': return 'הושלם';
+                case 'cancelled': return 'בוטל';
+                default: return status;
+            }
+        }
+    </script>
+</body>
+</html>
