@@ -733,41 +733,64 @@
         }, false);
     });
 
-    function createOrderCard(order, orderNumber, orderId) {
-        const orderCard = document.createElement('div');
-        orderCard.className = 'order-card';
+   function createOrderCard(order, orderNumber, orderId) {
+    const orderCard = document.createElement('div');
+    orderCard.className = 'order-card';
 
-        orderCard.innerHTML = `
-            <div class="order-number">#${orderNumber}</div>
-            <div class="order-title">${order.productName}</div>
-            <div class="order-details">
-                <span><i class="fas fa-tag"></i> קטגוריה: ${order.productCategory}</span>
-                <span><i class="fas fa-info-circle"></i> תיאור: ${order.productDescription}</span>
-                <span><i class="fas fa-cube"></i> חומרי גלם: ${order.productMaterials}</span>
-                <span><i class="fas fa-box"></i> כמות: ${order.productQuantity}</span>
-                <span><i class="fas fa-dollar-sign"></i> מחיר משוער: ${order.estimatedPrice}</span>
-                <span><i class="fas fa-calendar-alt"></i> תאריך אספקה: ${order.deliveryDate}</span>
-                <span><i class="fas fa-clipboard-list"></i> דרישות נוספות: ${order.additionalRequirements}</span>
-                <span><i class="fas fa-user"></i> איש קשר: ${order.contactName}</span>
-                <span><i class="fas fa-envelope"></i> אימייל: ${order.contactEmail}</span>
-                <span><i class="fas fa-phone"></i> טלפון: ${order.contactPhone}</span>
-            </div>
-            <div class="order-date"><i class="far fa-clock"></i> תאריך הזמנה: ${new Date(parseInt(orderId)).toLocaleDateString('he-IL')}</div>
-            <div class="order-actions">
-                <button class="action-btn share-btn" onclick="shareOrder('${orderId}')">
-                    <i class="fas fa-share-alt"></i> שתף
-                </button>
-                <button class="action-btn edit-btn" onclick="editOrder('${orderId}')">
-                    <i class="fas fa-edit"></i> ערוך
-                </button>
-                <button class="action-btn delete-btn" onclick="deleteOrder('${orderId}')">
-                    <i class="fas fa-trash-alt"></i> מחק
-                </button>
-            </div>
+    let orderDetails = '';
+    if (order.brightness) {
+        // This is a lighting order
+        orderDetails = `
+            <span><i class="fas fa-sun"></i> בהירות: ${order.brightness}</span>
+            <span><i class="fas fa-temperature-low"></i> טמפרטורת צבע: ${order['color-temperature']}</span>
+            <span><i class="fas fa-building"></i> שם החברה: ${order['company-name']}</span>
+            <span><i class="fas fa-user"></i> שם לקוח: ${order['customer-name']}</span>
+            <span><i class="fas fa-envelope"></i> אימייל לקוח: ${order['customer-email']}</span>
+            <span><i class="fas fa-phone"></i> טלפון לקוח: ${order['customer-phone']}</span>
+            <span><i class="fas fa-lightbulb"></i> דימור: ${order.dimming}</span>
+            <span><i class="fas fa-tachometer-alt"></i> דירוג IP: ${order['ip-rating']}</span>
+            <span><i class="fas fa-palette"></i> צבע LED: ${order['led-color']}</span>
+            <span><i class="fas fa-ruler"></i> אורך: ${order.length}</span>
         `;
-
-        return orderCard;
+    } else {
+        // This is a regular product order
+        orderDetails = `
+            <span><i class="fas fa-tag"></i> קטגוריה: ${order.productCategory}</span>
+            <span><i class="fas fa-info-circle"></i> תיאור: ${order.productDescription}</span>
+            <span><i class="fas fa-cube"></i> חומרי גלם: ${order.productMaterials}</span>
+            <span><i class="fas fa-box"></i> כמות: ${order.productQuantity}</span>
+            <span><i class="fas fa-dollar-sign"></i> מחיר משוער: ${order.estimatedPrice}</span>
+            <span><i class="fas fa-calendar-alt"></i> תאריך אספקה: ${order.deliveryDate}</span>
+            <span><i class="fas fa-clipboard-list"></i> דרישות נוספות: ${order.additionalRequirements}</span>
+            <span><i class="fas fa-user"></i> איש קשר: ${order.contactName}</span>
+            <span><i class="fas fa-envelope"></i> אימייל: ${order.contactEmail}</span>
+            <span><i class="fas fa-phone"></i> טלפון: ${order.contactPhone}</span>
+        `;
     }
+
+    orderCard.innerHTML = `
+        <div class="order-number">#${orderNumber}</div>
+        <div class="order-title">${order.productName || 'הזמנה חדשה'}</div>
+        <div class="order-details">
+            ${orderDetails}
+        </div>
+        <div class="order-date"><i class="far fa-clock"></i> תאריך הזמנה: ${new Date(parseInt(orderId)).toLocaleDateString('he-IL')}</div>
+        <div class="order-actions">
+            <button class="action-btn share-btn" onclick="shareOrder('${orderId}')">
+                <i class="fas fa-share-alt"></i> שתף
+            </button>
+            <button class="action-btn edit-btn" onclick="editOrder('${orderId}')">
+                <i class="fas fa-edit"></i> ערוך
+            </button>
+            <button class="action-btn delete-btn" onclick="deleteOrder('${orderId}')">
+                <i class="fas fa-trash-alt"></i> מחק
+            </button>
+        </div>
+    `;
+
+    return orderCard;
+}
+
 
     function showNotification(message) {
         const notification = document.createElement('div');
