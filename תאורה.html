@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPI - הזמנת לדים גמישים וגופי תאורה חדשניים</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-storage-compat.js"></script>
+    <style>
+        :root {
+            --primary-color: #6C63FF;
+            --secondary-color: #4CAF50;
+            --background-color: #F0F2F5;
+            --text-color: #333;
+            --light-text: #fff;
+            --card-bg: #fff;
+            --input-bg: #E8E8E8;
+            --input-border: #D1D1D1;
+            --hover-color: #5A52D5;
+            --error-color: #FF5252;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            direction: rtl;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: var(--light-text);
+            padding: 20px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--light-text);
+            text-decoration: none;
+            letter-spacing: 1px;
+        }
+
+        main {
+            margin-top: 100px;
+            padding: 20px;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--light-text);
+            text-align: center;
+            padding: 100px 0;
+            margin-bottom: 60px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 80%);
+            animation: pulse 15s linear infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: translate(0, 0);
+            }
+            100% {
+                transform: translate(50%, 50%);
+            }
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            margin-bottom: 30px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .order-form {
+            background-color: var(--card-bg);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 60px;
+            transition: transform 0.3s ease;
+        }
+
+        .order-form:hover {
+            transform: translateY(-5px);
+        }
+
+        .form-title {
+            font-size: 2.2rem;
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .form-title::after {
+            content: '';
+            display: block;
+            width: 50px;
+            height: 3px;
+            background-color: var(--secondary-color);
+            margin: 10px auto 0;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-color);
+            transition: color 0.3s ease;
+        }
+
+        .form-group:focus-within label {
+            color: var(--primary-color);
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="email"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--input-border);
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background-color: var(--input-bg);
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        input[type="email"]:focus,
+        select:focus,
+        textarea:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.2);
+            outline: none;
+        }
+
+        textarea {
+            height: 120px;
+            resize: vertical;
+        }
+
+        .color-picker {
+            display: flex;
+            align-items: center;
+        }
+
+        .color-preview {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+            border: 2px solid var(--input-border);
+            transition: transform 0.3s ease;
+        }
+
+        .color-preview:hover {
+            transform: scale(1.1);
+        }
+
+        .file-upload {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .file-upload-btn {
+            background-color: var(--secondary-color);
+            color: var(--light-text);
+            padding: 12px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            margin-bottom: 10px;
+            border: none;
+        }
+
+        .file-upload-btn:hover {
+            background-color: #45a049;
+            transform: translateY(-2px);
+        }
+
+        .file-upload input[type="file"] {
+            display: none;
+        }
+
+        .image-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .image-preview img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 2px solid var(--input-border);
+            transition: transform 0.3s ease;
+        }
+
+        .image-preview img:hover {
+            transform: scale(1.05);
+        }
+
+        .submit-btn {
+            background-color: var(--primary-color);
+            color: var(--light-text);
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            width: 100%;
+            margin-top: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: all 0.6s;
+        }
+
+        .submit-btn:hover::before {
+            left: 100%;
+        }
+
+        .submit-btn:hover {
+            background-color: var(--hover-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            margin-right: 5px;
+            cursor: pointer;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            right: 50%;
+            margin-right: -100px;
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s;
+            transform: translateY(10px);
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .order-form {
+                padding: 30px;
+            }
+        }
+
+        .profile-container {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .profile-picture {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 3px solid var(--primary-color);
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            object-fit: cover;
+        }
+
+        .profile-picture:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .profile-menu {
+            display: none;
+            position: absolute;
+            bottom: 70px;
+            left: 0;
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            width: 250px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .profile-menu.show {
+            display: block;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .profile-menu-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .profile-menu-picture {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 10px;
+            object-fit: cover;
+        }
+
+        .profile-menu-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .profile-menu-email {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .profile-menu-button {
+            background-color: var(--primary-color);
+            color: var(--light-text);
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .profile-menu-button:hover {
+            background-color: var(--hover-color);
+            transform: translateY(-2px);
+        }
+
+        #logout-button {
+            background-color: var(--error-color);
+        }
+
+        #logout-button:hover {
+            background-color: #FF3333;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <a href="#" class="logo">GPI - תאורה חדשנית</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <section class="hero-section">
+                <h1 class="hero-title">עיצוב התאורה של המחר, היום</h1>
+                <p class="hero-subtitle">צור פתרונות תאורה מהפכניים עם הטכנולוגיה המתקדמת ביותר של לדים גמישים וגופי תאורה חכמים</p>
+            </section>
+
+            <form class="order-form" id="led-order-form">
+                <h2 class="form-title">עצב את החזון שלך</h2>
+                
+                <div class="form-group">
+                    <label for="product-type">סוג המוצר</label>
+                    <select id="product-type" name="product-type" required>
+                        <option value="">בחר סוג מוצר</option>
+                        <option value="flexible-led">לד גמיש חדשני</option>
+                        <option value="smart-strip">רצועת לד חכמה</option>
+                        <option value="custom-fixture">גוף תאורה מותאם אישית</option>
+                        <option value="interactive-light">תאורה אינטראקטיבית</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="led-color">צבע הלד</label>
+                    <div class="color-picker">
+                        <input type="color" id="led-color" name="led-color" required>
+                        <div class="color-preview" id="color-preview"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="color-temperature">טמפרטורת צבע (קלווין)</label>
+                    <input type="range" id="color-temperature" name="color-temperature" min="2000" max="6500" step="100" value="4000">
+                    <output for="color-temperature" id="color-temp-output">4000K</output>
+                    <div class="tooltip">?
+                        <span class="tooltiptext">טמפרטורת הצבע נעה בין 2000K (חם) ל-6500K (קר)</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="brightness">עוצמת הארה (לומן למטר)</label>
+                    <input type="number" id="brightness" name="brightness" min="100" max="3000" step="50" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="length">אורך (מטרים)</label>
+                    <input type="number" id="length" name="length" min="0.1" max="100" step="0.1" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="width">רוחב (מילימטרים)</label>
+                    <input type="number" id="width" name="width" min="1" max="1000" step="1" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="ip-rating">דירוג IP (אטימות)</label>
+                    <select id="ip-rating" name="ip-rating" required>
+                        <option value="">בחר דירוג IP</option>
+                        <option value="IP20">IP20 - לשימוש פנימי</option>
+                        <option value="IP44">IP44 - עמיד לרסס מים</option>
+                        <option value="IP65">IP65 - עמיד למים ואבק</option>
+                        <option value="IP67">IP67 - עמיד לטבילה זמנית במים</option>
+                        <option value="IP68">IP68 - עמיד לטבילה ממושכת במים</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="power-supply">סוג ספק כוח</label>
+                    <select id="power-supply" name="power-supply" required>
+                        <option value="">בחר סוג ספק כוח</option>
+                        <option value="12V">12V DC</option>
+                        <option value="24V">24V DC</option>
+                        <option value="48V">48V DC</option>
+                        <option value="AC">AC (ישיר לרשת החשמל)</option>
+                        <option value="Battery">סוללה נטענת</option>
+                        <option value="Solar">פאנל סולארי</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="dimming">אפשרויות בקרה</label>
+                    <select id="dimming" name="dimming" required multiple>
+                        <option value="none">ללא בקרה</option>
+                        <option value="0-10V">עמעום 0-10V</option>
+                        <option value="DALI">פרוטוקול DALI</option>
+                        <option value="DMX">בקרת DMX</option>
+                        <option value="Bluetooth">שליטה דרך Bluetooth</option>
+                        <option value="WiFi">בקרה דרך WiFi</option>
+                        <option value="Voice">שליטה קולית</option>
+                        <option value="Motion">חיישן תנועה</option>
+                        <option value="Daylight">חיישן אור יום</option>
+                    </select>
+                    <div class="tooltip">?
+                        <span class="tooltiptext">ניתן לבחור מספר אפשרויות בקרה</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="mounting">שיטת התקנה</label>
+                    <select id="mounting" name="mounting" required>
+                        <option value="">בחר שיטת התקנה</option>
+                        <option value="adhesive">סרט דביק</option>
+                        <option value="clips">קליפסים</option>
+                        <option value="channel">תעלת אלומיניום</option>
+                        <option value="magnetic">מגנטי</option>
+                        <option value="custom">התקנה מותאמת אישית</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="quantity">כמות</label>
+                    <input type="number" id="quantity" name="quantity" min="1" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="special-requirements">דרישות מיוחדות או רעיונות חדשניים</label>
+                    <textarea id="special-requirements" name="special-requirements" placeholder="ספר לנו על הרעיונות היצירתיים שלך..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="project-images">תמונות השראה או סקיצות של הפרויקט</label>
+                    <div class="file-upload">
+                        <label for="project-images" class="file-upload-btn">העלה תמונות</label>
+                        <input type="file" id="project-images" name="project-images" accept="image/*" multiple>
+                        <div class="image-preview" id="image-preview"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="customer-name">שם מלא</label>
+                    <input type="text" id="customer-name" name="customer-name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="customer-email">כתובת אימייל</label>
+                    <input type="email" id="customer-email" name="customer-email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="customer-phone">מספר טלפון</label>
+                    <input type="tel" id="customer-phone" name="customer-phone" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="company-name">שם החברה (אופציונלי)</label>
+                    <input type="text" id="company-name" name="company-name">
+                </div>
+
+                <button type="submit" class="submit-btn">שלח בקשה להצעה חדשנית</button>
+            </form>
+        </div>
+    </main>
+
+    <div class="profile-container">
+        <img src="default-profile.png" alt="תמונת פרופיל" class="profile-picture" id="profile-picture">
+        <div class="profile-menu" id="profile-menu">
+            <div class="profile-menu-header">
+                <img src="default-profile.png" alt="תמונת פרופיל" class="profile-menu-picture" id="profile-menu-picture">
+                <div class="profile-menu-name" id="profile-menu-name">שם המשתמש</div>
+            </div>
+            <div class="profile-menu-email" id="profile-menu-email">user@example.com</div>
+            <button class="profile-menu-button" id="profile-button">הפרופיל שלי</button>
+            <button class="profile-menu-button" id="orders-button">הפרויקטים שלי</button>
+            <button class="profile-menu-button" id="settings-button">הגדרות</button>
+            <button class="profile-menu-button" id="logout-button">התנתק</button>
+        </div>
+    </div>
+
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAaOp49avUlLknLkGzskeCPCk9xPOAeMUE",
+            authDomain: "gpi0-d1e6d.firebaseapp.com",
+            databaseURL: "https://gpi0-d1e6d-default-rtdb.firebaseio.com",
+            projectId: "gpi0-d1e6d",
+            storageBucket: "gpi0-d1e6d.appspot.com",
+            messagingSenderId: "138797690477",
+            appId: "1:138797690477:web:5d04dd40ed2a577dbed964",
+            measurementId: "G-DP0JJ2FX3D"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        const auth = firebase.auth();
+        const database = firebase.database();
+        const storage = firebase.storage();
+
+        // Check if user is logged in
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                updateProfileUI(user);
+            } else {
+                window.location.href = "login.html";
+            }
+        });
+
+        // Update profile UI
+        function updateProfileUI(user) {
+            const profilePicture = document.getElementById('profile-picture');
+            const profileMenuPicture = document.getElementById('profile-menu-picture');
+            const profileMenuName = document.getElementById('profile-menu-name');
+            const profileMenuEmail = document.getElementById('profile-menu-email');
+
+            profilePicture.src = user.photoURL || 'default-profile.png';
+            profileMenuPicture.src = user.photoURL || 'default-profile.png';
+            profileMenuName.textContent = user.displayName || 'משתמש';
+            profileMenuEmail.textContent = user.email || '';
+
+            // Pre-fill customer info in the form
+            document.getElementById('customer-name').value = user.displayName || '';
+            document.getElementById('customer-email').value = user.email || '';
+        }
+
+        // Toggle profile menu
+        document.getElementById('profile-picture').addEventListener('click', () => {
+            document.getElementById('profile-menu').classList.toggle('show');
+        });
+
+        // Close profile menu when clicking outside
+        document.addEventListener('click', (event) => {
+            const profileMenu = document.getElementById('profile-menu');
+            const profilePicture = document.getElementById('profile-picture');
+            if (!profileMenu.contains(event.target) && event.target !== profilePicture) {
+                profileMenu.classList.remove('show');
+            }
+        });
+
+        // Logout functionality
+        document.getElementById('logout-button').addEventListener('click', () => {
+            auth.signOut().then(() => {
+                window.location.href = "login.html";
+            }).catch((error) => {
+                console.error("Error signing out:", error);
+            });
+        });
+
+        // Color picker functionality
+        const colorPicker = document.getElementById('led-color');
+        const colorPreview = document.getElementById('color-preview');
+
+        colorPicker.addEventListener('input', (e) => {
+            colorPreview.style.backgroundColor = e.target.value;
+        });
+
+        // Color temperature range functionality
+        const colorTempRange = document.getElementById('color-temperature');
+        const colorTempOutput = document.getElementById('color-temp-output');
+
+        colorTempRange.addEventListener('input', (e) => {
+            colorTempOutput.textContent = `${e.target.value}K`;
+        });
+
+        // Image preview functionality
+        const imageInput = document.getElementById('project-images');
+        const imagePreview = document.getElementById('image-preview');
+
+        imageInput.addEventListener('change', function(e) {
+            imagePreview.innerHTML = '';
+            for (const file of this.files) {
+                const img = document.createElement('img');
+                img.src = URL.createObjectURL(file);
+                img.onload = function() {
+                    URL.revokeObjectURL(this.src);
+                }
+                imagePreview.appendChild(img);
+            }
+        });
+
+        // Form submission
+        document.getElementById('led-order-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const user = auth.currentUser;
+            if (!user) {
+                alert('יש להתחבר כדי לשלוח בקשה');
+                return;
+            }
+
+            const formData = new FormData(e.target);
+            const orderData = Object.fromEntries(formData.entries());
+
+            // Add user ID to order data
+            orderData.userId = user.uid;
+
+            // Generate a unique order ID
+            const orderId = database.ref().child('orders').push().key;
+
+            // Upload images if any
+            const imageUrls = [];
+            const imageFiles = formData.getAll('project-images');
+            for (const file of imageFiles) {
+                if (file.size > 0) {
+                    const imageRef = storage.ref(`order-images/${orderId}/${file.name}`);
+                    await imageRef.put(file);
+                    const imageUrl = await imageRef.getDownloadURL();
+                    imageUrls.push(imageUrl);
+                }
+            }
+            orderData.projectImages = imageUrls;
+
+            // Save order data to Firebase
+            database.ref('orders/' + orderId).set(orderData)
+                .then(() => {
+                    alert('הבקשה נשלחה בהצלחה! צוות המומחים שלנו יצור איתך קשר בקרוב עם רעיונות חדשניים והצעת מחיר.');
+                    e.target.reset();
+                    imagePreview.innerHTML = '';
+                })
+                .catch((error) => {
+                    console.error("Error saving order:", error);
+                    alert('אירעה שגיאה בשליחת הבקשה. אנא נסה שנית מאוחר יותר.');
+                });
+        });
+    </script>
+</body>
+</html>
