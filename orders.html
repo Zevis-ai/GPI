@@ -1,5 +1,5 @@
-<html><head><base href="https://zevis-ai.github.io/GPI/orders.html">
-<html lang="he" dir="rtl">
+<!DOCTYPE html>
+<html lang="he">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,67 +7,307 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2ecc71;
+            --accent-color: #e74c3c;
+            --background-color: #f0f4f8;
+            --text-color: #2c3e50;
+            --card-background: #ffffff;
+        }
+
         body {
             font-family: 'Heebo', sans-serif;
-            background-color: #f0f0f0;
+            background-color: var(--background-color);
             margin: 0;
             padding: 0;
-            color: #333;
+            color: var(--text-color);
         }
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
         }
-        h1 {
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 30px 0;
             text-align: center;
-            color: #2c3e50;
+            border-radius: 0 0 30px 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         }
-        .order-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
         }
-        .order-card {
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            padding: 20px;
+
+        .user-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
             transition: transform 0.3s ease;
         }
-        .order-card:hover {
-            transform: translateY(-5px);
+
+        .user-avatar:hover {
+            transform: scale(1.05);
         }
-        .order-title {
-            font-size: 1.2em;
+
+        .user-name {
+            font-size: 2.5em;
             font-weight: bold;
-            margin-bottom: 10px;
-            color: #3498db;
+            margin-right: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
         }
+
+        h1 {
+            margin: 0;
+            font-size: 3em;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .order-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .order-card {
+            background-color: var(--card-background);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .order-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .order-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 8px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        }
+
+        .order-title {
+            font-size: 1.6em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+
         .order-detail {
-            margin-bottom: 5px;
+            margin-bottom: 15px;
+            font-size: 1em;
+            display: flex;
+            align-items: center;
         }
+
+        .order-detail i {
+            margin-left: 10px;
+            color: var(--secondary-color);
+        }
+
         .order-detail strong {
             font-weight: 500;
+            color: var(--text-color);
+            margin-left: 5px;
         }
+
         .no-orders {
             text-align: center;
-            font-size: 1.2em;
+            font-size: 1.4em;
             color: #777;
             margin-top: 50px;
+            background-color: var(--card-background);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
         }
-        @media (max-width: 600px) {
+
+        .order-status {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 8px 15px;
+            border-radius: 25px;
+            font-size: 0.9em;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .status-pending {
+            background-color: #f1c40f;
+            color: #34495e;
+        }
+
+        .status-processing {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .status-completed {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .order-icon {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        .order-actions {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
+        .order-action-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .edit-btn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .cancel-btn {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .order-action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .order-progress {
+            margin-top: 20px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            transition: width 0.5s ease;
+        }
+
+        .order-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .stat-card {
+            background-color: var(--card-background);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            flex: 1;
+            margin: 0 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: var(--text-color);
+            margin-top: 5px;
+        }
+
+        #orderChart {
+            margin-top: 40px;
+            background-color: var(--card-background);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        @media (max-width: 768px) {
             .order-list {
                 grid-template-columns: 1fr;
+            }
+            .user-profile {
+                flex-direction: column;
+            }
+            .user-name {
+                margin-right: 0;
+                margin-top: 15px;
+            }
+            .order-stats {
+                flex-direction: column;
+            }
+            .stat-card {
+                margin: 10px 0;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="header">
+        <div class="user-profile">
+            <img id="user-avatar" class="user-avatar" src="https://via.placeholder.com/120" alt="תמונת פרופיל">
+            <div id="user-name" class="user-name">שם המשתמש</div>
+        </div>
         <h1>ההזמנות שלי</h1>
+    </div>
+    <div class="container">
+        <div class="order-stats">
+            <div class="stat-card">
+                <div class="stat-value" id="totalOrders">0</div>
+                <div class="stat-label">סה"כ הזמנות</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="pendingOrders">0</div>
+                <div class="stat-label">הזמנות בהמתנה</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="completedOrders">0</div>
+                <div class="stat-label">הזמנות שהושלמו</div>
+            </div>
+        </div>
+        <canvas id="orderChart"></canvas>
         <div id="order-list" class="order-list">
             <!-- Orders will be dynamically inserted here -->
         </div>
@@ -88,19 +328,42 @@
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
+        const storage = firebase.storage();
 
         // Check if user is logged in
         auth.onAuthStateChanged(user => {
             if (user) {
+                loadUserProfile(user);
                 loadUserOrders(user.uid);
             } else {
                 window.location.href = "https://zevis-ai.github.io/GPI/login.html";
             }
         });
 
+        function loadUserProfile(user) {
+            const userNameElement = document.getElementById('user-name');
+            const userAvatarElement = document.getElementById('user-avatar');
+
+            // Set user name
+            userNameElement.textContent = user.displayName || 'משתמש';
+
+            // Set user avatar
+            if (user.photoURL) {
+                userAvatarElement.src = user.photoURL;
+            } else {
+                // If no photo URL, use default avatar or initials
+                const initials = (user.displayName || 'משתמש').charAt(0).toUpperCase();
+                userAvatarElement.src = `https://ui-avatars.com/api/?name=${initials}&background=random&color=fff&size=120`;
+            }
+        }
+
         function loadUserOrders(userId) {
             const orderList = document.getElementById('order-list');
             orderList.innerHTML = ''; // Clear existing content
+
+            let totalOrders = 0;
+            let pendingOrders = 0;
+            let completedOrders = 0;
 
             db.collection('orders').where('userId', '==', userId).get()
                 .then((querySnapshot) => {
@@ -111,7 +374,20 @@
                             const order = doc.data();
                             const orderCard = createOrderCard(order);
                             orderList.appendChild(orderCard);
+
+                            // Update stats
+                            totalOrders++;
+                            if (order.status === 'pending') pendingOrders++;
+                            if (order.status === 'completed') completedOrders++;
                         });
+
+                        // Update stats display
+                        document.getElementById('totalOrders').textContent = totalOrders;
+                        document.getElementById('pendingOrders').textContent = pendingOrders;
+                        document.getElementById('completedOrders').textContent = completedOrders;
+
+                        // Create chart
+                        createOrderChart(pendingOrders, totalOrders - pendingOrders - completedOrders, completedOrders);
                     }
                 })
                 .catch((error) => {
@@ -123,20 +399,86 @@
         function createOrderCard(order) {
             const card = document.createElement('div');
             card.className = 'order-card';
+            
+            // Determine order status and icon
+            let statusClass, statusText, icon;
+            switch(order.status) {
+                case 'pending':
+                    statusClass = 'status-pending';
+                    statusText = 'ממתין';
+                    icon = 'fa-clock';
+                    break;
+                case 'processing':
+                    statusClass = 'status-processing';
+                    statusText = 'בטיפול';
+                    icon = 'fa-cog';
+                    break;
+                case 'completed':
+                    statusClass = 'status-completed';
+                    statusText = 'הושלם';
+                    icon = 'fa-check-circle';
+                    break;
+                default:
+                    statusClass = 'status-pending';
+                    statusText = 'ממתין';
+                    icon = 'fa-question-circle';
+            }
+
+            const progress = order.status === 'completed' ? 100 : (order.status === 'processing' ? 50 : 0);
+
             card.innerHTML = `
+                <div class="order-status ${statusClass}">${statusText}</div>
+                <div class="order-icon"><i class="fas ${icon}"></i></div>
                 <div class="order-title">${order.productName}</div>
-                <div class="order-detail"><strong>קטגוריה:</strong> ${order.productCategory}</div>
-                <div class="order-detail"><strong>תיאור:</strong> ${order.productDescription}</div>
-                <div class="order-detail"><strong>חומרים:</strong> ${order.productMaterials}</div>
-                <div class="order-detail"><strong>כמות:</strong> ${order.productQuantity}</div>
-                <div class="order-detail"><strong>מחיר משוער:</strong> ${order.estimatedPrice}</div>
-                <div class="order-detail"><strong>תאריך אספקה:</strong> ${order.deliveryDate}</div>
-                <div class="order-detail"><strong>דרישות נוספות:</strong> ${order.additionalRequirements}</div>
-                <div class="order-detail"><strong>שם איש קשר:</strong> ${order.contactName}</div>
-                <div class="order-detail"><strong>אימייל:</strong> ${order.contactEmail}</div>
-                <div class="order-detail"><strong>טלפון:</strong> ${order.contactPhone}</div>
+                <div class="order-detail"><i class="fas fa-tag"></i><strong>קטגוריה:</strong> ${order.productCategory}</div>
+                <div class="order-detail"><i class="fas fa-info-circle"></i><strong>תיאור:</strong> ${order.productDescription}</div>
+                <div class="order-detail"><i class="fas fa-cube"></i><strong>חומרים:</strong> ${order.productMaterials}</div>
+                <div class="order-detail"><i class="fas fa-calculator"></i><strong>כמות:</strong> ${order.productQuantity}</div>
+                <div class="order-detail"><i class="fas fa-shekel-sign"></i><strong>מחיר משוער:</strong> ${order.estimatedPrice}</div>
+                <div class="order-detail"><i class="fas fa-calendar-alt"></i><strong>תאריך אספקה:</strong> ${order.deliveryDate}</div>
+                <div class="order-detail"><i class="fas fa-clipboard-list"></i><strong>דרישות נוספות:</strong> ${order.additionalRequirements}</div>
+                <div class="order-detail"><i class="fas fa-user"></i><strong>שם איש קשר:</strong> ${order.contactName}</div>
+                <div class="order-detail"><i class="fas fa-envelope"></i><strong>אימייל:</strong> ${order.contactEmail}</div>
+                <div class="order-detail"><i class="fas fa-phone"></i><strong>טלפון:</strong> ${order.contactPhone}</div>
+                <div class="order-progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${progress}%"></div>
+                    </div>
+                </div>
+                <div class="order-actions">
+                    <button class="order-action-btn edit-btn">עריכה</button>
+                    <button class="order-action-btn cancel-btn">ביטול</button>
+                </div>
             `;
             return card;
+        }
+
+        function createOrderChart(pending, processing, completed) {
+            const ctx = document.getElementById('orderChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['ממתין', 'בטיפול', 'הושלם'],
+                    datasets: [{
+                        data: [pending, processing, completed],
+                        backgroundColor: ['#f1c40f', '#3498db', '#2ecc71'],
+                        borderColor: ['#f39c12', '#2980b9', '#27ae60'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: 'סטטוס הזמנות'
+                        }
+                    }
+                }
+            });
         }
     </script>
 </body>
