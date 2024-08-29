@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,100 +12,135 @@
     <style>
         body {
             font-family: 'Rubik', sans-serif;
-            background-color: #f0f0f0;
+            background-color: #f4f6f9;
             margin: 0;
             padding: 0;
             direction: rtl;
+            color: #333;
         }
+
         .container {
-            max-width: 1000px;
-            margin: 0 auto;
+            max-width: 1200px;
+            margin: 40px auto;
             padding: 20px;
             background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
+
         header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background-color: #333;
+            background-color: #2a3f54;
             color: white;
-            padding: 10px 20px;
-            border-radius: 8px 8px 0 0;
+            padding: 15px 20px;
+            border-radius: 12px 12px 0 0;
         }
+
         header img {
             border-radius: 50%;
             width: 50px;
             height: 50px;
             border: 2px solid white;
         }
+
         header h2 {
             margin: 0;
         }
+
         .menu {
             display: flex;
-            gap: 15px;
+            gap: 20px;
         }
+
         .menu a {
             color: white;
             text-decoration: none;
-            font-weight: bold;
+            font-weight: 500;
+            transition: color 0.3s;
         }
+
+        .menu a:hover {
+            color: #ffa726;
+        }
+
         .search-bar {
-            margin: 20px 0;
+            margin: 30px 0;
             display: flex;
             justify-content: space-between;
+            align-items: center;
         }
+
         .search-bar input[type="text"] {
-            width: 70%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            width: 75%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
         }
+
         .search-bar button {
-            padding: 10px 20px;
-            background-color: #4CAF50;
+            padding: 12px 25px;
+            background-color: #ffa726;
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 8px;
+            font-size: 16px;
             cursor: pointer;
+            transition: background-color 0.3s;
         }
+
+        .search-bar button:hover {
+            background-color: #fb8c00;
+        }
+
         .order {
             background-color: #f9f9f9;
             border: 1px solid #ddd;
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 4px;
-            transition: transform 0.3s ease;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 8px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
+
         .order:hover {
-            transform: scale(1.02);
+            transform: scale(1.03);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
+
         .order-header {
-            font-weight: bold;
-            margin-bottom: 10px;
-            font-size: 1.1em;
+            font-weight: 500;
+            margin-bottom: 12px;
+            font-size: 1.3em;
             color: #333;
         }
+
         .order-detail {
-            margin-bottom: 5px;
+            margin-bottom: 8px;
             color: #555;
         }
+
         .order-status {
             font-weight: bold;
             color: #4CAF50;
         }
-        .no-orders, .loading, .error {
+
+        .no-orders,
+        .loading,
+        .error {
             text-align: center;
-            margin-top: 20px;
+            margin-top: 30px;
+            font-size: 18px;
         }
+
         .error {
             color: red;
             font-weight: bold;
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <header>
@@ -209,21 +245,21 @@
                 <div class="order-detail">הרכבה: ${order.mounting}</div>
                 <div class="order-detail">דרגת IP: ${order['ip-rating']}</div>
                 <div class="order-detail">ספק כוח: ${order['power-supply']}</div>
-                <div class="order-detail">דרישות מיוחדות: ${order['special-requirements']}</div>
-                <div class="order-detail">שם חברה: ${order['company-name']}</div>
+                <div class="order-detail">דרישות מיוחדות: ${order['special-requirements'] || 'אין'}</div>
+                <div class="order-status">סטטוס: ${order.status || 'בהמתנה'}</div>
             `;
             return orderDiv;
         }
 
         function searchOrders() {
-            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const searchInput = document.getElementById('search-input').value.toLowerCase();
             const ordersContainer = document.getElementById('orders-container');
-            const orders = ordersContainer.querySelectorAll('.order');
+            const orders = ordersContainer.getElementsByClassName('order');
 
-            orders.forEach(order => {
+            Array.from(orders).forEach(order => {
                 const orderText = order.textContent.toLowerCase();
-                if (orderText.includes(searchTerm)) {
-                    order.style.display = '';
+                if (orderText.includes(searchInput)) {
+                    order.style.display = 'block';
                 } else {
                     order.style.display = 'none';
                 }
@@ -232,3 +268,4 @@
     </script>
 </body>
 </html>
+
