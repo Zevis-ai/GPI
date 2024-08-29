@@ -52,13 +52,13 @@
             color: #666;
             font-style: italic;
         }
-        .loading {
+        .loading, .error {
             text-align: center;
             margin-top: 20px;
         }
         .error {
             color: red;
-            text-align: center;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -67,7 +67,7 @@
         <h1>ההזמנות שלי</h1>
         <div id="loading" class="loading">טוען הזמנות...</div>
         <div id="orders-container"></div>
-        <div id="error-message" class="error"></div>
+        <div id="error" class="error" style="display:none;">אירעה שגיאה בטעינת ההזמנות. אנא נסה שוב מאוחר יותר.</div>
     </div>
 
     <script>
@@ -97,41 +97,28 @@
 
         function loadUserOrders(userId) {
             const ordersRef = database.ref('orders').orderByChild('userId').equalTo(userId);
-            const productRequestsRef = database.ref('productRequests').orderByChild('userId').equalTo(userId);
-            const ordersContainer = document.getElementById('orders-container');
-            const loadingElement = document.getElementById('loading');
-            const errorMessage = document.getElementById('error-message');
+            ordersRef.on('value', (snapshot) => {
+                const ordersContainer = document.getElementById('orders-container');
+                const loadingElement = document.getElementById('loading');
+                const errorElement = document.getElementById('error');
 
-            let orderCount = 0;
+                loadingElement.style.display = 'none';
+                errorElement.style.display = 'none';
+                ordersContainer.innerHTML = '';
 
-            function handleSnapshot(snapshot, type) {
                 if (snapshot.exists()) {
                     snapshot.forEach((childSnapshot) => {
                         const order = childSnapshot.val();
-                        const orderElement = type === 'order'
-                            ? createOrderElement(order, childSnapshot.key)
-                            : createProductRequestElement(order, childSnapshot.key);
+                        const orderElement = createOrderElement(order, childSnapshot.key);
                         ordersContainer.appendChild(orderElement);
-                        orderCount++;
                     });
+                } else {
+                    ordersContainer.innerHTML = '<p class="no-orders">אין הזמנות להצגה כרגע.</p>';
                 }
-            }
-
-            ordersRef.on('value', (snapshot) => {
-                loadingElement.style.display = 'none';
-                ordersContainer.innerHTML = '';
-
-                try {
-                    handleSnapshot(snapshot, 'order');
-                    productRequestsRef.on('value', (snapshot) => {
-                        handleSnapshot(snapshot, 'productRequest');
-                        if (orderCount === 0) {
-                            ordersContainer.innerHTML = '<p class="no-orders">אין הזמנות להצגה כרגע.</p>';
-                        }
-                    });
-                } catch (error) {
-                    errorMessage.textContent = 'אירעה שגיאה בטעינת ההזמנות.';
-                }
+            }, (error) => {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('error').style.display = 'block';
+                console.error("Error loading orders:", error);
             });
         }
 
@@ -140,45 +127,24 @@
             orderDiv.className = 'order';
             orderDiv.innerHTML = `
                 <div class="order-header">הזמנה מספר: ${orderId}</div>
-                <div class="order-detail">תאריך: ${new Date(order.date).toLocaleDateString('he-IL')}</div>
-                <div class="order-detail">סטטוס: <span class="order-status">${order.status}</span></div>
-                <div class="order-detail">שם לקוח: ${order.customerName}</div>
-                <div class="order-detail">אימייל: ${order.customerEmail}</div>
-                <div class="order-detail">טלפון: ${order.customerPhone}</div>
-                <div class="order-detail">סוג מוצר: ${order.productType}</div>
+                <div class="order-detail">שם לקוח: ${order['customer-name']}</div>
+                <div class="order-detail">אימייל: ${order['customer-email']}</div>
+                <div class="order-detail">טלפון: ${order['customer-phone']}</div>
+                <div class="order-detail">סוג מוצר: ${order['product-type']}</div>
                 <div class="order-detail">כמות: ${order.quantity}</div>
                 <div class="order-detail">בהירות: ${order.brightness}</div>
-                <div class="order-detail">צבע LED: ${order.ledColor}</div>
-                <div class="order-detail">טמפרטורת צבע: ${order.colorTemperature}</div>
-                <div class="order-detail">דימר: ${order.dimming ? 'כן' : 'לא'}</div>
+                <div class="order-detail">צבע LED: ${order['led-color']}</div>
+                <div class="order-detail">טמפרטורת צבע: ${order['color-temperature']}</div>
+                <div class="order-detail">דימר: ${order.dimming}</div>
                 <div class="order-detail">אורך: ${order.length}</div>
+                <div class="order-detail">רוחב: ${order.width}</div>
                 <div class="order-detail">הרכבה: ${order.mounting}</div>
-                <div class="order-detail">דרגת IP: ${order.ipRating}</div>
-                <div class="order-detail">ספק כוח: ${order.powerSupply}</div>
-                <div class="order-detail">דרישות מיוחדות: ${order.specialRequirements}</div>
-                <div class="order-detail">שם חברה: ${order.companyName}</div>
+                <div class="order-detail">דרגת IP: ${order['ip-rating']}</div>
+                <div class="order-detail">ספק כוח: ${order['power-supply']}</div>
+                <div class="order-detail">דרישות מיוחדות: ${order['special-requirements']}</div>
+                <div class="order-detail">שם חברה: ${order['company-name']}</div>
             `;
             return orderDiv;
-        }
-
-        function createProductRequestElement(request, requestId) {
-            const requestDiv = document.createElement('div');
-            requestDiv.className = 'order';
-            requestDiv.innerHTML = `
-                <div class="order-header">בקשת מוצר מספר: ${requestId}</div>
-                <div class="order-detail">תאריך אספקה: ${new Date(request.deliveryDate).toLocaleDateString('he-IL')}</div>
-                <div class="order-detail">שם לקוח: ${request.contactName}</div>
-                <div class="order-detail">אימייל: ${request.contactEmail}</div>
-                <div class="order-detail">טלפון: ${request.contactPhone}</div>
-                <div class="order-detail">קטגוריה: ${request.productCategory}</div>
-                <div class="order-detail">כמות: ${request.productQuantity}</div>
-                <div class="order-detail">תיאור מוצר: ${request.productDescription}</div>
-                <div class="order-detail">חומרים: ${request.productMaterials}</div>
-                <div class="order-detail">שם מוצר: ${request.productName}</div>
-                <div class="order-detail">דרישות נוספות: ${request.additionalRequirements}</div>
-                <div class="order-detail">מחיר משוער: ${request.estimatedPrice}</div>
-            `;
-            return requestDiv;
         }
     </script>
 </body>
