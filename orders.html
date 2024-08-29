@@ -233,17 +233,31 @@
             });
         }
 
-        function createOrderElement(order, orderId) {
-            const orderDiv = document.createElement('div');
-            orderDiv.className = 'order';
-            orderDiv.innerHTML = `
-                <span class="order-id">הזמנה מספר: ${orderId}</span>
-                <span class="order-date">תאריך: ${new Date(order.date).toLocaleDateString('he-IL')}</span>
-                <span class="order-status ${getStatusClass(order.status)}">${getStatusText(order.status)}</span>
-                <p class="order-details">פרטי ההזמנה: ${order.details}</p>
-            `;
-            return orderDiv;
-        }
+       function createOrderElement(order, orderId) {
+    const orderDiv = document.createElement('div');
+    orderDiv.className = 'order';
+    orderDiv.innerHTML = `
+        <span class="order-id">הזמנה מספר: ${orderId}</span>
+        <span class="order-date">תאריך: ${new Date(order.date).toLocaleDateString('he-IL')}</span>
+        <span class="order-status ${getStatusClass(order.status)}">${getStatusText(order.status)}</span>
+        <p class="order-details">
+            <strong>שם המוצר:</strong> ${order.productName}<br>
+            <strong>קטגוריה:</strong> ${order.productCategory}<br>
+            <strong>תיאור:</strong> ${order.productDescription}<br>
+            <strong>חומרים:</strong> ${order.productMaterials}<br>
+            <strong>כמות:</strong> ${order.productQuantity}<br>
+            <strong>מחיר משוער:</strong> ${order.estimatedPrice}<br>
+            <strong>תאריך משלוח:</strong> ${new Date(order.deliveryDate).toLocaleDateString('he-IL')}<br>
+            <strong>דרישות נוספות:</strong> ${order.additionalRequirements}<br>
+            <strong>שם איש קשר:</strong> ${order.contactName}<br>
+            <strong>אימייל איש קשר:</strong> ${order.contactEmail}<br>
+            <strong>טלפון איש קשר:</strong> ${order.contactPhone}<br>
+        </p>
+        <button class="edit-order-button" data-order-id="${orderId}">ערוך הזמנה</button>
+    `;
+    return orderDiv;
+}
+
 
         function getStatusClass(status) {
             switch (status) {
