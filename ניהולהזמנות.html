@@ -733,7 +733,7 @@
         }, false);
     });
 
-   function createOrderCard(order, orderNumber, orderId) {
+ function createOrderCard(order, orderNumber, orderId) {
     const orderCard = document.createElement('div');
     orderCard.className = 'order-card';
 
@@ -925,45 +925,56 @@
         });
     }
 
-    function addNewOrder() {
-        const orderData = {
-            productName: document.getElementById('productName').value,
-            productCategory: document.getElementById('productCategory').value,
-            productDescription: document.getElementById('productDescription').value,
-            productMaterials: document.getElementById('productMaterials').value,
-            productQuantity: document.getElementById('productQuantity').value,
-            estimatedPrice: document.getElementById('estimatedPrice').value,
-            deliveryDate: document.getElementById('deliveryDate').value,
-            additionalRequirements: document.getElementById('additionalRequirements').value,
-            contactName: document.getElementById('contactName').value,
-            contactEmail: document.getElementById('contactEmail').value,
-            contactPhone: document.getElementById('contactPhone').value
-        };
+   function addNewOrder() {
+    const orderData = {
+        productName: document.getElementById('productName').value,
+        productCategory: document.getElementById('productCategory').value,
+        productDescription: document.getElementById('productDescription').value,
+        productMaterials: document.getElementById('productMaterials').value,
+        productQuantity: document.getElementById('productQuantity').value,
+        estimatedPrice: document.getElementById('estimatedPrice').value,
+        deliveryDate: document.getElementById('deliveryDate').value,
+        additionalRequirements: document.getElementById('additionalRequirements').value,
+        contactName: document.getElementById('contactName').value,
+        contactEmail: document.getElementById('contactEmail').value,
+        contactPhone: document.getElementById('contactPhone').value,
+        brightness: document.getElementById('brightness') ? document.getElementById('brightness').value : undefined,
+        'color-temperature': document.getElementById('colorTemperature') ? document.getElementById('colorTemperature').value : undefined,
+        'company-name': document.getElementById('companyName') ? document.getElementById('companyName').value : undefined,
+        'customer-name': document.getElementById('customerName') ? document.getElementById('customerName').value : undefined,
+        'customer-email': document.getElementById('customerEmail') ? document.getElementById('customerEmail').value : undefined,
+        'customer-phone': document.getElementById('customerPhone') ? document.getElementById('customerPhone').value : undefined,
+        dimming: document.getElementById('dimming') ? document.getElementById('dimming').value : undefined,
+        'ip-rating': document.getElementById('ipRating') ? document.getElementById('ipRating').value : undefined,
+        'led-color': document.getElementById('ledColor') ? document.getElementById('ledColor').value : undefined,
+        length: document.getElementById('length') ? document.getElementById('length').value : undefined
+    };
 
-        const editOrderId = document.getElementById('orderForm').dataset.editOrderId;
-        if (editOrderId) {
-            const orderRef = ref(database, `productRequests/${editOrderId}`);
-            set(orderRef, orderData).then(() => {
-                showNotification('ההזמנה עודכנה בהצלחה');
-                document.getElementById('orderModal').style.display = 'none';
-                document.getElementById('orderForm').reset();
-                delete document.getElementById('orderForm').dataset.editOrderId;
-            }).catch((error) => {
-                console.error('שגיאה בעדכון ההזמנה:', error);
-                showNotification('אירעה שגיאה בעדכון ההזמנה');
-            });
-        } else {
-            const newOrderRef = push(ref(database, 'productRequests'));
-            set(newOrderRef, orderData).then(() => {
-                showNotification('ההזמנה נוספה בהצלחה');
-                document.getElementById('orderModal').style.display = 'none';
-                document.getElementById('orderForm').reset();
-            }).catch((error) => {
-                console.error('שגיאה בהוספת ההזמנה:', error);
-                showNotification('אירעה שגיאה בהוספת ההזמנה');
-            });
-        }
+    const editOrderId = document.getElementById('orderForm').dataset.editOrderId;
+    if (editOrderId) {
+        const orderRef = ref(database, `productRequests/${editOrderId}`);
+        set(orderRef, orderData).then(() => {
+            showNotification('ההזמנה עודכנה בהצלחה');
+            document.getElementById('orderModal').style.display = 'none';
+            document.getElementById('orderForm').reset();
+            delete document.getElementById('orderForm').dataset.editOrderId;
+        }).catch((error) => {
+            console.error('שגיאה בעדכון ההזמנה:', error);
+            showNotification('אירעה שגיאה בעדכון ההזמנה');
+        });
+    } else {
+        const newOrderRef = push(ref(database, 'productRequests'));
+        set(newOrderRef, orderData).then(() => {
+            showNotification('ההזמנה נוספה בהצלחה');
+            document.getElementById('orderModal').style.display = 'none';
+            document.getElementById('orderForm').reset();
+        }).catch((error) => {
+            console.error('שגיאה בהוספת ההזמנה:', error);
+            showNotification('אירעה שגיאה בהוספת ההזמנה');
+        });
     }
+}
+
 
     function toggleSidebar() {
         document.querySelector('.sidebar').classList.toggle('active');
