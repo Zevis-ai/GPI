@@ -3,107 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>הזמנות שלי</title>
+    <title>דף הזמנות</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            direction: rtl;
-            text-align: right;
             background-color: #f4f4f4;
             margin: 0;
             padding: 0;
         }
         .container {
-            max-width: 1200px;
+            width: 80%;
             margin: 20px auto;
-            padding: 20px;
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-        h1 {
-            text-align: center;
-            color: #333;
-        }
-        .profile-info {
+        .profile {
             display: flex;
             align-items: center;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
             margin-bottom: 20px;
         }
-        .profile-info img {
+        .profile img {
             border-radius: 50%;
-            width: 100px;
-            height: 100px;
-            object-fit: cover;
+            width: 80px;
+            height: 80px;
             margin-right: 20px;
         }
-        .profile-info h2 {
-            margin: 0;
-            color: #555;
-        }
-        .orders-container {
-            margin-top: 20px;
+        .orders {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
         .order {
-            background: #f9f9f9;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            padding: 15px;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid #ddd;
+            padding: 10px 0;
         }
-        .order-id {
-            font-weight: bold;
-            color: #333;
-        }
-        .order-date {
-            color: #888;
-        }
-        .order-status {
-            font-weight: bold;
-            padding: 5px;
-            border-radius: 4px;
-        }
-        .status-pending {
-            background: #f0ad4e;
-            color: #fff;
-        }
-        .status-completed {
-            background: #5bc0de;
-            color: #fff;
-        }
-        .status-cancelled {
-            background: #d9534f;
-            color: #fff;
+        .order:last-child {
+            border-bottom: none;
         }
         .order-details {
-            margin-top: 10px;
+            font-size: 14px;
+            color: #555;
         }
         .no-orders {
             text-align: center;
-            color: #666;
+            font-size: 18px;
+            color: #888;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>הזמנות שלי</h1>
-        <div class="profile-info">
+        <div class="profile">
             <img id="profile-picture" src="default-profile.png" alt="Profile Picture">
             <div>
                 <h2 id="user-greeting">שלום, משתמש</h2>
-                <p id="user-email"></p>
+                <p id="user-email">email@example.com</p>
             </div>
         </div>
-        <div id="orders-container" class="orders-container">
-            <p id="loading">טוען הזמנות...</p>
-        </div>
+        <div id="loading">טוען...</div>
+        <div id="orders-container" class="orders"></div>
     </div>
-    <script src="https://www.gstatic.com/firebasejs/9.19.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.19.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.19.1/firebase-database.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+
+    <!-- Firebase App (core) SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.16.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.16.0/firebase-database.js"></script>
+
     <script>
+        // Your web app's Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyAaOp49avUlLknLkGzskeCPCk9xPOAeMUE",
             authDomain: "gpi0-d1e6d.firebaseapp.com",
@@ -115,6 +85,7 @@
             measurementId: "G-DP0JJ2FX3D"
         };
 
+        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
 
         const auth = firebase.auth();
@@ -122,13 +93,9 @@
 
         auth.onAuthStateChanged(user => {
             if (user) {
-                const profilePicture = document.getElementById('profile-picture');
-                const userGreeting = document.getElementById('user-greeting');
-                const userEmail = document.getElementById('user-email');
-
-                profilePicture.src = user.photoURL || 'default-profile.png';
-                userGreeting.textContent = `שלום, ${user.displayName || 'משתמש'}`;
-                userEmail.textContent = user.email;
+                document.getElementById('profile-picture').src = user.photoURL || 'default-profile.png';
+                document.getElementById('user-greeting').textContent = `שלום, ${user.displayName || 'משתמש'}`;
+                document.getElementById('user-email').textContent = user.email;
 
                 loadUserOrders(user.email);
             } else {
@@ -136,35 +103,27 @@
             }
         });
 
-        function loadUserOrders(userEmail) {
+        function loadUserOrders(email) {
             const ordersRef = database.ref('orders');
-            ordersRef.orderByChild('contactEmail').equalTo(userEmail).on('value', (snapshot) => {
+            ordersRef.orderByChild('contactEmail').equalTo(email).on('value', snapshot => {
                 const ordersContainer = document.getElementById('orders-container');
                 const loadingElement = document.getElementById('loading');
                 
                 loadingElement.style.display = 'none';
+                
                 ordersContainer.innerHTML = '';
 
                 const orders = [];
-                snapshot.forEach((childSnapshot) => {
+                snapshot.forEach(childSnapshot => {
                     orders.push({ key: childSnapshot.key, ...childSnapshot.val() });
                 });
 
                 if (orders.length === 0) {
                     ordersContainer.innerHTML = '<p class="no-orders">אין הזמנות להצגה כרגע.</p>';
                 } else {
-                    orders.forEach((order, index) => {
+                    orders.forEach(order => {
                         const orderElement = createOrderElement(order, order.key);
                         ordersContainer.appendChild(orderElement);
-                        
-                        anime({
-                            targets: orderElement,
-                            translateY: [50, 0],
-                            opacity: [0, 1],
-                            easing: 'easeOutExpo',
-                            duration: 1000,
-                            delay: index * 100
-                        });
                     });
                 }
             });
@@ -174,10 +133,8 @@
             const orderDiv = document.createElement('div');
             orderDiv.className = 'order';
             orderDiv.innerHTML = `
-                <span class="order-id">הזמנה מספר: ${orderId}</span>
-                <span class="order-date">תאריך: ${new Date(order.date).toLocaleDateString('he-IL')}</span>
-                <span class="order-status ${getStatusClass(order.status)}">${getStatusText(order.status)}</span>
-                <p class="order-details">
+                <div class="order-id">הזמנה מספר: ${orderId}</div>
+                <div class="order-details">
                     <strong>שם המוצר:</strong> ${order.productName}<br>
                     <strong>קטגוריה:</strong> ${order.productCategory}<br>
                     <strong>תיאור:</strong> ${order.productDescription}<br>
@@ -189,28 +146,9 @@
                     <strong>שם איש קשר:</strong> ${order.contactName}<br>
                     <strong>אימייל איש קשר:</strong> ${order.contactEmail}<br>
                     <strong>טלפון איש קשר:</strong> ${order.contactPhone}<br>
-                </p>
-                <button class="edit-order-button" data-order-id="${orderId}">ערוך הזמנה</button>
+                </div>
             `;
             return orderDiv;
-        }
-
-        function getStatusClass(status) {
-            switch (status) {
-                case 'pending': return 'status-pending';
-                case 'completed': return 'status-completed';
-                case 'cancelled': return 'status-cancelled';
-                default: return '';
-            }
-        }
-
-        function getStatusText(status) {
-            switch (status) {
-                case 'pending': return 'ממתין';
-                case 'completed': return 'הושלם';
-                case 'cancelled': return 'בוטל';
-                default: return status;
-            }
         }
     </script>
 </body>
