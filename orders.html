@@ -1,154 +1,142 @@
-<!DOCTYPE html>
-<html lang="he">
+<html><head><base href="https://zevis-ai.github.io/GPI/orders.html">
+<html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>דף הזמנות</title>
+    <title>ההזמנות שלי - GPI</title>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            font-family: 'Heebo', sans-serif;
+            background-color: #f0f0f0;
             margin: 0;
             padding: 0;
+            color: #333;
         }
         .container {
-            width: 80%;
-            margin: 20px auto;
-        }
-        .profile {
-            display: flex;
-            align-items: center;
-            background: #fff;
+            max-width: 1200px;
+            margin: 0 auto;
             padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        .order-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .order-card {
+            background-color: #fff;
             border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
-        .profile img {
-            border-radius: 50%;
-            width: 80px;
-            height: 80px;
-            margin-right: 20px;
-        }
-        .orders {
-            background: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
         }
-        .order {
-            border-bottom: 1px solid #ddd;
-            padding: 10px 0;
+        .order-card:hover {
+            transform: translateY(-5px);
         }
-        .order:last-child {
-            border-bottom: none;
+        .order-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #3498db;
         }
-        .order-details {
-            font-size: 14px;
-            color: #555;
+        .order-detail {
+            margin-bottom: 5px;
+        }
+        .order-detail strong {
+            font-weight: 500;
         }
         .no-orders {
             text-align: center;
-            font-size: 18px;
-            color: #888;
+            font-size: 1.2em;
+            color: #777;
+            margin-top: 50px;
+        }
+        @media (max-width: 600px) {
+            .order-list {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="profile">
-            <img id="profile-picture" src="default-profile.png" alt="Profile Picture">
-            <div>
-                <h2 id="user-greeting">שלום, משתמש</h2>
-                <p id="user-email">email@example.com</p>
-            </div>
+        <h1>ההזמנות שלי</h1>
+        <div id="order-list" class="order-list">
+            <!-- Orders will be dynamically inserted here -->
         </div>
-        <div id="loading">טוען...</div>
-        <div id="orders-container" class="orders"></div>
     </div>
 
-    <!-- Firebase App (core) SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.16.0/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.16.0/firebase-database.js"></script>
-
     <script>
-        // Your web app's Firebase configuration
+        // Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyAaOp49avUlLknLkGzskeCPCk9xPOAeMUE",
             authDomain: "gpi0-d1e6d.firebaseapp.com",
-            databaseURL: "https://gpi0-d1e6d-default-rtdb.firebaseio.com",
             projectId: "gpi0-d1e6d",
             storageBucket: "gpi0-d1e6d.appspot.com",
             messagingSenderId: "138797690477",
-            appId: "1:138797690477:web:5d04dd40ed2a577dbed964",
-            measurementId: "G-DP0JJ2FX3D"
+            appId: "1:138797690477:web:5d04dd40ed2a577dbed964"
         };
 
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
-
         const auth = firebase.auth();
-        const database = firebase.database();
+        const db = firebase.firestore();
 
+        // Check if user is logged in
         auth.onAuthStateChanged(user => {
             if (user) {
-                document.getElementById('profile-picture').src = user.photoURL || 'default-profile.png';
-                document.getElementById('user-greeting').textContent = `שלום, ${user.displayName || 'משתמש'}`;
-                document.getElementById('user-email').textContent = user.email;
-
-                loadUserOrders(user.email);
+                loadUserOrders(user.uid);
             } else {
                 window.location.href = "https://zevis-ai.github.io/GPI/login.html";
             }
         });
 
-        function loadUserOrders(email) {
-            const ordersRef = database.ref('orders');
-            ordersRef.orderByChild('contactEmail').equalTo(email).on('value', snapshot => {
-                const ordersContainer = document.getElementById('orders-container');
-                const loadingElement = document.getElementById('loading');
-                
-                loadingElement.style.display = 'none';
-                
-                ordersContainer.innerHTML = '';
+        function loadUserOrders(userId) {
+            const orderList = document.getElementById('order-list');
+            orderList.innerHTML = ''; // Clear existing content
 
-                const orders = [];
-                snapshot.forEach(childSnapshot => {
-                    orders.push({ key: childSnapshot.key, ...childSnapshot.val() });
+            db.collection('orders').where('userId', '==', userId).get()
+                .then((querySnapshot) => {
+                    if (querySnapshot.empty) {
+                        orderList.innerHTML = '<div class="no-orders">אין הזמנות להצגה כרגע.</div>';
+                    } else {
+                        querySnapshot.forEach((doc) => {
+                            const order = doc.data();
+                            const orderCard = createOrderCard(order);
+                            orderList.appendChild(orderCard);
+                        });
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error getting orders: ", error);
+                    orderList.innerHTML = '<div class="no-orders">אירעה שגיאה בטעינת ההזמנות. נסה שוב מאוחר יותר.</div>';
                 });
-
-                if (orders.length === 0) {
-                    ordersContainer.innerHTML = '<p class="no-orders">אין הזמנות להצגה כרגע.</p>';
-                } else {
-                    orders.forEach(order => {
-                        const orderElement = createOrderElement(order, order.key);
-                        ordersContainer.appendChild(orderElement);
-                    });
-                }
-            });
         }
 
-        function createOrderElement(order, orderId) {
-            const orderDiv = document.createElement('div');
-            orderDiv.className = 'order';
-            orderDiv.innerHTML = `
-                <div class="order-id">הזמנה מספר: ${orderId}</div>
-                <div class="order-details">
-                    <strong>שם המוצר:</strong> ${order.productName}<br>
-                    <strong>קטגוריה:</strong> ${order.productCategory}<br>
-                    <strong>תיאור:</strong> ${order.productDescription}<br>
-                    <strong>חומרים:</strong> ${order.productMaterials}<br>
-                    <strong>כמות:</strong> ${order.productQuantity}<br>
-                    <strong>מחיר משוער:</strong> ${order.estimatedPrice}<br>
-                    <strong>תאריך משלוח:</strong> ${new Date(order.deliveryDate).toLocaleDateString('he-IL')}<br>
-                    <strong>דרישות נוספות:</strong> ${order.additionalRequirements}<br>
-                    <strong>שם איש קשר:</strong> ${order.contactName}<br>
-                    <strong>אימייל איש קשר:</strong> ${order.contactEmail}<br>
-                    <strong>טלפון איש קשר:</strong> ${order.contactPhone}<br>
-                </div>
+        function createOrderCard(order) {
+            const card = document.createElement('div');
+            card.className = 'order-card';
+            card.innerHTML = `
+                <div class="order-title">${order.productName}</div>
+                <div class="order-detail"><strong>קטגוריה:</strong> ${order.productCategory}</div>
+                <div class="order-detail"><strong>תיאור:</strong> ${order.productDescription}</div>
+                <div class="order-detail"><strong>חומרים:</strong> ${order.productMaterials}</div>
+                <div class="order-detail"><strong>כמות:</strong> ${order.productQuantity}</div>
+                <div class="order-detail"><strong>מחיר משוער:</strong> ${order.estimatedPrice}</div>
+                <div class="order-detail"><strong>תאריך אספקה:</strong> ${order.deliveryDate}</div>
+                <div class="order-detail"><strong>דרישות נוספות:</strong> ${order.additionalRequirements}</div>
+                <div class="order-detail"><strong>שם איש קשר:</strong> ${order.contactName}</div>
+                <div class="order-detail"><strong>אימייל:</strong> ${order.contactEmail}</div>
+                <div class="order-detail"><strong>טלפון:</strong> ${order.contactPhone}</div>
             `;
-            return orderDiv;
+            return card;
         }
     </script>
 </body>
