@@ -1,484 +1,266 @@
-<!DOCTYPE html>
-<html lang="he">
+<html><head><base href="https://zevis-ai.github.io/GPI/"></head>
+<html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ההזמנות שלי - GPI</title>
+    <title>ההזמנות שלי</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
     <style>
-        :root {
-            --primary-color: #3498db;
-            --secondary-color: #2ecc71;
-            --accent-color: #e74c3c;
-            --background-color: #f0f4f8;
-            --text-color: #2c3e50;
-            --card-background: #ffffff;
-        }
-
         body {
-            font-family: 'Heebo', sans-serif;
-            background-color: var(--background-color);
+            font-family: 'Rubik', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             margin: 0;
             padding: 0;
-            color: var(--text-color);
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .header {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            padding: 30px 0;
-            text-align: center;
-            border-radius: 0 0 30px 30px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .user-profile {
             display: flex;
-            align-items: center;
             justify-content: center;
-            margin-bottom: 20px;
+            align-items: center;
+            min-height: 100vh;
         }
-
-        .user-avatar {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 4px solid white;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s ease;
-        }
-
-        .user-avatar:hover {
-            transform: scale(1.05);
-        }
-
-        .user-name {
-            font-size: 2.5em;
-            font-weight: bold;
-            margin-right: 20px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-        }
-
-        h1 {
-            margin: 0;
-            font-size: 3em;
-            color: white;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .order-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 30px;
-            margin-top: 40px;
-        }
-
-        .order-card {
-            background-color: var(--card-background);
+        .container {
+            background-color: rgba(255, 255, 255, 0.9);
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            padding: 25px;
+            padding: 40px;
+            width: 90%;
+            max-width: 900px;
+            backdrop-filter: blur(10px);
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        .profile-picture {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-left: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border: 4px solid white;
+        }
+        .user-details {
+            flex-grow: 1;
+        }
+        h1 {
+            color: #333;
+            margin: 0;
+            font-size: 2.2em;
+            font-weight: 700;
+        }
+        .email {
+            color: #666;
+            margin: 5px 0;
+            font-size: 1.1em;
+        }
+        .orders {
+            margin-top: 30px;
+        }
+        .order {
+            background-color: #ffffff;
+            border: none;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
             transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
             position: relative;
             overflow: hidden;
         }
-
-        .order-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
-        }
-
-        .order-card::before {
+        .order::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
-            right: 0;
-            height: 8px;
-            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-        }
-
-        .order-title {
-            font-size: 1.6em;
-            font-weight: bold;
-            margin-bottom: 20px;
-            color: var(--primary-color);
-        }
-
-        .order-detail {
-            margin-bottom: 15px;
-            font-size: 1em;
-            display: flex;
-            align-items: center;
-        }
-
-        .order-detail i {
-            margin-left: 10px;
-            color: var(--secondary-color);
-        }
-
-        .order-detail strong {
-            font-weight: 500;
-            color: var(--text-color);
-            margin-left: 5px;
-        }
-
-        .no-orders {
-            text-align: center;
-            font-size: 1.4em;
-            color: #777;
-            margin-top: 50px;
-            background-color: var(--card-background);
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .order-status {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            padding: 8px 15px;
-            border-radius: 25px;
-            font-size: 0.9em;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-
-        .status-pending {
-            background-color: #f1c40f;
-            color: #34495e;
-        }
-
-        .status-processing {
-            background-color: var(--primary-color);
-            color: white;
-        }
-
-        .status-completed {
-            background-color: var(--secondary-color);
-            color: white;
-        }
-
-        .order-icon {
-            font-size: 2.5em;
-            margin-bottom: 15px;
-            color: var(--primary-color);
-        }
-
-        .order-actions {
-            display: flex;
-            justify-content: space-around;
-            margin-top: 20px;
-        }
-
-        .order-action-btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 25px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .edit-btn {
-            background-color: var(--primary-color);
-            color: white;
-        }
-
-        .cancel-btn {
-            background-color: var(--accent-color);
-            color: white;
-        }
-
-        .order-action-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .order-progress {
-            margin-top: 20px;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 10px;
-            background-color: #e0e0e0;
-            border-radius: 5px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
+            width: 5px;
             height: 100%;
-            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-            transition: width 0.5s ease;
+            background: linear-gradient(to bottom, #6a11cb 0%, #2575fc 100%);
         }
-
-        .order-stats {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 30px;
+        .order:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
         }
-
-        .stat-card {
-            background-color: var(--card-background);
-            border-radius: 15px;
-            padding: 20px;
-            text-align: center;
-            flex: 1;
-            margin: 0 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .stat-value {
-            font-size: 2em;
+        .order-id {
             font-weight: bold;
-            color: var(--primary-color);
+            color: #3a1c71;
+            font-size: 1.2em;
         }
-
-        .stat-label {
+        .order-date {
+            color: #666;
             font-size: 0.9em;
-            color: var(--text-color);
             margin-top: 5px;
         }
-
-        #orderChart {
-            margin-top: 40px;
-            background-color: var(--card-background);
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        .order-status {
+            float: left;
+            padding: 8px 15px;
+            border-radius: 30px;
+            font-size: 0.9em;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
-
-        @media (max-width: 768px) {
-            .order-list {
-                grid-template-columns: 1fr;
-            }
-            .user-profile {
-                flex-direction: column;
-            }
-            .user-name {
-                margin-right: 0;
-                margin-top: 15px;
-            }
-            .order-stats {
-                flex-direction: column;
-            }
-            .stat-card {
-                margin: 10px 0;
-            }
+        .status-pending {
+            background-color: #ffeeba;
+            color: #856404;
+        }
+        .status-completed {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .status-cancelled {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .order-details {
+            margin-top: 15px;
+            color: #444;
+            line-height: 1.6;
+        }
+        .no-orders {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            margin-top: 30px;
+        }
+        .loading {
+            text-align: center;
+            margin-top: 50px;
+        }
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <div class="user-profile">
-            <img id="user-avatar" class="user-avatar" src="https://via.placeholder.com/120" alt="תמונת פרופיל">
-            <div id="user-name" class="user-name">שם המשתמש</div>
-        </div>
-        <h1>ההזמנות שלי</h1>
-    </div>
     <div class="container">
-        <div class="order-stats">
-            <div class="stat-card">
-                <div class="stat-value" id="totalOrders">0</div>
-                <div class="stat-label">סה"כ הזמנות</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="pendingOrders">0</div>
-                <div class="stat-label">הזמנות בהמתנה</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="completedOrders">0</div>
-                <div class="stat-label">הזמנות שהושלמו</div>
+        <div class="user-info">
+            <img id="profile-picture" class="profile-picture" src="default-profile.png" alt="תמונת פרופיל">
+            <div class="user-details">
+                <h1 id="user-greeting">שלום, אורח</h1>
+                <p id="user-email" class="email"></p>
             </div>
         </div>
-        <canvas id="orderChart"></canvas>
-        <div id="order-list" class="order-list">
-            <!-- Orders will be dynamically inserted here -->
+        <div id="loading" class="loading">
+            <div class="loading-spinner"></div>
+        </div>
+        <div class="orders" id="orders-container">
+            <!-- ההזמנות יוכנסו כאן דינמית -->
         </div>
     </div>
 
     <script>
-        // Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyAaOp49avUlLknLkGzskeCPCk9xPOAeMUE",
             authDomain: "gpi0-d1e6d.firebaseapp.com",
+            databaseURL: "https://gpi0-d1e6d-default-rtdb.firebaseio.com",
             projectId: "gpi0-d1e6d",
             storageBucket: "gpi0-d1e6d.appspot.com",
             messagingSenderId: "138797690477",
-            appId: "1:138797690477:web:5d04dd40ed2a577dbed964"
+            appId: "1:138797690477:web:5d04dd40ed2a577dbed964",
+            measurementId: "G-DP0JJ2FX3D"
         };
 
-        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
-        const storage = firebase.storage();
 
-        // Check if user is logged in
+        const auth = firebase.auth();
+        const database = firebase.database();
+
         auth.onAuthStateChanged(user => {
             if (user) {
-                loadUserProfile(user);
+                const profilePicture = document.getElementById('profile-picture');
+                const userGreeting = document.getElementById('user-greeting');
+                const userEmail = document.getElementById('user-email');
+
+                profilePicture.src = user.photoURL || 'default-profile.png';
+                userGreeting.textContent = `שלום, ${user.displayName || 'משתמש'}`;
+                userEmail.textContent = user.email;
+
                 loadUserOrders(user.uid);
             } else {
                 window.location.href = "https://zevis-ai.github.io/GPI/login.html";
             }
         });
 
-        function loadUserProfile(user) {
-            const userNameElement = document.getElementById('user-name');
-            const userAvatarElement = document.getElementById('user-avatar');
-
-            // Set user name
-            userNameElement.textContent = user.displayName || 'משתמש';
-
-            // Set user avatar
-            if (user.photoURL) {
-                userAvatarElement.src = user.photoURL;
-            } else {
-                // If no photo URL, use default avatar or initials
-                const initials = (user.displayName || 'משתמש').charAt(0).toUpperCase();
-                userAvatarElement.src = `https://ui-avatars.com/api/?name=${initials}&background=random&color=fff&size=120`;
-            }
-        }
-
         function loadUserOrders(userId) {
-            const orderList = document.getElementById('order-list');
-            orderList.innerHTML = ''; // Clear existing content
+            const ordersRef = database.ref('orders').orderByChild('userId').equalTo(userId);
+            ordersRef.on('value', (snapshot) => {
+                const ordersContainer = document.getElementById('orders-container');
+                const loadingElement = document.getElementById('loading');
+                
+                // Hide loading spinner
+                loadingElement.style.display = 'none';
+                
+                ordersContainer.innerHTML = '';
 
-            let totalOrders = 0;
-            let pendingOrders = 0;
-            let completedOrders = 0;
-
-            db.collection('orders').where('userId', '==', userId).get()
-                .then((querySnapshot) => {
-                    if (querySnapshot.empty) {
-                        orderList.innerHTML = '<div class="no-orders">אין הזמנות להצגה כרגע.</div>';
-                    } else {
-                        querySnapshot.forEach((doc) => {
-                            const order = doc.data();
-                            const orderCard = createOrderCard(order);
-                            orderList.appendChild(orderCard);
-
-                            // Update stats
-                            totalOrders++;
-                            if (order.status === 'pending') pendingOrders++;
-                            if (order.status === 'completed') completedOrders++;
-                        });
-
-                        // Update stats display
-                        document.getElementById('totalOrders').textContent = totalOrders;
-                        document.getElementById('pendingOrders').textContent = pendingOrders;
-                        document.getElementById('completedOrders').textContent = completedOrders;
-
-                        // Create chart
-                        createOrderChart(pendingOrders, totalOrders - pendingOrders - completedOrders, completedOrders);
-                    }
-                })
-                .catch((error) => {
-                    console.error("Error getting orders: ", error);
-                    orderList.innerHTML = '<div class="no-orders">אירעה שגיאה בטעינת ההזמנות. נסה שוב מאוחר יותר.</div>';
+                const orders = [];
+                snapshot.forEach((childSnapshot) => {
+                    orders.push({ key: childSnapshot.key, ...childSnapshot.val() });
                 });
-        }
 
-        function createOrderCard(order) {
-            const card = document.createElement('div');
-            card.className = 'order-card';
-            
-            // Determine order status and icon
-            let statusClass, statusText, icon;
-            switch(order.status) {
-                case 'pending':
-                    statusClass = 'status-pending';
-                    statusText = 'ממתין';
-                    icon = 'fa-clock';
-                    break;
-                case 'processing':
-                    statusClass = 'status-processing';
-                    statusText = 'בטיפול';
-                    icon = 'fa-cog';
-                    break;
-                case 'completed':
-                    statusClass = 'status-completed';
-                    statusText = 'הושלם';
-                    icon = 'fa-check-circle';
-                    break;
-                default:
-                    statusClass = 'status-pending';
-                    statusText = 'ממתין';
-                    icon = 'fa-question-circle';
-            }
-
-            const progress = order.status === 'completed' ? 100 : (order.status === 'processing' ? 50 : 0);
-
-            card.innerHTML = `
-                <div class="order-status ${statusClass}">${statusText}</div>
-                <div class="order-icon"><i class="fas ${icon}"></i></div>
-                <div class="order-title">${order.productName}</div>
-                <div class="order-detail"><i class="fas fa-tag"></i><strong>קטגוריה:</strong> ${order.productCategory}</div>
-                <div class="order-detail"><i class="fas fa-info-circle"></i><strong>תיאור:</strong> ${order.productDescription}</div>
-                <div class="order-detail"><i class="fas fa-cube"></i><strong>חומרים:</strong> ${order.productMaterials}</div>
-                <div class="order-detail"><i class="fas fa-calculator"></i><strong>כמות:</strong> ${order.productQuantity}</div>
-                <div class="order-detail"><i class="fas fa-shekel-sign"></i><strong>מחיר משוער:</strong> ${order.estimatedPrice}</div>
-                <div class="order-detail"><i class="fas fa-calendar-alt"></i><strong>תאריך אספקה:</strong> ${order.deliveryDate}</div>
-                <div class="order-detail"><i class="fas fa-clipboard-list"></i><strong>דרישות נוספות:</strong> ${order.additionalRequirements}</div>
-                <div class="order-detail"><i class="fas fa-user"></i><strong>שם איש קשר:</strong> ${order.contactName}</div>
-                <div class="order-detail"><i class="fas fa-envelope"></i><strong>אימייל:</strong> ${order.contactEmail}</div>
-                <div class="order-detail"><i class="fas fa-phone"></i><strong>טלפון:</strong> ${order.contactPhone}</div>
-                <div class="order-progress">
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: ${progress}%"></div>
-                    </div>
-                </div>
-                <div class="order-actions">
-                    <button class="order-action-btn edit-btn">עריכה</button>
-                    <button class="order-action-btn cancel-btn">ביטול</button>
-                </div>
-            `;
-            return card;
-        }
-
-        function createOrderChart(pending, processing, completed) {
-            const ctx = document.getElementById('orderChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['ממתין', 'בטיפול', 'הושלם'],
-                    datasets: [{
-                        data: [pending, processing, completed],
-                        backgroundColor: ['#f1c40f', '#3498db', '#2ecc71'],
-                        borderColor: ['#f39c12', '#2980b9', '#27ae60'],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                        },
-                        title: {
-                            display: true,
-                            text: 'סטטוס הזמנות'
-                        }
-                    }
+                if (orders.length === 0) {
+                    ordersContainer.innerHTML = '<p class="no-orders">אין הזמנות להצגה כרגע.</p>';
+                } else {
+                    orders.forEach((order, index) => {
+                        const orderElement = createOrderElement(order, order.key);
+                        ordersContainer.appendChild(orderElement);
+                        
+                        // Animate order entrance
+                        anime({
+                            targets: orderElement,
+                            translateY: [50, 0],
+                            opacity: [0, 1],
+                            easing: 'easeOutExpo',
+                            duration: 1000,
+                            delay: index * 100
+                        });
+                    });
                 }
             });
+        }
+
+        function createOrderElement(order, orderId) {
+            const orderDiv = document.createElement('div');
+            orderDiv.className = 'order';
+            orderDiv.innerHTML = `
+                <span class="order-id">הזמנה מספר: ${orderId}</span>
+                <span class="order-date">תאריך: ${new Date(order.date).toLocaleDateString('he-IL')}</span>
+                <span class="order-status ${getStatusClass(order.status)}">${getStatusText(order.status)}</span>
+                <p class="order-details">פרטי ההזמנה: ${order.details}</p>
+            `;
+            return orderDiv;
+        }
+
+        function getStatusClass(status) {
+            switch (status) {
+                case 'pending': return 'status-pending';
+                case 'completed': return 'status-completed';
+                case 'cancelled': return 'status-cancelled';
+                default: return '';
+            }
+        }
+
+        function getStatusText(status) {
+            switch (status) {
+                case 'pending': return 'ממתין';
+                case 'completed': return 'הושלם';
+                case 'cancelled': return 'בוטל';
+                default: return status;
+            }
         }
     </script>
 </body>
