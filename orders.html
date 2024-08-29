@@ -151,7 +151,7 @@
         <div class="user-info">
             <img id="profile-picture" class="profile-picture" src="default-profile.png" alt="תמונת פרופיל">
             <div class="user-details">
-                <h1 id="user-greeting">ההזמנות שלי</h1>
+                <h1 id="user-greeting">שלום, אורח</h1>
                 <p id="user-email" class="email"></p>
             </div>
         </div>
@@ -187,7 +187,7 @@
                 const userEmail = document.getElementById('user-email');
 
                 profilePicture.src = user.photoURL || 'default-profile.png';
-                userGreeting.textContent = `שלום, ${user.displayName || 'משתמש'}`;
+                userGreeting.textContent = ;
                 userEmail.textContent = user.email;
 
                 loadUserOrders(user.uid);
@@ -236,43 +236,28 @@
         function createOrderElement(order, orderId) {
             const orderDiv = document.createElement('div');
             orderDiv.className = 'order';
-            orderDiv.innerHTML = `
-                <span class="order-id">הזמנה מספר: ${orderId}</span>
-                <span class="order-date">תאריך: ${new Date(order.date).toLocaleDateString('he-IL')}</span
-                <div class="order-status ${getOrderStatusClass(order.status)}">
-                    ${order.status}
-                </div>
-                <div class="order-details">
-                    <p><strong>שם הלקוח:</strong> ${order.customerName}</p>
-                    <p><strong>דוא"ל לקוח:</strong> ${order.customerEmail}</p>
-                    <p><strong>טלפון:</strong> ${order.customerPhone}</p>
-                    <p><strong>סוג מוצר:</strong> ${order.productType}</p>
-                    <p><strong>כמות:</strong> ${order.quantity}</p>
-                    <p><strong>בהירות:</strong> ${order.brightness}</p>
-                    <p><strong>צבע LED:</strong> ${order.ledColor}</p>
-                    <p><strong>טמפרטורת צבע:</strong> ${order.colorTemperature}</p>
-                    <p><strong>דימר:</strong> ${order.dimming ? 'כן' : 'לא'}</p>
-                    <p><strong>אורך:</strong> ${order.length}</p>
-                    <p><strong>הרכבה:</strong> ${order.mounting}</p>
-                    <p><strong>דרגת IP:</strong> ${order.ipRating}</p>
-                    <p><strong>ספק כוח:</strong> ${order.powerSupply}</p>
-                    <p><strong>דרישות מיוחדות:</strong> ${order.specialRequirements}</p>
-                    <p><strong>שם חברה:</strong> ${order.companyName}</p>
-                </div>
-            `;
-            return orderDiv;
+            orderDiv.innerHTML =                 <span class="order-id">הזמנה מספר: ${orderId}</span>
+                <span class="order-date">תאריך: ${new Date(order.date).toLocaleDateString('he-IL')}</span>
+                <span class="order-status ${getStatusClass(order.status)}">${getStatusText(order.status)}</span>
+                <p class="order-details">פרטי ההזמנה: ${order.details}</p>
+                        return orderDiv;
         }
 
-        function getOrderStatusClass(status) {
-            switch (status.toLowerCase()) {
-                case 'בהמתנה':
-                    return 'status-pending';
-                case 'הושלמה':
-                    return 'status-completed';
-                case 'בוטלה':
-                    return 'status-cancelled';
-                default:
-                    return '';
+        function getStatusClass(status) {
+            switch (status) {
+                case 'pending': return 'status-pending';
+                case 'completed': return 'status-completed';
+                case 'cancelled': return 'status-cancelled';
+                default: return '';
+            }
+        }
+
+        function getStatusText(status) {
+            switch (status) {
+                case 'pending': return 'ממתין';
+                case 'completed': return 'הושלם';
+                case 'cancelled': return 'בוטל';
+                default: return status;
             }
         }
     </script>
