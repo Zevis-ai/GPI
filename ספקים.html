@@ -372,10 +372,7 @@
             const doc = new jsPDF();
 
             // Add luxury header with gradient
-            const gradient = doc.createLinearGradient(0, 0, 210, 60);
-            gradient.addColorStop(0, 'rgb(98, 0, 234)');
-            gradient.addColorStop(1, 'rgb(124, 77, 255)');
-            doc.setFillColor(gradient);
+            const gradient = doc.setFillColor(98, 0, 234);
             doc.rect(0, 0, 210, 60, 'F');
             doc.setTextColor(3, 218, 198); // Secondary color
             doc.setFont("helvetica", "bold");
@@ -451,10 +448,7 @@
             }
 
             // Add stylish footer with gradient
-            const footerGradient = doc.createLinearGradient(0, 272, 210, 297);
-            footerGradient.addColorStop(0, 'rgb(98, 0, 234)');
-            footerGradient.addColorStop(1, 'rgb(124, 77, 255)');
-            doc.setFillColor(footerGradient);
+            const footerGradient = doc.setFillColor(98, 0, 234);
             doc.rect(0, 272, 210, 25, 'F');
 
             // Add "Click here" text with shadow
