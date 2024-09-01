@@ -290,7 +290,7 @@
                 <h1>ספקים</h1>
                 <div class="search-bar">
                     <i class="fas fa-search"></i>
-                    <input type="text" placeholder="חיפוש הזמנות..." id="searchInput">
+                    <input type="text" placeholder="חיפוש ספקים...!" id="searchInput">
                 </div>
             </div>
             <div id="customerGrid" class="customer-grid">
@@ -384,87 +384,92 @@
 
             // Add logo
             const logo = new Image();
-            logo.src = 'path/to/logo.png'; // החלף עם הנתיב ללוגו שלך
-            doc.addImage(logo, 'PNG', 10, 10, 50, 50); // מיקום וגודל הלוגו ב-PDF
+            logo.src = 'https://zevis-ai.github.io/GPI/path/to/logo.png'; // החלף עם הנתיב ללוגו שלך
+            logo.onload = () => {
+                doc.addImage(logo, 'PNG', 10, 10, 50, 50); // מיקום וגודל הלוגו ב-PDF
 
-            // Add accent line with shadow
-            doc.setDrawColor(3, 218, 198);
-            doc.setLineWidth(4);
-            doc.setLineDash([5, 5], 0);
-            doc.line(15, 65, 195, 65);
+                // Add accent line with shadow
+                doc.setDrawColor(3, 218, 198);
+                doc.setLineWidth(4);
+                doc.setLineDash([5, 5], 0);
+                doc.line(15, 65, 195, 65);
 
-            // Add order details header with shadow
-            doc.setTextColor(98, 0, 234);
-            doc.setFontSize(26);
-            doc.setFont("helvetica", "bold");
-            doc.text("Price Quote Request", 105, 85, null, null, "center");
+                // Add order details header with shadow
+                doc.setTextColor(98, 0, 234);
+                doc.setFontSize(26);
+                doc.setFont("helvetica", "bold");
+                doc.text("Price Quote Request", 105, 85, null, null, "center");
 
-            // Add category and ID with shadow
-            doc.setFontSize(20);
-            doc.setTextColor(3, 218, 198);
-            doc.text(`${category} - ${id}`, 105, 100, null, null, "center");
+                // Add category and ID with shadow
+                doc.setFontSize(20);
+                doc.setTextColor(3, 218, 198);
+                doc.text(`${category} - ${id}`, 105, 100, null, null, "center");
 
-            // Add content with alternating row colors
-            doc.setTextColor(51, 51, 51);
-            doc.setFontSize(12);
-            doc.setFont("helvetica", "normal");
-            let yPosition = 120;
-            let isAlternate = false;
+                // Add content with alternating row colors
+                doc.setTextColor(51, 51, 51);
+                doc.setFontSize(12);
+                doc.setFont("helvetica", "normal");
+                let yPosition = 120;
+                let isAlternate = false;
 
-            for (let key in data) {
-                if (key !== 'email' && key !== 'phone') {
-                    if (typeof data[key] === 'object') {
-                        doc.setFont("helvetica", "bold");
-                        doc.text(`${key}:`, 20, yPosition);
-                        yPosition += 10;
-                        doc.setFont("helvetica", "normal");
-                        for (let subKey in data[key]) {
+                for (let key in data) {
+                    if (key !== 'email' && key !== 'phone') {
+                        if (typeof data[key] === 'object') {
+                            doc.setFont("helvetica", "bold");
+                            doc.text(`${key}:`, 20, yPosition);
+                            yPosition += 10;
+                            doc.setFont("helvetica", "normal");
+                            for (let subKey in data[key]) {
+                                if (isAlternate) {
+                                    doc.setFillColor(245, 245, 245);
+                                    doc.rect(15, yPosition - 8, 180, 10, 'F');
+                                }
+                                doc.text(`${subKey}: ${data[key][subKey]}`, 30, yPosition);
+                                yPosition += 10;
+                                isAlternate = !isAlternate;
+                            }
+                        } else {
                             if (isAlternate) {
                                 doc.setFillColor(245, 245, 245);
                                 doc.rect(15, yPosition - 8, 180, 10, 'F');
                             }
-                            doc.text(`${subKey}: ${data[key][subKey]}`, 30, yPosition);
+                            doc.setFont("helvetica", "bold");
+                            doc.text(`${key}:`, 20, yPosition);
+                            doc.setFont("helvetica", "normal");
+                            doc.text(`${data[key]}`, 70, yPosition);
                             yPosition += 10;
                             isAlternate = !isAlternate;
                         }
-                    } else {
-                        if (isAlternate) {
-                            doc.setFillColor(245, 245, 245);
-                            doc.rect(15, yPosition - 8, 180, 10, 'F');
-                        }
-                        doc.setFont("helvetica", "bold");
-                        doc.text(`${key}:`, 20, yPosition);
-                        doc.setFont("helvetica", "normal");
-                        doc.text(`${data[key]}`, 70, yPosition);
-                        yPosition += 10;
-                        isAlternate = !isAlternate;
-                    }
 
-                    if (yPosition > 260) {
-                        doc.addPage();
-                        yPosition = 20;
+                        if (yPosition > 260) {
+                            doc.addPage();
+                            yPosition = 20;
+                        }
                     }
                 }
-            }
 
-            // Add stylish footer with gradient
-            const footerGradient = doc.setFillColor(98, 0, 234);
-            doc.rect(0, 272, 210, 25, 'F');
+                // Add stylish footer with gradient
+                const footerGradient = doc.setFillColor(98, 0, 234);
+                doc.rect(0, 272, 210, 25, 'F');
 
-            // Add "Click here" text with shadow
-            doc.setTextColor(255, 255, 255);
-            doc.setFontSize(12);
-            doc.setFont("helvetica", "bold");
-            doc.text("To submit a price quote or add comments, click here:", 105, 280, null, null, "center");
+                // Add "Click here" text with shadow
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(12);
+                doc.setFont("helvetica", "bold");
+                doc.text("To submit a price quote or add comments, click here:", 105, 280, null, null, "center");
 
-            // Add hyperlink with shadow
-            const linkText = "www.gpiluxury.com/quote";
-            const linkX = 105 - (doc.getTextWidth(linkText) / 2);
-            doc.setTextColor(3, 218, 198);
-            doc.textWithLink(linkText, linkX, 288, { url: 'https://www.gpiluxury.com/quote' });
+                // Add hyperlink with shadow
+                const linkText = "www.gpiluxury.com/quote";
+                const linkX = 105 - (doc.getTextWidth(linkText) / 2);
+                doc.setTextColor(3, 218, 198);
+                doc.textWithLink(linkText, linkX, 288, { url: 'https://www.gpiluxury.com/quote' });
 
-            // Save the PDF
-            doc.save(`GPI_Luxury_${category}_${id}.pdf`);
+                // Save the PDF
+                doc.save(`GPI_Luxury_${category}_${id}.pdf`);
+            };
+            logo.onerror = () => {
+                console.error('Failed to load logo image');
+            };
         }
 
         function shareData(id, data, category) {
