@@ -463,10 +463,11 @@
                     content += `<div class="customer-details">${key}: ${data[key]}</div>`;
                 }
             }
-            const viewDetailsBtn = document.createElement('button');
-            viewDetailsBtn.className = 'view-details-btn';
-            viewDetailsBtn.innerHTML = 'לחץ כאן לראות את פרטי ההזמנה ולהגשת הצעת מחיר';
-            viewDetailsBtn.onclick = () => viewOrderDetails(id, data, category);
+
+            const exportPdfBtn = document.createElement('button');
+            exportPdfBtn.className = 'export-pdf-btn';
+            exportPdfBtn.innerHTML = '<i class="fas fa-file-pdf"></i> ייצוא ל-PDF';
+            exportPdfBtn.onclick = () => exportToPdf(id, data, category);
 
             const shareBtn = document.createElement('button');
             shareBtn.className = 'share-btn';
