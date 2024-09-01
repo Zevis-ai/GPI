@@ -485,7 +485,8 @@
             const doc = new jsPDF();
 
             // Add the Alef font
-            doc.addFileToVFS("Alef-Regular.ttf", "data:font/truetype;base64,{{ base64_encoded_font }}");
+            const alefFont = "data:font/truetype;base64,{{ base64_encoded_font }}";
+            doc.addFileToVFS("Alef-Regular.ttf", alefFont);
             doc.addFont("Alef-Regular.ttf", "Alef", "normal");
             doc.setFont("Alef");
 
