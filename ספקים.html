@@ -386,7 +386,7 @@
             const logo = new Image();
             logo.src = '1000181465-512x512.png'; // החלף עם הנתיב ללוגו שלך
             logo.onload = () => {
-                doc.addImage(logo, 'PNG', 10, 10, 50, 50); // מיקום וגודל הלוגו ב-PDF
+             doc.addImage(logo, 'PNG', 10, 10, 50, 50, null, 'FAST', 0, 'circle'); // מיקום וגודל הלוגו ב-PDF עם מסגרת עגולה
 
                 // Add accent line with shadow
                 doc.setDrawColor(3, 218, 198);
