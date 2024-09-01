@@ -484,30 +484,22 @@
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
 
-            // Add the Alef font
-            const alefFont = "data:font/truetype;base64,{{ base64_encoded_font }}";
-            doc.addFileToVFS("Alef-Regular.ttf", alefFont);
-            doc.addFont("Alef-Regular.ttf", "Alef", "normal");
-            doc.setFont("Alef");
-
-            // Set text direction to RTL
-            doc.setR2L(true);
-
             // Add luxury header with gradient
             const gradient = doc.setFillColor(98, 0, 234);
             doc.rect(0, 0, 210, 60, 'F');
             doc.setTextColor(3, 218, 198); // Secondary color
+            doc.setFont("helvetica", "bold");
             doc.setFontSize(40);
             doc.text("GPI LUXURY", 105, 30, null, null, "center");
             doc.setFontSize(20);
             doc.setTextColor(255, 255, 255); // White
-            doc.text("פרטי הזמנה בלעדיים", 105, 45, null, null, "center");
+            doc.text("Exclusive Order Details", 105, 45, null, null, "center");
 
             // Add logo
             const logo = new Image();
             logo.src = '1000181465-512x512.png'; // החלף עם הנתיב ללוגו שלך
             logo.onload = () => {
-                doc.addImage(logo, 'PNG', 10, 10, 50, 50, null, 'FAST', 0, 'circle'); // מיקום וגודל הלוגו ב-PDF עם מסגרת עגולה
+             doc.addImage(logo, 'PNG', 10, 10, 50, 50, null, 'FAST', 0, 'circle'); // מיקום וגודל הלוגו ב-PDF עם מסגרת עגולה
 
                 // Add accent line with shadow
                 doc.setDrawColor(3, 218, 198);
@@ -516,11 +508,10 @@
                 doc.line(15, 65, 195, 65);
 
                 // Add order details header with shadow
-
-                                // Add order details header with shadow
-                                doc.setTextColor(98, 0, 234);
+                doc.setTextColor(98, 0, 234);
                 doc.setFontSize(26);
-                doc.text("בקשת הצעת מחיר", 105, 85, null, null, "center");
+                doc.setFont("helvetica", "bold");
+                doc.text("Price Quote Request", 105, 85, null, null, "center");
 
                 // Add category and ID with shadow
                 doc.setFontSize(20);
@@ -530,16 +521,17 @@
                 // Add content with alternating row colors
                 doc.setTextColor(51, 51, 51);
                 doc.setFontSize(12);
+                doc.setFont("helvetica", "normal");
                 let yPosition = 120;
                 let isAlternate = false;
 
                 for (let key in data) {
                     if (key !== 'email' && key !== 'phone') {
                         if (typeof data[key] === 'object') {
-                            doc.setFont("Alef", "bold");
+                            doc.setFont("helvetica", "bold");
                             doc.text(`${key}:`, 20, yPosition);
                             yPosition += 10;
-                            doc.setFont("Alef", "normal");
+                            doc.setFont("helvetica", "normal");
                             for (let subKey in data[key]) {
                                 if (isAlternate) {
                                     doc.setFillColor(245, 245, 245);
@@ -554,9 +546,9 @@
                                 doc.setFillColor(245, 245, 245);
                                 doc.rect(15, yPosition - 8, 180, 10, 'F');
                             }
-                            doc.setFont("Alef", "bold");
+                            doc.setFont("helvetica", "bold");
                             doc.text(`${key}:`, 20, yPosition);
-                            doc.setFont("Alef", "normal");
+                            doc.setFont("helvetica", "normal");
                             doc.text(`${data[key]}`, 70, yPosition);
                             yPosition += 10;
                             isAlternate = !isAlternate;
@@ -576,14 +568,14 @@
                 // Add "Click here" text with shadow
                 doc.setTextColor(255, 255, 255);
                 doc.setFontSize(12);
-                doc.setFont("Alef", "bold");
-                doc.text("להגשת הצעת מחיר או הוספת הערות, לחץ כאן:", 105, 280, null, null, "center");
+                doc.setFont("helvetica", "bold");
+                doc.text("To submit a price quote or add comments, click here:", 105, 280, null, null, "center");
 
                 // Add hyperlink with shadow
-                const linkText = "להגשת הצעת מחיר לחץ כאן";
+                const linkText = "To submit a quote click here";
                 const linkX = 105 - (doc.getTextWidth(linkText) / 2);
                 doc.setTextColor(3, 218, 198);
-                doc.textWithLink(linkText, linkX, 288, { url: `https://zevis-ai.github.io/GPI/כל-ההזמנות.html?search=${id}` });
+                doc.textWithLink(linkText, linkX, 288, { url: `https://zevis-ai.github.io/GPI/%D7%A0%D7%AA%D7%99%D7%A0%D7%AA%20%D7%94%D7%A6%D7%A2%D7%AA%20%D7%9E%D7%97%D7%99%D7%A8.html?search=${id}` });
 
                 // Save the PDF
                 doc.save(`GPI_Luxury_${category}_${id}.pdf`);
