@@ -575,7 +575,7 @@
                 const linkText = "To submit a quote click here";
                 const linkX = 105 - (doc.getTextWidth(linkText) / 2);
                 doc.setTextColor(3, 218, 198);
-                doc.textWithLink(linkText, linkX, 288, { url: 'https://zevis-ai.github.io/GPI/%D7%A0%D7%AA%D7%99%D7%A0%D7%AA%20%D7%94%D7%A6%D7%A2%D7%AA%20%D7%9E%D7%97%D7%99%D7%A8.html' });
+                doc.textWithLink(linkText, linkX, 288, { url: `https://zevis-ai.github.io/GPI/כל-ההזמנות.html?search=${id}` });
 
                 // Save the PDF
                 doc.save(`GPI_Luxury_${category}_${id}.pdf`);
