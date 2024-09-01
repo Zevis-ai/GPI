@@ -290,7 +290,7 @@
                 <h1>ספקים</h1>
                 <div class="search-bar">
                     <i class="fas fa-search"></i>
-                    <input type="text" placeholder="חיפוש ספקים.." id="searchInput">
+                    <input type="text" placeholder="חיפוש ספקים..." id="searchInput">
                 </div>
             </div>
             <div id="customerGrid" class="customer-grid">
@@ -452,25 +452,17 @@
                 const footerGradient = doc.setFillColor(98, 0, 234);
                 doc.rect(0, 272, 210, 25, 'F');
 
-               
-                // Add stylish footer with gradient
-                const footerGradient = doc.setFillColor(98, 0, 234);
-                doc.rect(0, 272, 210, 25, 'F');
-
                 // Add "Click here" text with shadow
                 doc.setTextColor(255, 255, 255);
                 doc.setFontSize(12);
                 doc.setFont("helvetica", "bold");
                 doc.text("To submit a price quote or add comments, click here:", 105, 280, null, null, "center");
 
-            
-                // Add large button with hyperlink
-                const buttonText = "CLICK HERE TO SUBMIT A PRICE QUOTE";
-                const buttonX = 105 - (doc.getTextWidth(buttonText) / 2);
-                doc.setFillColor(3, 218, 198);
-                doc.rect(buttonX - 5, 290, doc.getTextWidth(buttonText) + 10, 15, 'F');
-                doc.setTextColor(255, 255, 255);
-                doc.textWithLink(buttonText, buttonX, 300, { url: 'https://zevis-ai.github.io/GPI/%D7%A0%D7%AA%D7%99%D7%A0%D7%AA%20%D7%94%D7%A6%D7%A2%D7%AA%20%D7%9E%D7%97%D7%99%D7%A8.html' });
+                // Add hyperlink with shadow
+                const linkText = "www.gpiluxury.com/quote";
+                const linkX = 105 - (doc.getTextWidth(linkText) / 2);
+                doc.setTextColor(3, 218, 198);
+                doc.textWithLink(linkText, linkX, 288, { url: 'https://zevis-ai.github.io/GPI/%D7%A0%D7%AA%D7%99%D7%A0%D7%AA%20%D7%94%D7%A6%D7%A2%D7%AA%20%D7%9E%D7%97%D7%99%D7%A8.html' });
 
                 // Save the PDF
                 doc.save(`GPI_Luxury_${category}_${id}.pdf`);
