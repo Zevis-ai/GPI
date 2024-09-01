@@ -531,6 +531,60 @@
 
 
 
+<!DOCTYPE html>
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <title>הדף הראשי</title>
+</head>
+<body>
+ 
+    <!-- האלמנט שבו נטמיע את התוכן של פרופיל.html -->
+    <div id="profile-content"></div>
+
+    <script>
+        // פונקציה לטעינת התוכן של פרופיל.html
+        function loadProfile() {
+            fetch('פרופיל.html')
+                .then(response => response.text())
+                .then(data => {
+                    // יצירת אלמנט זמני כדי לפרק את התוכן של פרופיל.html
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = data;
+
+                    // הוספת ה-CSS
+                    const styles = tempDiv.querySelectorAll('style');
+                    styles.forEach(style => document.head.appendChild(style));
+
+                    // הוספת התוכן ה-HTML
+                    const bodyContent = tempDiv.querySelector('body').innerHTML;
+                    document.getElementById('profile-content').innerHTML = bodyContent;
+
+                    // הוספת ה-JavaScript
+                    const scripts = tempDiv.querySelectorAll('script');
+                    scripts.forEach(script => {
+                        const newScript = document.createElement('script');
+                        newScript.textContent = script.textContent;
+                        document.body.appendChild(newScript);
+                    });
+                })
+                .catch(error => console.error('שגיאה בטעינת הפרופיל:', error));
+        }
+
+        // קריאה לפונקציה לטעינת התוכן
+        loadProfile();
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
 
 
 
