@@ -371,8 +371,11 @@
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
 
-            // Add luxury header
-            doc.setFillColor(98, 0, 234); // Primary color
+            // Add luxury header with gradient
+            const gradient = doc.createLinearGradient(0, 0, 210, 60);
+            gradient.addColorStop(0, 'rgb(98, 0, 234)');
+            gradient.addColorStop(1, 'rgb(124, 77, 255)');
+            doc.setFillColor(gradient);
             doc.rect(0, 0, 210, 60, 'F');
             doc.setTextColor(3, 218, 198); // Secondary color
             doc.setFont("helvetica", "bold");
@@ -382,27 +385,34 @@
             doc.setTextColor(255, 255, 255); // White
             doc.text("Exclusive Order Details", 105, 45, null, null, "center");
 
-            // Add accent line
+            // Add logo
+            const logo = new Image();
+            logo.src = 'path/to/logo.png'; // החלף עם הנתיב ללוגו שלך
+            doc.addImage(logo, 'PNG', 10, 10, 50, 50); // מיקום וגודל הלוגו ב-PDF
+
+            // Add accent line with shadow
             doc.setDrawColor(3, 218, 198);
             doc.setLineWidth(4);
+            doc.setLineDash([5, 5], 0);
             doc.line(15, 65, 195, 65);
 
-            // Add order details header
+            // Add order details header with shadow
             doc.setTextColor(98, 0, 234);
             doc.setFontSize(26);
             doc.setFont("helvetica", "bold");
             doc.text("Price Quote Request", 105, 85, null, null, "center");
 
-            // Add category and ID
+            // Add category and ID with shadow
             doc.setFontSize(20);
             doc.setTextColor(3, 218, 198);
             doc.text(`${category} - ${id}`, 105, 100, null, null, "center");
 
-            // Add content
+            // Add content with alternating row colors
             doc.setTextColor(51, 51, 51);
             doc.setFontSize(12);
             doc.setFont("helvetica", "normal");
             let yPosition = 120;
+            let isAlternate = false;
 
             for (let key in data) {
                 if (key !== 'email' && key !== 'phone') {
@@ -412,15 +422,25 @@
                         yPosition += 10;
                         doc.setFont("helvetica", "normal");
                         for (let subKey in data[key]) {
+                            if (isAlternate) {
+                                doc.setFillColor(245, 245, 245);
+                                doc.rect(15, yPosition - 8, 180, 10, 'F');
+                            }
                             doc.text(`${subKey}: ${data[key][subKey]}`, 30, yPosition);
                             yPosition += 10;
+                            isAlternate = !isAlternate;
                         }
                     } else {
+                        if (isAlternate) {
+                            doc.setFillColor(245, 245, 245);
+                            doc.rect(15, yPosition - 8, 180, 10, 'F');
+                        }
                         doc.setFont("helvetica", "bold");
                         doc.text(`${key}:`, 20, yPosition);
                         doc.setFont("helvetica", "normal");
                         doc.text(`${data[key]}`, 70, yPosition);
                         yPosition += 10;
+                        isAlternate = !isAlternate;
                     }
 
                     if (yPosition > 260) {
@@ -430,17 +450,20 @@
                 }
             }
 
-            // Add stylish footer
-            doc.setFillColor(98, 0, 234);
+            // Add stylish footer with gradient
+            const footerGradient = doc.createLinearGradient(0, 272, 210, 297);
+            footerGradient.addColorStop(0, 'rgb(98, 0, 234)');
+            footerGradient.addColorStop(1, 'rgb(124, 77, 255)');
+            doc.setFillColor(footerGradient);
             doc.rect(0, 272, 210, 25, 'F');
 
-            // Add "Click here" text
+            // Add "Click here" text with shadow
             doc.setTextColor(255, 255, 255);
             doc.setFontSize(12);
             doc.setFont("helvetica", "bold");
             doc.text("To submit a price quote or add comments, click here:", 105, 280, null, null, "center");
 
-            // Add hyperlink
+            // Add hyperlink with shadow
             const linkText = "www.gpiluxury.com/quote";
             const linkX = 105 - (doc.getTextWidth(linkText) / 2);
             doc.setTextColor(3, 218, 198);
