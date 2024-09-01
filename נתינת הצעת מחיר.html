@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>פורטל ספקים - GPI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <style>
+        :root {
+            --primary-color: #1e88e5;
+            --secondary-color: #ff6d00;
+            --text-color: #333;
+            --bg-color: #f5f5f5;
+            --card-bg: #ffffff;
+            --sidebar-width: 280px;
+            --border-radius: 12px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Heebo', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            direction: rtl;
+            line-height: 1.6;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(145deg, var(--primary-color), #1565c0);
+            color: white;
+            padding: 30px;
+            transition: var(--transition);
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 40px;
+        }
+
+        .sidebar-header h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .sidebar-menu {
+            list-style-type: none;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 20px;
+        }
+
+        .sidebar-menu a {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            transition: var(--transition);
+            font-size: 1.1rem;
+            padding: 10px 15px;
+            border-radius: var(--border-radius);
+        }
+
+        .sidebar-menu a:hover {
+            background-color: rgba(255,255,255,0.1);
+            transform: translateX(-5px);
+        }
+
+        .sidebar-menu i {
+            margin-left: 15px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 40px;
+            transition: var(--transition);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background-color: var(--card-bg);
+            border-radius: 30px;
+            padding: 10px 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: var(--transition);
+        }
+
+        .search-bar:focus-within {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .search-bar input {
+            border: none;
+            outline: none;
+            padding: 10px;
+            font-size: 1rem;
+            width: 300px;
+            background: transparent;
+        }
+
+        .search-bar button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            transition: var(--transition);
+        }
+
+        .search-bar button:hover {
+            color: var(--secondary-color);
+        }
+
+        .orders-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .order-card {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: var(--transition);
+        }
+
+        .order-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .order-number {
+            font-weight: bold;
+            font-size: 1.3rem;
+            color: var(--primary-color);
+        }
+
+        .order-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .status-pending {
+            background-color: #fff3e0;
+            color: #e65100;
+        }
+
+        .status-approved {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .order-details {
+            margin-bottom: 20px;
+        }
+
+        .order-details span {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+        }
+
+        .order-details i {
+            margin-left: 10px;
+            color: var(--primary-color);
+            width: 20px;
+            text-align: center;
+        }
+
+        .order-actions {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+            font-size: 1rem;
+            text-transform: uppercase;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            margin: 10% auto;
+            padding: 30px;
+            border-radius: var(--border-radius);
+            width: 50%;
+            max-width: 500px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            animation: slideIn 0.3s;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .close {
+            color: #aaa;
+            float: left;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .close:hover {
+            color: var(--text-color);
+        }
+
+        .modal-header {
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            color: var(--primary-color);
+        }
+
+        .modal-body {
+            margin-bottom: 20px;
+        }
+
+        .modal-footer {
+            text-align: left;
+        }
+
+        #quoteForm, #commentForm {
+            display: flex;
+            flex-direction: column;
+        }
+
+        #quoteForm input, #quoteForm textarea,
+        #commentForm input, #commentForm textarea {
+            margin-bottom: 15px;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        #quoteForm input:focus, #quoteForm textarea:focus,
+        #commentForm input:focus, #commentForm textarea:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(30, 136, 229, 0.2);
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 80px;
+                padding: 20px 10px;
+            }
+
+            .sidebar-header h2, .sidebar-menu span {
+                display: none;
+            }
+
+            .main-content {
+                padding: 20px;
+            }
+
+            .orders-grid {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            }
+
+            .modal-content {
+                width: 90%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                position: fixed;
+                bottom: 0;
+                z-index: 100;
+                padding: 10px;
+            }
+
+            .sidebar-menu {
+                display: flex;
+                justify-content: space-around;
+            }
+
+            .sidebar-menu li {
+                margin: 0;
+            }
+
+            .main-content {
+                margin-bottom: 60px;
+            }
+
+            .header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-bar {
+                margin-top: 20px;
+            }
+
+            .search-bar input {
+                width: 100%;
+            }
+
+            .orders-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>פורטל ספקים</h2>
+                <i class="fas fa-bars" id="menuToggle"></i>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="#"><i class="fas fa-home"></i> <span>דף הבית</span></a></li>
+                <li><a href="#"><i class="fas fa-file-invoice"></i> <span>הזמנות</span></a></li>
+                <li><a href="#"><i class="fas fa-cog"></i> <span>הגדרות</span></a></li>
+                <li><a href="#"><i class="fas fa-chart-bar"></i> <span>דוחות</span></a></li>
+                <li><a href="#"><i class="fas fa-envelope"></i> <span>הודעות</span></a></li>
+                <li><a href="#"><i class="fas fa-sign-out-alt"></i> <span>יציאה</span></a></li>
+            </ul>
+        </aside>
+        <main class="main-content">
+            <header class="header">
+                <h1>הזמנות פתוחות</h1>
+                <div class="search-bar">
+                    <input type="text" placeholder="חיפוש הזמנות...">
+                    <button><i class="fas fa-search"></i></button>
+                </div>
+            </header>
+            <section class="orders-grid" id="ordersContainer">
+                <!-- Order cards will be dynamically inserted here -->
+            </section>
+        </main>
+    </div>
+
+    <!-- Quote Modal -->
+    <div id="quoteModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="modal-header">
+                <h2>הגש הצעת מחיר</h2>
+            </div>
+            <div class="modal-body">
+                <form id="quoteForm">
+                    <input type="hidden" id="quoteOrderId">
+                    <input type="number" id="quotePrice" placeholder="מחיר" required>
+                    <textarea id="quoteDetails" placeholder="פרטי ההצעה" required></textarea>
+                    <input type="date" id="quoteDeliveryDate" required>
+                    <button type="submit" class="btn btn-primary">שלח הצעת מחיר</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comment Modal -->
+    <div id="commentModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="modal-header">
+                <h2>הוסף הערה</h2>
+            </div>
+            <div class="modal-body">
+                <form id="commentForm">
+                    <input type="hidden" id="commentOrderId">
+                    <textarea id="commentText" placeholder="הערה ללקוח" required></textarea>
+                    <button type="submit" class="btn btn-primary">שלח הערה</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAaOp49avUlLknLkGzskeCPCk9xPOAeMUE",
+            authDomain: "gpi0-d1e6d.firebaseapp.com",
+            databaseURL: "https://gpi0-d1e6d-default-rtdb.firebaseio.com",
+            projectId: "gpi0-d1e6d",
+            storageBucket: "gpi0-d1e6d.appspot.com",
+            messagingSenderId: "138797690477",
+            appId: "1:138797690477:web:5d04dd40ed2a577dbed964",
+            measurementId: "G-DP0JJ2FX3D"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // DOM Elements
+        const ordersContainer = document.getElementById('ordersContainer');
+        const quoteModal = document.getElementById('quoteModal');
+        const commentModal = document.getElementById('commentModal');
+        const quoteForm = document.getElementById('quoteForm');
+        const commentForm = document.getElementById('commentForm');
+
+        // Load orders from Firebase
+        function loadOrders() {
+            const ordersRef = database.ref('orders');
+            ordersRef.on('value', (snapshot) => {
+                ordersContainer.innerHTML = ''; // Clear existing orders
+                snapshot.forEach((childSnapshot) => {
+                    const order = childSnapshot.val();
+                    const orderId = childSnapshot.key;
+                    createOrderCard(order, orderId);
+                });
+            });
+        }
+
+        // Create order card
+        function createOrderCard(order, orderId) {
+            const card = document.createElement('div');
+            card.className = 'order-card';
+
+            let orderDetails = '';
+            if (order.brightness) {
+                // This is a lighting order
+                orderDetails = `
+                    <span><i class="fas fa-sun"></i> בהירות: ${order.brightness}</span>
+                    <span><i class="fas fa-temperature-low"></i> טמפרטורת צבע: ${order['color-temperature']}</span>
+                    <span><i class="fas fa-building"></i> שם החברה: ${order['company-name']}</span>
+                    <span><i class="fas fa-user"></i> שם לקוח: ${order['customer-name']}</span>
+                    <span><i class="fas fa-envelope"></i> אימייל לקוח: ${order['customer-email']}</span>
+                    <span><i class="fas fa-phone"></i> טלפון לקוח: ${order['customer-phone']}</span>
+                    <span><i class="fas fa-lightbulb"></i> דימור: ${order.dimming}</span>
+                    <span><i class="fas fa-tachometer-alt"></i> דירוג IP: ${order['ip-rating']}</span>
+                    <span><i class="fas fa-palette"></i> צבע LED: ${order['led-color']}</span>
+                    <span><i class="fas fa-ruler"></i> אורך: ${order.length}</span>
+                `;
+            } else {
+                // This is a non-lighting order
+                orderDetails = `
+                    <span><i class="fas fa-box"></i> סוג מוצר: ${order['product-type']}</span>
+                    <span><i class="fas fa-hashtag"></i> כמות: ${order.quantity}</span>
+                    <span><i class="fas fa-building"></i> שם החברה: ${order['company-name']}</span>
+                    <span><i class="fas fa-user"></i> שם לקוח: ${order['customer-name']}</span>
+                    <span><i class="fas fa-envelope"></i> אימייל לקוח: ${order['customer-email']}</span>
+                    <span><i class="fas fa-phone"></i> טלפון לקוח: ${order['customer-phone']}</span>
+                    <span><i class="fas fa-ruler-combined"></i> מידות: ${order.width} x ${order.length}</span>
+                    <span><i class="fas fa-cogs"></i> הרכבה: ${order.mounting}</span>
+                    <span><i class="fas fa-bolt"></i> ספק כוח: ${order['power-supply']}</span>
+                    <span><i class="fas fa-comment"></i> דרישות מיוחדות: ${order['special-requirements'] || 'אין'}</span>
+                `;
+            }
+
+            card.innerHTML = `
+                <div class="order-header">
+                    <span class="order-number">הזמנה #${orderId}</span>
+                    <span class="order-status ${order.status === 'מאושר' ? 'status-approved' : 'status-pending'}">${order.status || 'ממתין'}</span>
+                </div>
+                <div class="order-details">
+                    ${orderDetails}
+                </div>
+                <div class="order-actions">
+                    <button class="btn btn-primary" onclick="openQuoteModal('${orderId}')">הגש הצעת מחיר</button>
+                    <button class="btn btn-secondary" onclick="openCommentModal('${orderId}')">הוסף הערה</button>
+                </div>
+            `;
+            ordersContainer.appendChild(card);
+        }
+
+        // Open quote modal
+        function openQuoteModal(orderId) {
+            quoteModal.style.display = 'block';
+            document.getElementById('quoteOrderId').value = orderId;
+        }
+
+        // Open comment modal
+        function openCommentModal(orderId) {
+            commentModal.style.display = 'block';
+            document.getElementById('commentOrderId').value = orderId;
+        }
+
+        // Close modals
+        document.querySelectorAll('.close').forEach(closeBtn => {
+            closeBtn.onclick = function() {
+                quoteModal.style.display = 'none';
+                commentModal.style.display = 'none';
+            }
+        });
+
+        // Submit quote
+        quoteForm.onsubmit = function(e) {
+            e.preventDefault();
+            const orderId = document.getElementById('quoteOrderId').value;
+            const price = document.getElementById('quotePrice').value;
+            const details = document.getElementById('quoteDetails').value;
+            const deliveryDate = document.getElementById('quoteDeliveryDate').value;
+
+            database.ref('orders/' + orderId + '/quote').set({
+                price: price,
+                details: details,
+                deliveryDate: deliveryDate,
+                timestamp: firebase.database.ServerValue.TIMESTAMP
+            }).then(() => {
+                alert('הצעת המחיר נשלחה בהצלחה');
+                quoteModal.style.display = 'none';
+            }).catch((error) => {
+                console.error("Error submitting quote: ", error);
+                alert('אירעה שגיאה בשליחת הצעת המחיר');
+            });
+        }
+
+        // Submit comment
+        commentForm.onsubmit = function(e) {
+            e.preventDefault();
+            const orderId = document.getElementById('commentOrderId').value;
+            const comment = document.getElementById('commentText').value;
+
+            database.ref('orders/' + orderId + '/comments').push({
+                text: comment,
+                timestamp: firebase.database.ServerValue.TIMESTAMP
+            }).then(() => {
+                alert('ההערה נוספה בהצלחה');
+                commentModal.style.display = 'none';
+            }).catch((error) => {
+                console.error("Error adding comment: ", error);
+                alert('אירעה שגיאה בהוספת ההערה');
+            });
+        }
+
+        // Toggle sidebar on mobile
+        document.getElementById('menuToggle').onclick = function() {
+            const sidebar = document.querySelector('.sidebar');
+            sidebar.classList.toggle('active');
+        }
+
+        // Load orders when the page loads
+        loadOrders();
+    </script>
+</body>
+</html>
